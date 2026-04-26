@@ -140,6 +140,7 @@ export default function AgendamentoPage() {
         data: selectedDate,
         horario: selectedTime,
         telefone: clientPhone,
+        cliente: clientName,
       })
       setIsSubmitting(false)
       

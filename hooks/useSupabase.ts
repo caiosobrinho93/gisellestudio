@@ -143,7 +143,7 @@ export function useAgendamentos() {
       const { data, error } = await supabase
         .from('agendamentos')
         .select('*')
-        .order('data', { ascending: true })
+        .order('created_at', { ascending: false })
       
       if (error) {
       } else if (mounted.current) {
@@ -168,6 +168,7 @@ export async function createAgendamento(data: {
   data: string
   horario: string
   telefone: string
+  cliente?: string
   status?: string
 }) {
   try {
@@ -179,6 +180,7 @@ export async function createAgendamento(data: {
         data: data.data,
         horario: data.horario,
         telefone: data.telefone,
+        cliente: data.cliente || data.telefone,
         status: data.status || 'PENDENTE',
       }])
 

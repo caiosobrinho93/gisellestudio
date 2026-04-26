@@ -2,20 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Search, Calendar as CalIcon, Clock, CheckCircle, XCircle, AlertCircle, Trash2, Calendar } from 'lucide-react'
+import { Trash2, Calendar } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import { useNotification } from '@/components/ui/NotificationContext'
 import { useAgendamentos, useServicos, useProfissionais, deleteAgendamento } from '@/hooks/useSupabase'
-
-const statusConfig: Record<string, { variant: string; icon: any }> = {
-  PENDENTE: { variant: 'warning', icon: AlertCircle },
-  CONFIRMADO: { variant: 'success', icon: CheckCircle },
-  CANCELADO: { variant: 'error', icon: XCircle },
-  CONCLUIDO: { variant: 'primary', icon: CheckCircle },
-}
 
 export default function AgendamentosPage() {
   const { showNotification } = useNotification()
@@ -45,7 +38,7 @@ export default function AgendamentosPage() {
 
   const displayItens = itens.map(a => ({
     ...a,
-    cliente: a.telefone,
+    cliente: a.cliente || a.telefone,
     servico: getServicoNome(a.servico_id),
     profissional: getProfissionalNome(a.profissional_id)
   }))
@@ -123,49 +116,41 @@ export default function AgendamentosPage() {
           <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="grid gap-3">
-          {filteredAgendamentos.map((agend, i) => {
-            const StatusIcon = statusConfig[agend.status]?.icon || AlertCircle
-            return (
+        <div className="grid gap-2">
+          {filteredAgendamentos.map((agend, i) => (
               <motion.div
                 key={agend.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
               >
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center">
-                        <Calendar className="w-6 h-6 text-accent-primary" />
+                <Card className="p-3 max-h-[100px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-4 h-4 text-accent-primary" />
                       </div>
-                      <div>
-                        <p className="font-medium text-text-primary">{agend.cliente}</p>
-                        <p className="text-sm text-text-secondary">{agend.servico} - {agend.profissional}</p>
-                        <div className="flex items-center gap-2 text-sm text-text-tertiary mt-1">
-                          <Calendar className="w-3 h-3" />
-                          {agend.data}
-                          <Clock className="w-3 h-3 ml-2" />
-                          {agend.horario}
-                        </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-text-primary text-sm truncate">{agend.cliente}</p>
+                        <p className="text-xs text-text-secondary truncate">{agend.servico} por {agend.profissionais}</p>
+                        <p className="text-xs text-text-tertiary">{agend.data} às {agend.horario}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={agend.status === 'CONFIRMADO' ? 'success' : agend.status === 'PENDENTE' ? 'warning' : agend.status === 'CANCELADO' ? 'error' : 'primary'}>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Badge variant={agend.status === 'CONFIRMADO' ? 'success' : agend.status === 'PENDENTE' ? 'warning' : agend.status === 'CANCELADO' ? 'error' : 'primary'} className="text-xs">
                         {agend.status}
                       </Badge>
                       <button
                         onClick={() => { setAgendamentoToDelete(agend); setIsDeleteModalOpen(true) }}
-                        className="p-2 bg-error/20 text-error rounded-lg"
+                        className="p-1.5 bg-error/20 text-error rounded-lg"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
                 </Card>
               </motion.div>
-            )
-          })}
+          ))}
         </div>
       )}
 
