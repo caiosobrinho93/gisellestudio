@@ -1,17 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Sparkles, Award, Users, Star, ArrowRight, Quote } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Sparkles, Star, ArrowRight, Quote, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import Image from 'next/image'
-
-const stats = [
-  { value: '2.500+', label: 'Satisfeitas', color: 'text-accent-primary' },
-  { value: '8+', label: 'Anos', color: 'text-pink-400' },
-  { value: '15+', label: 'Serviços', color: 'text-accent-primary' },
-  { value: '4.9', label: 'Nota', color: 'text-yellow-400' },
-]
 
 const testimonials = [
   {
@@ -29,101 +23,157 @@ const testimonials = [
     text: 'A massagem é um sonho. Vou toda semana agora.',
     rating: 5,
   },
+  {
+    name: 'Juliana Costa',
+    text: 'A Giselle é incrível! Agora só confio nela as minhas unhas.',
+    rating: 5,
+  },
+  {
+    name: 'Patrícia Lima',
+    text: 'Saiu de lá me sentindo outra pessoa. Ambiente maravilhoso!',
+    rating: 5,
+  },
+  {
+    name: 'Carla M.',
+    text: 'Atendimento impecável. Recomendo para todas as minhas amigas.',
+    rating: 5,
+  },
 ]
 
 export function Professionals() {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+
+  useEffect(() => {
+    if (!isAutoPlaying) return
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [isAutoPlaying])
+
+  const prevTestimonial = () => {
+    setIsAutoPlaying(false)
+    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+  }
+
+  const nextTestimonial = () => {
+    setIsAutoPlaying(false)
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
+  }
+
   return (
     <section id="sobre" className="py-16 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-bg-secondary/50 via-bg-primary to-bg-secondary/30" />
-      
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-primary/10 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center lg:text-left"
-          >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-4">
-              <Sparkles className="w-4 h-4 inline mr-2" />
-              Quem somos
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4">
-              Um espaço feito para <span className="text-accent-primary">mulheres</span>
-            </h2>
-            <p className="text-text-secondary mb-6 md:mb-8 max-w-xl">
-              Aqui é tudo sobre você. Nossa equipe é especializada em fazer você se sentir bem.
-            </p>
-            
-            <div className="flex items-center gap-4 justify-center lg:justify-start">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-accent-primary">
-                <Image
-                  src="/gisellestudio/images/giselle-02.png"
-                  alt="Giselle Soares"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="text-left">
-                <p className="font-bold text-text-primary">Giselle Soares</p>
-                <p className="text-sm text-text-secondary">Fundadora</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4"
-          >
-            {stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                className="p-3 md:p-4 rounded-2xl bg-white/5 border border-white/10 text-center"
-              >
-                <p className={`text-xl md:text-2xl lg:text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</p>
-                <p className="text-xs md:text-sm text-text-secondary">{stat.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 md:mb-12"
+          className="text-center mb-12 md:mb-16"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-white/5 text-text-secondary text-sm font-medium">
-            O que dizem nossas clientes
+          <span className="inline-block px-4 py-1.5 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-4">
+            <Sparkles className="w-4 h-4 inline mr-2" />
+            Quem somos
           </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary mb-4 md:mb-6">
+            Giselle <span className="text-accent-primary">Soares</span>
+          </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10"
-            >
-              <Quote className="w-6 md:w-8 h-6 md:h-8 text-accent-primary mb-3 md:mb-4" />
-              <p className="text-text-secondary text-sm md:text-base mb-4 md:mb-6">{t.text}</p>
-              <div className="flex items-center justify-between">
-                <p className="font-semibold text-text-primary text-sm md:text-base">{t.name}</p>
-                <div className="flex gap-1">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="w-3 md:w-4 h-3 md:h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center"
+          >
+            <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-accent-primary mb-6 md:mb-8">
+              <Image
+                src="/gisellestudio/images/giselle-02.png"
+                alt="Giselle Soares"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+            <div className="text-center max-w-md">
+              <p className="text-lg md:text-xl text-text-primary font-medium mb-2">Fundadora</p>
+              <p className="text-text-secondary">
+                Com mais de 8 anos de experiência em beleza e estética, 
+                Giselle criou este espaço pensando em cada mulher que merece 
+                ser tratada com carinho e atenção especial.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
+              <h3 className="text-xl md:text-2xl font-bold text-text-primary mb-6 text-center">
+                O que dizem nossas clientes
+              </h3>
+              
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentTestimonial}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center"
+                  >
+                    <Quote className="w-10 h-10 text-accent-primary mx-auto mb-4" />
+                    <p className="text-lg md:text-xl text-text-secondary mb-6 italic">
+                      "{testimonials[currentTestimonial].text}"
+                    </p>
+                    <p className="font-semibold text-text-primary">
+                      {testimonials[currentTestimonial].name}
+                    </p>
+                    <div className="flex justify-center gap-1 mt-2">
+                      {[...Array(testimonials[currentTestimonial].rating)].map((_, j) => (
+                        <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                <button
+                  onClick={prevTestimonial}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 p-2 rounded-full bg-bg-card border border-white/10 hover:bg-accent-primary/20 transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextTestimonial}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 p-2 rounded-full bg-bg-card border border-white/10 hover:bg-accent-primary/20 transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            </motion.div>
-          ))}
+
+              <div className="flex justify-center gap-2 mt-6">
+                {testimonials.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setCurrentTestimonial(idx); setIsAutoPlaying(false) }}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      idx === currentTestimonial 
+                        ? 'bg-accent-primary w-6' 
+                        : 'bg-white/20'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         <motion.div

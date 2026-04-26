@@ -19,10 +19,19 @@ export function Navbar() {
   }, [])
 
   const navLinks = [
-    { href: '#servicos', label: 'Serviços' },
-    { href: '#galeria', label: 'Galeria' },
-    { href: '#sobre', label: 'Sobre' },
+    { href: '#servicos', label: 'Serviços', action: () => scrollTo('servicos') },
+    { href: '#galeria', label: 'Galeria', action: () => scrollTo('galeria') },
+    { href: '#sobre', label: 'Sobre', action: () => scrollTo('sobre') },
   ]
+
+  const scrollTo = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      window.location.href = `/#${id}`
+    }
+  }
 
   return (
     <motion.nav
@@ -50,14 +59,14 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
+            <button
               key={link.href}
-              href={link.href}
+              onClick={link.action}
               className="text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors relative group"
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300" />
-            </Link>
+            </button>
           ))}
         </div>
 
@@ -101,14 +110,13 @@ export function Navbar() {
           >
             <div className="p-6 space-y-4">
               {navLinks.map((link) => (
-                <Link
+                <button
                   key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-text-secondary hover:text-accent-primary transition-colors text-lg"
+                  onClick={() => { link.action(); setIsMobileMenuOpen(false); }}
+                  className="block py-3 text-text-secondary hover:text-accent-primary transition-colors text-lg w-full text-left"
                 >
                   {link.label}
-                </Link>
+                </button>
               ))}
               <Link href="/agendar" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button className="w-full mt-4">Agendar Agora</Button>
