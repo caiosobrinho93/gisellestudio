@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 
-console.log('[useSupabase] Loading hooks...')
-
 export function useServicos() {
   const [servicos, setServicos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -19,12 +17,10 @@ export function useServicos() {
         .order('nome')
       
       if (error) {
-        console.error('[Servicos] Erro:', error)
       } else if (mounted.current) {
         setServicos(data || [])
       }
     } catch (e) {
-      console.error('[Servicos] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -53,12 +49,10 @@ export function useProfissionais() {
         .order('nome')
       
       if (error) {
-        console.error('[Profissionais] Erro:', error)
       } else if (mounted.current) {
         setProfissionais(data || [])
       }
     } catch (e) {
-      console.error('[Profissionais] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -87,12 +81,10 @@ export function useGaleria() {
         .order('created_at', { ascending: false })
       
       if (error) {
-        console.error('[Galeria] Erro:', error)
       } else if (mounted.current) {
         setGaleria(data || [])
       }
     } catch (e) {
-      console.error('[Galeria] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -119,7 +111,6 @@ export function useConfiguracoes() {
         .select('chave, valor')
       
       if (error) {
-        console.error('[Config] Erro:', error)
       } else if (mounted.current) {
         const configMap: Record<string, string> = {}
         data?.forEach((item) => {
@@ -128,7 +119,6 @@ export function useConfiguracoes() {
         setConfig(configMap)
       }
     } catch (e) {
-      console.error('[Config] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -149,7 +139,6 @@ export function useAgendamentos() {
   const fetchAgendamentos = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Agendamentos] Buscando...')
     try {
       const { data, error } = await supabase
         .from('agendamentos')
@@ -157,13 +146,10 @@ export function useAgendamentos() {
         .order('data', { ascending: true })
       
       if (error) {
-        console.error('[Agendamentos] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Agendamentos] Encontrados:', data?.length, 'agendamentos')
         setAgendamentos(data || [])
       }
     } catch (e) {
-      console.error('[Agendamentos] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -184,7 +170,6 @@ export async function createAgendamento(data: {
   telefone: string
   status?: string
 }) {
-  console.log('[createAgendamento] Salvando:', data)
   try {
     const { error } = await supabase
       .from('agendamentos')
@@ -197,34 +182,49 @@ export async function createAgendamento(data: {
         status: data.status || 'PENDENTE',
       }])
 
-    if (error) {
-      console.error('[createAgendamento] Erro:', error)
-      return { success: false, error }
-    }
-    console.log('[createAgendamento] Sucesso!')
+    if (error) return { success: false, error }
   } catch (e) {
-    console.error('[createAgendamento] Exceção:', e)
     return { success: false, error: e }
   }
 
   return { success: true }
 }
 
-export async function deleteGaleriaItem(id: string) {
-  console.log('[deleteGaleriaItem] Excluindo:', id)
+export async function deleteAgendamento(id: string) {
   try {
-    const { error } = await supabase
-      .from('galeria')
-      .delete()
-      .eq('id', id)
-
-    if (error) {
-      console.error('[deleteGaleriaItem] Erro:', error)
-      return { success: false, error }
-    }
-    console.log('[deleteGaleriaItem] Sucesso!')
+    const { error } = await supabase.from('agendamentos').delete().eq('id', id)
+    if (error) return { success: false, error }
   } catch (e) {
-    console.error('[deleteGaleriaItem] Exceção:', e)
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function deleteGaleriaItem(id: string) {
+  try {
+    const { error } = await supabase.from('galeria').delete().eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function updateGaleriaItem(id: string, data: {
+  titulo: string
+  imagem: string
+  categoria: string
+  ativo?: boolean
+}) {
+  try {
+    const { error } = await supabase.from('galeria').update({
+      titulo: data.titulo,
+      imagem: data.imagem,
+      categoria: data.categoria,
+      ativo: data.ativo
+    }).eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
     return { success: false, error: e }
   }
   return { success: true }
@@ -235,7 +235,6 @@ export async function createGaleriaItem(data: {
   imagem: string
   categoria: string
 }) {
-  console.log('[createGaleriaItem] Criando:', data)
   try {
     const { error } = await supabase
       .from('galeria')
@@ -246,13 +245,118 @@ export async function createGaleriaItem(data: {
         ativo: true
       }])
 
-    if (error) {
-      console.error('[createGaleriaItem] Erro:', error)
-      return { success: false, error }
-    }
-    console.log('[createGaleriaItem] Sucesso!')
+    if (error) return { success: false, error }
   } catch (e) {
-    console.error('[createGaleriaItem] Exceção:', e)
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function deleteServico(id: string) {
+  try {
+    const { error } = await supabase.from('servicos').delete().eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function updateServico(id: string, data: {
+  nome: string
+  preco: number
+  duracao: number
+  descricao?: string
+  categoria: string
+  ativo?: boolean
+}) {
+  try {
+    const { error } = await supabase.from('servicos').update({
+      nome: data.nome,
+      preco: data.preco,
+      duracao: data.duracao,
+      descricao: data.descricao,
+      categoria: data.categoria,
+      ativo: data.ativo
+    }).eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function createServico(data: {
+  nome: string
+  preco: number
+  duracao: number
+  descricao?: string
+  categoria: string
+}) {
+  try {
+    const { error } = await supabase.from('servicos').insert([{
+      nome: data.nome,
+      preco: data.preco,
+      duracao: data.duracao,
+      descricao: data.descricao,
+      categoria: data.categoria,
+      ativo: true
+    }])
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function deleteProfissional(id: string) {
+  try {
+    const { error } = await supabase.from('profissionais').delete().eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function updateProfissional(id: string, data: {
+  nome: string
+  especialidade: string
+  telefone?: string
+  email?: string
+  ativo?: boolean
+}) {
+  try {
+    const { error } = await supabase.from('profissionais').update({
+      nome: data.nome,
+      especialidade: data.especialidade,
+      telefone: data.telefone,
+      email: data.email,
+      ativo: data.ativo
+    }).eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function createProfissional(data: {
+  nome: string
+  especialidade: string
+  telefone?: string
+  email?: string
+}) {
+  try {
+    const { error } = await supabase.from('profissionais').insert([{
+      nome: data.nome,
+      especialidade: data.especialidade,
+      telefone: data.telefone,
+      email: data.email,
+      ativo: true
+    }])
+    if (error) return { success: false, error }
+  } catch (e) {
     return { success: false, error: e }
   }
   return { success: true }

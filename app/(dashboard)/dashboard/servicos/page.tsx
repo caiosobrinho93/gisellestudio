@@ -1,22 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit2, Trash2, Search, Clock, DollarSign } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
-
-interface Servico {
-  id: string
-  nome: string
-  preco: number
-  duracao: number
-  categoria: string
-  ativo: boolean
-  descricao?: string
-}
+import { useServicos, createServico, deleteServico, updateServico } from '@/hooks/useSupabase'
 
 const categoriaOptions = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Skincare', 'Depilação', 'Harmonização']
 
@@ -25,113 +16,126 @@ function formatCurrency(value: number) {
 }
 
 export default function ServicosPage() {
-  const [servicos, setServicos] = useState<Servico[]>([
-    { id: '1', nome: 'Manicure Simples', preco: 35, duracao: 30, categoria: 'Manicure', ativo: true, descricao: 'Corte e pintura básica' },
-    { id: '2', nome: 'Manicure + Esmaltação', preco: 45, duracao: 45, categoria: 'Manicure', ativo: true, descricao: 'Manicure com escolha de cor' },
-    { id: '3', nome: 'Pedicure Spa', preco: 65, duracao: 60, categoria: 'Pedicure', ativo: true, descricao: 'Tratamento completo dos pés' },
-    { id: '4', nome: 'Extensão de Cílios', preco: 150, duracao: 90, categoria: 'Cílios', ativo: true, descricao: 'Aplicação fio a fio' },
-    { id: '5', nome: 'Design de Sobrancelha', preco: 30, duracao: 20, categoria: 'Sobrancelha', ativo: true, descricao: 'Designer profissional' },
-    { id: '6', nome: 'Massagem Relaxante', preco: 80, duracao: 60, categoria: 'Massagem', ativo: true, descricao: 'Massagem corporal' },
-  ])
-
+  const { servicos, loading, refetch } = useServicos()
+  const [itens, setItens] = useState<any[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [editingServico, setEditingServico] = useState<Servico | null>(null)
-  const [servicoToDelete, setServicoToDelete] = useState<Servico | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterCategoria, setFilterCategoria] = useState('')
+  const [editingServico, setEditingServico] = useState<any>(null)
+  const [servicoToDelete, setServicoToDelete] = useState<any>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  
+  const [newNome, setNewNome] = useState('')
+  const [newPreco, setNewPreco] = useState('')
+  const [newDuracao, setNewDuracao] = useState('')
+  const [newCategoria, setNewCategoria] = useState('Manicure')
+  const [newDescricao, setNewDescricao] = useState('')
 
-  const [formData, setFormData] = useState({
-    nome: '',
-    preco: '',
-    duracao: '',
-    categoria: '',
-    descricao: '',
-  })
+  useEffect(() => {
+    if (servicos.length > 0) {
+      setItens(servicos)
+    }
+  }, [servicos])
 
-  const filteredServicos = servicos.filter(servico => {
-    const matchesSearch = servico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      servico.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategoria = !filterCategoria || servico.categoria === filterCategoria
-    return matchesSearch && matchesCategoria
-  })
+  const filteredServicos = itens.filter(servico =>
+    servico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    servico.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
-  const handleOpenModal = (servico?: Servico) => {
+  const handleOpenModal = (servico?: any) => {
     if (servico) {
       setEditingServico(servico)
-      setFormData({
-        nome: servico.nome,
-        preco: servico.preco.toString(),
-        duracao: servico.duracao.toString(),
-        categoria: servico.categoria,
-        descricao: servico.descricao || '',
-      })
+      setNewNome(servico.nome)
+      setNewPreco(String(servico.preco))
+      setNewDuracao(String(servico.duracao))
+      setNewCategoria(servico.categoria)
+      setNewDescricao(servico.descricao || '')
     } else {
       setEditingServico(null)
-      setFormData({ nome: '', preco: '', duracao: '', categoria: '', descricao: '' })
+      setNewNome('')
+      setNewPreco('')
+      setNewDuracao('')
+      setNewCategoria('Manicure')
+      setNewDescricao('')
     }
     setIsModalOpen(true)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    const servicoData = {
-      nome: formData.nome,
-      preco: parseFloat(formData.preco),
-      duracao: parseInt(formData.duracao),
-      categoria: formData.categoria,
-      descricao: formData.descricao,
-    }
-    
-    if (editingServico) {
-      setServicos(prev => prev.map(s => 
-        s.id === editingServico.id 
-          ? { ...s, ...servicoData }
-          : s
-      ))
-    } else {
-      const newServico: Servico = {
-        id: Date.now().toString(),
-        ...servicoData,
-        ativo: true,
-      }
-      setServicos(prev => [...prev, newServico])
-    }
-    
+  const handleCloseModal = () => {
     setIsModalOpen(false)
-    setFormData({ nome: '', preco: '', duracao: '', categoria: '', descricao: '' })
     setEditingServico(null)
   }
 
-  const handleDelete = () => {
+  const handleSave = async () => {
+    if (!newNome || !newPreco || !newDuracao) {
+      alert('Preencha todos os campos obrigatórios')
+      return
+    }
+    
+    setIsSaving(true)
+    
+    let result
+    if (editingServico) {
+      result = await updateServico(editingServico.id, {
+        nome: newNome,
+        preco: Number(newPreco),
+        duracao: Number(newDuracao),
+        descricao: newDescricao,
+        categoria: newCategoria,
+        ativo: editingServico.ativo
+      })
+    } else {
+      result = await createServico({
+        nome: newNome,
+        preco: Number(newPreco),
+        duracao: Number(newDuracao),
+        descricao: newDescricao,
+        categoria: newCategoria
+      })
+    }
+    
+    setIsSaving(false)
+    
+    if (result.success) {
+      refetch()
+      handleCloseModal()
+    } else {
+      alert('Erro ao salvar. Tente novamente.')
+    }
+  }
+
+  const handleDelete = async () => {
     if (servicoToDelete) {
-      setServicos(prev => prev.filter(s => s.id !== servicoToDelete.id))
+      const result = await deleteServico(servicoToDelete.id)
+      if (result.success) {
+        setItens(prev => prev.filter(s => s.id !== servicoToDelete.id))
+        refetch()
+      }
     }
     setIsDeleteModalOpen(false)
     setServicoToDelete(null)
   }
 
   const toggleAtivo = (id: string) => {
-    setServicos(prev => prev.map(s => 
+    setItens(prev => prev.map(s => 
       s.id === id ? { ...s, ativo: !s.ativo } : s
     ))
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Serviços</h1>
-          <p className="text-text-secondary text-sm md:text-base">({servicos.length})</p>
+          <p className="text-text-secondary text-sm md:text-base">({itens.length})</p>
         </div>
         <Button onClick={() => handleOpenModal()} className="w-10 h-10 p-0">
           <Plus className="w-5 h-5" />
         </Button>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        <div className="relative max-w-md flex-1">
+      <div className="mb-6">
+        <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary" />
           <input
             type="text"
@@ -141,168 +145,143 @@ export default function ServicosPage() {
             className="w-full h-12 pl-12 pr-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           />
         </div>
-        <select
-          value={filterCategoria}
-          onChange={(e) => setFilterCategoria(e.target.value)}
-          className="h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-        >
-          <option value="">Todas as categorias</option>
-          {categoriaOptions.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredServicos.map((servico, i) => (
-          <motion.div
-            key={servico.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-          >
-            <Card className="h-full">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filteredServicos.map((servico, i) => (
+            <motion.div
+              key={servico.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Card className={`p-4 ${!servico.ativo && 'opacity-50'}`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-medium text-text-primary">{servico.nome}</h3>
+                      <Badge>{servico.categoria}</Badge>
+                    </div>
+                    <p className="text-sm text-text-secondary mb-2">{servico.descricao}</p>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="flex items-center gap-1 text-accent-primary font-medium">
+                        <DollarSign className="w-4 h-4" />
+                        {formatCurrency(servico.preco)}
+                      </span>
+                      <span className="flex items-center gap-1 text-text-secondary">
+                        <Clock className="w-4 h-4" />
+                        {servico.duracao} min
+                      </span>
+                    </div>
+                  </div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold text-text-primary">{servico.nome}</h3>
-                    <button onClick={() => toggleAtivo(servico.id)}>
-                      <Badge variant={servico.ativo ? 'success' : 'default'}>
-                        {servico.ativo ? 'Ativo' : 'Inativo'}
-                      </Badge>
+                    <button
+                      onClick={() => toggleAtivo(servico.id)}
+                      className={`p-2 rounded-lg ${servico.ativo ? 'bg-success/20 text-success' : 'bg-bg-secondary text-text-tertiary'}`}
+                    >
+                      {servico.ativo ? 'Ativo' : 'Inativo'}
+                    </button>
+                    <button
+                      onClick={() => handleOpenModal(servico)}
+                      className="p-2 bg-bg-secondary rounded-lg"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => { setServicoToDelete(servico); setIsDeleteModalOpen(true) }}
+                      className="p-2 bg-error/20 text-error rounded-lg"
+                    >
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
-                  <Badge variant="primary" className="mt-2">{servico.categoria}</Badge>
-                  {servico.descricao && (
-                    <p className="text-sm text-text-secondary mt-2">{servico.descricao}</p>
-                  )}
                 </div>
-                <div className="flex gap-1">
-                  <button 
-                    onClick={() => handleOpenModal(servico)} 
-                    className="p-2 rounded-lg hover:bg-bg-secondary"
-                  >
-                    <Edit2 className="w-4 h-4 text-text-secondary" />
-                  </button>
-                  <button 
-                    onClick={() => { setServicoToDelete(servico); setIsDeleteModalOpen(true) }}
-                    className="p-2 rounded-lg hover:bg-error/10"
-                  >
-                    <Trash2 className="w-4 h-4 text-error" />
-                  </button>
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t border-border-light flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4 text-success" />
-                    <span className="text-xl font-bold text-success">{formatCurrency(servico.preco)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4 text-text-secondary" />
-                    <span className="text-sm text-text-secondary">{servico.duracao} min</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-
-      {filteredServicos.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Nenhum serviço encontrado</p>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       )}
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingServico ? 'Editar Serviço' : 'Novo Serviço'}>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-text-secondary mb-2">Nome do Serviço</label>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4">
+            {editingServico ? 'Editar Serviço' : 'Novo Serviço'}
+          </h2>
+          
+          <div className="space-y-4">
             <input
               type="text"
-              placeholder="Ex: Manicure Simples"
-              value={formData.nome}
-              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-              className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-              required
+              placeholder="Nome do serviço"
+              value={newNome}
+              onChange={(e) => setNewNome(e.target.value)}
+              className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
             />
-          </div>
-          <div>
-            <label className="block text-sm text-text-secondary mb-2">Descrição</label>
-            <textarea
-              placeholder="Descrição do serviço..."
-              value={formData.descricao}
-              onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-              className="w-full h-20 px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary resize-none"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-text-secondary mb-2">Preço (R$)</label>
+            
+            <div className="grid grid-cols-2 gap-4">
               <input
                 type="number"
-                placeholder="0,00"
-                value={formData.preco}
-                onChange={(e) => setFormData({ ...formData, preco: e.target.value })}
-                className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-                required
-                min="0"
-                step="0.01"
+                placeholder="Preço"
+                value={newPreco}
+                onChange={(e) => setNewPreco(e.target.value)}
+                className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
               />
-            </div>
-            <div>
-              <label className="block text-sm text-text-secondary mb-2">Duração (min)</label>
               <input
                 type="number"
-                placeholder="0"
-                value={formData.duracao}
-                onChange={(e) => setFormData({ ...formData, duracao: e.target.value })}
-                className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-                required
-                min="1"
+                placeholder="Duração (min)"
+                value={newDuracao}
+                onChange={(e) => setNewDuracao(e.target.value)}
+                className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
               />
             </div>
-          </div>
-          <div>
-            <label className="block text-sm text-text-secondary mb-2">Categoria</label>
+            
             <select
-              value={formData.categoria}
-              onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-              className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-              required
+              value={newCategoria}
+              onChange={(e) => setNewCategoria(e.target.value)}
+              className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
             >
-              <option value="">Selecione a categoria</option>
               {categoriaOptions.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
+            
+            <textarea
+              placeholder="Descrição (opcional)"
+              value={newDescricao}
+              onChange={(e) => setNewDescricao(e.target.value)}
+              rows={3}
+              className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
+            />
           </div>
-          <div className="flex gap-3 pt-4">
-            <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)} className="flex-1">
+          
+          <div className="flex gap-3 mt-6">
+            <Button variant="secondary" onClick={handleCloseModal} className="flex-1">
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1">
-              {editingServico ? 'Atualizar' : 'Salvar'}
+            <Button onClick={handleSave} disabled={isSaving} className="flex-1">
+              {isSaving ? 'Salvando...' : 'Salvar'}
             </Button>
           </div>
-        </form>
+        </div>
       </Modal>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title="Confirmar Exclusão">
-        <div className="text-center py-4">
-          <p className="text-text-secondary mb-4">
-            Tem certeza que deseja excluir o serviço <strong className="text-text-primary">{servicoToDelete?.nome}</strong>?
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Excluir Serviço</h2>
+          <p className="text-text-secondary mb-6">
+            Tem certeza que deseja excluir <strong className="text-text-primary">{servicoToDelete?.nome}</strong>?
           </p>
-          <p className="text-sm text-error">Esta ação não pode ser desfeita.</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} className="flex-1">
-            Cancelar
-          </Button>
-          <Button variant="danger" onClick={handleDelete} className="flex-1">
-            Excluir
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} className="flex-1">
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={handleDelete} className="flex-1">
+              Excluir
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

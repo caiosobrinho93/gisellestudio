@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { ImageUploader } from '@/components/ui/ImageUploader'
-import { useGaleria, deleteGaleriaItem, createGaleriaItem } from '@/hooks/useSupabase'
+import { useGaleria, deleteGaleriaItem, createGaleriaItem, updateGaleriaItem } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
 
 const categorias = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Geral']
@@ -79,11 +79,21 @@ export default function GaleriaPage() {
     
     setIsSaving(true)
     
-    const result = await createGaleriaItem({
-      titulo: newTitulo,
-      imagem: newImagem,
-      categoria: newCategoria
-    })
+    let result
+    if (editingItem) {
+      result = await updateGaleriaItem(editingItem.id, {
+        titulo: newTitulo,
+        imagem: newImagem,
+        categoria: newCategoria,
+        ativo: editingItem.ativo
+      })
+    } else {
+      result = await createGaleriaItem({
+        titulo: newTitulo,
+        imagem: newImagem,
+        categoria: newCategoria
+      })
+    }
     
     setIsSaving(false)
     
