@@ -157,9 +157,13 @@ export default function ClientesPage() {
                 >
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
-                        <User className="w-5 h-5 text-accent-primary" />
-                      </div>
+                      {cliente.foto ? (
+                        <img src={cliente.foto} alt={cliente.nome} className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                          <User className="w-5 h-5 text-accent-primary" />
+                        </div>
+                      )}
                       <div>
                         <p className="font-medium text-text-primary">{cliente.nome}</p>
                         <p className="text-xs text-text-tertiary">Cadastro: {cliente.dataCadastro}</p>
@@ -219,6 +223,11 @@ export default function ClientesPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingCliente ? 'Editar Cliente' : 'Novo Cliente'}>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <ImageUploader
+            value={formData.foto}
+            onChange={(foto) => setFormData({ ...formData, foto })}
+            label="Foto do cliente"
+          />
           <div>
             <label className="block text-sm text-text-secondary mb-2">Nome</label>
             <input
