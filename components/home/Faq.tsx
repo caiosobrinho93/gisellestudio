@@ -7,33 +7,33 @@ import { cn } from '@/lib/utils'
 
 const faqs = [
   {
-    question: 'Como funciona o agendamento?',
-    answer: 'Você pode agendar diretamente pelo nosso site, selecionando o serviço, profissional e horário disponível. Ou pode entrar em contato pelo WhatsApp.',
+    question: 'Como agendo?',
+    answer: 'É só clicar em Agendar, escolher o serviço, o horário que funciona pra você. Ou se preferir, me chama no WhatsApp.',
     icon: Calendar,
   },
   {
-    question: 'Quais são as formas de pagamento?',
-    answer: 'Aceitamos dinheiro, cartão de débito, cartão de crédito e PIX. Parcelamento disponível em até 6x sem juros.',
+    question: 'Quais formas de pagamento?',
+    answer: 'Dinheiro, cartão de débito, crédito e PIX. Parcelamos em até 6x sem juros.',
     icon: CreditCard,
   },
   {
-    question: 'Qual o prazo para extensão de cílios?',
-    answer: 'O procedimento completo leva em média 90 minutos para extensão clássica e 120 minutos para volume russo.',
+    question: 'Quanto tempo demora extensão de cílios?',
+    answer: 'Em média 90 minutos. Mas fica lindo, vale a pena esperar.',
     icon: Sparkles,
   },
   {
-    question: 'Os serviços incluem produtos?',
-    answer: 'Sim, todos os serviços incluem produtos premium específicos para cada tipo de tratamento.',
+    question: 'Os produtos estão inclusos?',
+    answer: 'Sim, todos os materiales são de primeira linha.',
     icon: MessageCircle,
   },
   {
-    question: 'Possuem estacionamento?',
-    answer: 'Sim, temos vagas exclusivas para clientes em frente ao salão.',
+    question: 'Tem estacionamento?',
+    answer: 'Temos! Vagas exclusivas na frente do salão.',
     icon: Car,
   },
   {
-    question: 'Qual o horário de funcionamento?',
-    answer: 'Funcionamos de segunda a sexta das 08h às 20h, e aos sábados das 08h às 18h. Domingos fechados.',
+    question: 'Qual o horário?',
+    answer: 'De seg a sex das 08h às 20h. Sáb das 08h às 18h. Dom fechamos.',
     icon: Clock,
   },
 ]
@@ -53,13 +53,13 @@ export function Faq() {
           className="text-center mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-4">
-            FAQ
+            Dúvidas?
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Perguntas <span className="text-accent-primary">Frequentes</span>
+            Perguntas <span className="text-accent-primary">frequentes</span>
           </h2>
           <p className="text-lg text-text-secondary">
-            Tire suas dúvidas sobre nossos serviços
+            As principais dúvidas que ouvimos.
           </p>
         </motion.div>
 

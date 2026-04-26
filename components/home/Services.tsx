@@ -23,8 +23,8 @@ const servicesData = [
     name: 'Manicure', 
     price: 35, 
     duration: 30,
-    description: 'Cuidados completos para suas mãos, com atenção especial às cutículas e unhas.',
-    benefits: ['Limpeza das unhas', 'Cutícula tratada', 'Esmalte simples', 'Hidratação das mãos'],
+    description: 'Suas mãos merecem atenção especial. Cuidação completo com acabamento impecável.',
+    benefits: ['Esmalte tradicional', 'Cutícula tratada', 'Hidratação', 'Modelagem perfeita'],
     process: ['Higienização', 'Cutícula', 'Modelagem', 'Esmalte', 'Hidratação']
   },
   { 
@@ -32,45 +32,45 @@ const servicesData = [
     name: 'Manicure + Esmaltação', 
     price: 45, 
     duration: 45,
-    description: 'Manicure completa com esmaltação profissional e duração prolongada.',
-    benefits: ['Tudo da manicure simples', 'Esmalte gel', 'Maior durabilidade', 'Brilho intenso'],
-    process: ['Higienização', 'Cutícula', 'Modelagem', 'Esmalte Profissional', 'Secagem UV', 'Hidratação']
+    description: 'O toque final perfeito. Esmalte gel que dura semanas e brilha mais.',
+    benefits: ['Esmalte gel', 'Duração prolongada', 'Brilho intenso', 'Sem precisar retocar'],
+    process: ['Higienização', 'Cutícula', 'Modelagem', 'Esmalte', 'Secagem UV', 'Hidratação']
   },
   { 
     id: '3', 
     name: 'Pedicure SPA', 
     price: 65, 
     duration: 60,
-    description: 'Tratamento relaxante e rejuvenescente para os pés com produtos premium.',
-    benefits: ['Esfoliação profunda', 'Hidratação intensiva', 'Massagem relaxante', 'Esmalte premium'],
-    process: ['Banho de pés', 'Esfoliação', 'Remoção de calos', 'Hidratação', 'Massagem', 'Esmalte']
+    description: 'Pés renovada e relaxamento garantido. Você vai sair daqui se sentindo outra pessoa.',
+    benefits: ['Esfoliação suave', 'Hidratação intensiva', 'Massagem', 'Esmalte'],
+    process: ['Banho de pés', 'Esfoliação', 'Calos', 'Hidratação', 'Massagem', 'Esmalte']
   },
   { 
     id: '4', 
     name: 'Extensão de Cílios', 
     price: 150, 
     duration: 90,
-    description: 'Olhares mais marcantes e naturais com técnica profissional.',
-    benefits: ['Volume natural', 'Cílios mais longos', 'Sem necessidade de rímel', 'Duração de 30 dias'],
-    process: ['Consulta inicial', 'Preparação dos cílios', 'Aplicação fio a fio', 'Secagem', 'Recomendações']
+    description: 'Olhar mais bonito, sem esforço. Acorda pronta e lindas todos os dias.',
+    benefits: ['Volume natural', 'Acorda pronta', 'Sem rímel', 'Dura até 30 dias'],
+    process: ['Consulta', 'Preparação', 'Aplicação', 'Secagem', 'Instruções']
   },
   { 
     id: '5', 
     name: 'Design de Sobrancelha', 
     price: 30, 
     duration: 20,
-    description: 'Designer personalizado para valorizar seu rosto.',
-    benefits: ['Formato ideal para seu rosto', 'Simetria perfeita', 'Produto henna natural', 'Duração de 15 dias'],
-    process: ['Avaliação do rosto', 'Desenho inicial', 'Ajuste', 'Aplicação de henna', 'Finalização']
+    description: 'O formato ideal para o seu rosto. Olhar mais definido e、自然.',
+    benefits: ['Feito para seu rosto', 'Simetria perfeita', 'Henna natural', 'Dura 15 dias'],
+    process: ['Análise facial', 'Desenho', 'Ajuste', 'Henna', 'Finalização']
   },
   { 
     id: '6', 
     name: 'Massagem Relaxante', 
     price: 80, 
     duration: 60,
-    description: 'Massagem profissional para relaxamento completo do corpo.',
-    benefits: ['Alívio do estresse', 'Melhora da circulação', 'Relaxamento muscular', 'Sensação de bem-estar'],
-    process: ['Aromaterapia', 'Massagem corporal', 'Foco em áreas tensionadas', 'Hidratação corporal']
+    description: 'Uma hora só para você. Desconectar do mundo e se cuidar.',
+    benefits: ['Alívio tensão', 'Melhora circulação', 'Relaxamento', 'Bem-estar'],
+    process: ['Aromaterapia', 'Massagem', 'Áreas tensionadas', 'Hidratação']
   },
 ]
 
@@ -98,13 +98,13 @@ export function Services() {
           className="text-center mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-4">
-            Nossos Serviços
+            O que fazemos
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Tratamentos <span className="text-accent-primary">Exclusivos</span>
+            Servicios <span className="text-accent-primary">especiais</span>
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            Serviços premium desenvolvidos para destacar sua beleza natural
+            Cada tratamento é feito com atenção e carinho. Veja o que temos para você.
           </p>
         </motion.div>
 

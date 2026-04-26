@@ -34,7 +34,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6"
             >
               <Sparkles className="w-4 h-4 text-accent-primary" />
-              <span className="text-sm text-text-secondary">Salão Premium de Beleza</span>
+              <span className="text-sm text-text-secondary">Seurefúgio de beleza e autocuidado</span>
             </motion.div>
 
             <motion.h1
@@ -43,15 +43,15 @@ export function Hero() {
               transition={{ delay: 0.2 }}
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary leading-[1.1] mb-6"
             >
-              Transforme sua{' '}
+              Cuidar de você é{' '}
               <span className="relative">
-                <span className="relative z-10 text-accent-primary">beleza</span>
+                <span className="relative z-10 text-accent-primary">nosso</span>
                 <svg className="absolute -bottom-2 left-0 w-full h-3 text-accent-primary/30" viewBox="0 0 200 12" preserveAspectRatio="none">
                   <path d="M2 8 Q 50 2, 100 8 T 198 8" stroke="currentColor" strokeWidth="8" fill="none" />
                 </svg>
               </span>
               <br />
-              em arte
+              prazer
             </motion.h1>
 
             <motion.p
@@ -60,8 +60,8 @@ export function Hero() {
               transition={{ delay: 0.3 }}
               className="text-lg md:text-xl text-text-secondary max-w-lg mb-8"
             >
-              Experiência única de beleza e bem-estar em um ambiente sofisticado. 
-              Tratamentos personalizados para você se sentir especial.
+              Um espaço pensado para você relaxar, se cuidar e sair ainda mais bonita.
+              Tratamentos personalizados com atenção aos detalhes.
             </motion.p>
 
             <motion.div
@@ -72,13 +72,13 @@ export function Hero() {
             >
               <Link href="/agendar">
                 <Button size="lg" className="px-8 py-4 text-lg">
-                  Agendar Agora
+                  Agendar
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link href="#servicos">
                 <Button variant="secondary" size="lg" className="px-8 py-4 text-lg">
-                  Ver Serviços
+                  Ver tratamentos
                 </Button>
               </Link>
             </motion.div>

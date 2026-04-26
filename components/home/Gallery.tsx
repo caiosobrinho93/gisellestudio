@@ -24,10 +24,10 @@ export function Gallery() {
             Galeria
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Nosso <span className="text-accent-primary">Espaço</span>
+            Nosso <span className="text-accent-primary">espaço</span>
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            Um ambiente sofisticado pensado especialmente para você
+            Um ambiente pensado para você.
           </p>
         </motion.div>
 

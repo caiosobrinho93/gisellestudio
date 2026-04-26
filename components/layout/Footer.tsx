@@ -24,8 +24,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-text-secondary max-w-md mb-6">
-              Seu espaço de beleza e bem-estar. Proporcionamos experiências
-              relaxantes e transformadoras em um ambiente sofisticado e acolhedor.
+              Um refúgio de beleza e bem-estar. Venha nos fazer uma visita e se cuidar.
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-10 h-10 rounded-xl bg-white/5 hover:bg-accent-primary/20 flex items-center justify-center transition-colors">
@@ -74,7 +73,7 @@ export function Footer() {
             
             <Link href="/agendar">
               <Button className="w-full mt-6">
-                Agendar Agora
+                Quero me cuidar
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>

@@ -15,17 +15,17 @@ const stats = [
 const testimonials = [
   {
     name: 'Ana Paula',
-    text: 'Ambiente incrível, profissionais super capacitadas. Sempre sai daqui me sentindo uma rainha!',
+    text: 'Sempre venho aqui porque me sinto em casa. As meninas são tão Attenciosas...',
     rating: 5,
   },
   {
     name: 'Camila Rodrigues',
-    text: 'Melhor salão que já conheci. O design de sobrancelha ficou perfeito!',
+    text: 'A sobrancelha ficou exatamente como eu queria. Recomendo!',
     rating: 5,
   },
   {
     name: 'Fernanda Silva',
-    text: 'Serviço de massagem excepcional. Recomendo para todas as minhas amigas.',
+    text: 'A massagem é um sonho. Vou toda semana agora.',
     rating: 5,
   },
 ]
@@ -46,14 +46,13 @@ export function Professionals() {
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4 inline mr-2" />
-            Sobre Nós
+            Quem somos
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Especialistas em <span className="text-accent-primary">Beleza</span>
+            Um espaço feito para <span className="text-accent-primary">mulheres</span>
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            Somos um salão de beleza premium dedicado a proporcionar experiências 
-            transformadoras. Nossa equipe altamente qualificada utiliza tecnologia de ponta.
+            Aqui é tudo sobre você. Nossa equipe é especializada em fazer você se sentir bem.
           </p>
         </motion.div>
 
@@ -121,7 +120,7 @@ export function Professionals() {
         >
           <Link href="/agendar">
             <Button size="lg" className="px-8">
-              Agendar Agora
+              Quero me cuidar
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
