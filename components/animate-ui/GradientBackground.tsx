@@ -20,7 +20,6 @@ export function GradientBackground({ children }: GradientBackgroundProps) {
         className="absolute w-[800px] h-[800px] rounded-full pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(255, 0, 80, 0.15) 0%, rgba(255, 0, 80, 0.05) 50%, transparent 70%)',
-          filter: 'blur(60px)',
           top: '-300px',
           left: '-200px',
         }}
@@ -30,7 +29,6 @@ export function GradientBackground({ children }: GradientBackgroundProps) {
         className="absolute w-[900px] h-[900px] rounded-full pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(255, 51, 102, 0.12) 0%, rgba(255, 51, 102, 0.05) 50%, transparent 70%)',
-          filter: 'blur(60px)',
           top: '50%',
           right: '-400px',
         }}
@@ -40,7 +38,6 @@ export function GradientBackground({ children }: GradientBackgroundProps) {
         className="absolute w-[700px] h-[700px] rounded-full pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(255, 107, 138, 0.1) 0%, rgba(255, 107, 138, 0.03) 50%, transparent 70%)',
-          filter: 'blur(60px)',
           bottom: '-250px',
           left: '20%',
         }}

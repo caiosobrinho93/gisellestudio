@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Scissors } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useConfiguracoes } from '@/hooks/useSupabase'
+import { useRouter } from 'next/navigation'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -13,6 +14,7 @@ export function Navbar() {
   const { config, loading } = useConfiguracoes()
 
   const isOpen = config.status_loja === 'ABERTO'
+  const router = useRouter()
 
   const handleScroll = useCallback(() => {
     if (window.scrollY > 50) {
@@ -33,7 +35,7 @@ export function Navbar() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      window.location.href = `/#${id}`
+      router.push(`/#${id}`)
     }
   }
 

@@ -17,8 +17,8 @@ export function Hero() {
     <section className="relative min-h-[100dvh] flex items-center overflow-hidden pt-16 md:pt-20">
       <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary pointer-events-none" />
       
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/30 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/20 rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-pink-500/10 rounded-full pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
@@ -108,8 +108,8 @@ export function Hero() {
             className="relative"
           >
             <div className="relative w-full aspect-[4/5] max-w-md mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/40 via-pink-500/20 to-transparent rounded-[3rem] blur-2xl" />
-              <div className="relative w-full h-full rounded-[3rem] overflow-hidden border border-white/10 bg-bg-card/50 backdrop-blur-sm">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/20 via-pink-500/10 to-transparent rounded-[3rem]" />
+              <div className="relative w-full h-full rounded-[3rem] overflow-hidden border border-white/10 bg-bg-card/90">
                 <Image
                   src="/gisellestudio/images/giselle-01.png"
                   alt="Giselle Soares - Dono(a) do salão"
@@ -122,7 +122,7 @@ export function Hero() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.6 }}
-                  className="absolute bottom-8 left-6 right-6 p-6 rounded-2xl bg-bg-primary/80 backdrop-blur-xl border border-white/10"
+                  className="absolute bottom-8 left-6 right-6 p-6 rounded-2xl bg-bg-primary/95 border border-white/10"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
@@ -146,7 +146,7 @@ export function Hero() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute -right-8 top-1/4 p-4 rounded-2xl bg-bg-card/80 backdrop-blur-xl border border-white/10"
+                className="absolute -right-8 top-1/4 p-4 rounded-2xl bg-bg-card/95 border border-white/10"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-success/20 flex items-center justify-center">
