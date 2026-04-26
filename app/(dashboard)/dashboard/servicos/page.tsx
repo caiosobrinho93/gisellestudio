@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import { useServicos, createServico, deleteServico, updateServico } from '@/hooks/useSupabase'
+import { ImageUploader } from '@/components/ui/ImageUploader'
 
 const categoriaOptions = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Skincare', 'Depilação', 'Harmonização']
 
@@ -30,6 +31,7 @@ export default function ServicosPage() {
   const [newDuracao, setNewDuracao] = useState('')
   const [newCategoria, setNewCategoria] = useState('Manicure')
   const [newDescricao, setNewDescricao] = useState('')
+  const [newImagem, setNewImagem] = useState('')
 
   useEffect(() => {
     if (servicos.length > 0) {
@@ -50,6 +52,7 @@ export default function ServicosPage() {
       setNewDuracao(String(servico.duracao))
       setNewCategoria(servico.categoria)
       setNewDescricao(servico.descricao || '')
+      setNewImagem(servico.imagem || '')
     } else {
       setEditingServico(null)
       setNewNome('')
@@ -57,6 +60,7 @@ export default function ServicosPage() {
       setNewDuracao('')
       setNewCategoria('Manicure')
       setNewDescricao('')
+      setNewImagem('')
     }
     setIsModalOpen(true)
   }
@@ -82,7 +86,8 @@ export default function ServicosPage() {
         duracao: Number(newDuracao),
         descricao: newDescricao,
         categoria: newCategoria,
-        ativo: editingServico.ativo
+        ativo: editingServico.ativo,
+        imagem: newImagem
       })
     } else {
       result = await createServico({
@@ -90,7 +95,8 @@ export default function ServicosPage() {
         preco: Number(newPreco),
         duracao: Number(newDuracao),
         descricao: newDescricao,
-        categoria: newCategoria
+        categoria: newCategoria,
+        imagem: newImagem
       })
     }
     
@@ -254,6 +260,12 @@ export default function ServicosPage() {
               onChange={(e) => setNewDescricao(e.target.value)}
               rows={3}
               className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
+            />
+            
+            <ImageUploader
+              value={newImagem}
+              onChange={setNewImagem}
+              label="Imagem do serviço"
             />
           </div>
           

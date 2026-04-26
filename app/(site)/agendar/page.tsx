@@ -73,6 +73,7 @@ export default function AgendamentoPage() {
     price: s.preco,
     duration: s.duracao,
     description: s.descricao,
+    imagem: s.imagem,
     benefits: s.beneficios || [],
     process: s.processo || []
   }))
@@ -354,18 +355,27 @@ export default function AgendamentoPage() {
 
             <Card className="mt-6">
               <TabsPanel value="servicos">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((service) => (
                     <div key={service.id} className="relative group">
                       <button
                         onClick={() => toggleService(service.id)}
                         className={cn(
-                          'w-full p-3 sm:p-4 pr-12 rounded-xl border text-left transition-all',
+                          'w-full p-3 sm:p-4 rounded-xl border text-left transition-all overflow-hidden',
                           selectedServices.includes(service.id)
                             ? 'border-accent-primary bg-accent-primary/20'
                             : 'border-border-light hover:border-accent-primary'
                         )}
                       >
+                        {service.imagem && (
+                          <div className="w-full h-20 sm:h-24 mb-3 rounded-lg overflow-hidden">
+                            <img 
+                              src={service.imagem} 
+                              alt={service.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium text-text-primary text-sm sm:text-base">{service.name}</p>
@@ -384,7 +394,7 @@ export default function AgendamentoPage() {
                           e.stopPropagation()
                           setSelectedServiceDetail(service)
                         }}
-                        className="absolute top-1/2 -translate-y-1/2 right-2 p-2 rounded-lg bg-bg-secondary hover:bg-accent-primary/20 transition-colors z-10"
+                        className="absolute top-3 right-3 p-2 rounded-lg bg-bg-secondary/80 hover:bg-accent-primary/20 transition-colors z-10"
                       >
                         <Info className="w-4 h-4 text-text-secondary" />
                       </button>

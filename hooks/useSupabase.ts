@@ -271,6 +271,7 @@ export async function updateServico(id: string, data: {
   descricao?: string
   categoria: string
   ativo?: boolean
+  imagem?: string
 }) {
   try {
     const { error } = await supabase.from('servicos').update({
@@ -279,7 +280,8 @@ export async function updateServico(id: string, data: {
       duracao: data.duracao,
       descricao: data.descricao,
       categoria: data.categoria,
-      ativo: data.ativo
+      ativo: data.ativo,
+      imagem: data.imagem
     }).eq('id', id)
     if (error) return { success: false, error }
   } catch (e) {
@@ -294,6 +296,7 @@ export async function createServico(data: {
   duracao: number
   descricao?: string
   categoria: string
+  imagem?: string
 }) {
   try {
     const { error } = await supabase.from('servicos').insert([{
@@ -302,7 +305,8 @@ export async function createServico(data: {
       duracao: data.duracao,
       descricao: data.descricao,
       categoria: data.categoria,
-      ativo: true
+      ativo: true,
+      imagem: data.imagem
     }])
     if (error) return { success: false, error }
   } catch (e) {
