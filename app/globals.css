@@ -53,6 +53,10 @@
   * {
     @apply border-border-light;
   }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem; /* Navbar offset */
+  }
   html, body {
     max-width: 100%;
     overflow-x: hidden;
