@@ -6,6 +6,7 @@ import { Sparkles, Star, ArrowRight, Quote, ChevronLeft, ChevronRight } from 'lu
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useProfissionais } from '@/hooks/useSupabase'
 
 const testimonials = [
   {
@@ -41,6 +42,7 @@ const testimonials = [
 ]
 
 export function Professionals() {
+  const { profissionais, loading } = useProfissionais()
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
@@ -175,6 +177,36 @@ export function Professionals() {
             </div>
           </motion.div>
         </div>
+
+        {!loading && profissionais.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <h3 className="text-xl font-bold text-text-primary mb-4">Nossa Equipe</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              {profissionais.map((prof: any) => (
+                <div key={prof.id} className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-accent-primary/20">
+                    {prof.foto ? (
+                      <img src={prof.foto} alt={prof.nome} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-accent-primary font-bold">
+                        {prof.nome.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">{prof.nome}</p>
+                    <p className="text-xs text-text-secondary">{prof.especialidade}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

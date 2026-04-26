@@ -7,71 +7,8 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@/components/ui/Tabs'
 import { ServiceDetailModal } from '@/components/ui/ServiceDetailModal'
+import { useServicos, useProfissionais, createAgendamento } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
-
-const services = [
-  { 
-    id: '1', 
-    name: 'Manicure Simples', 
-    price: 35, 
-    duration: 30,
-    description: 'Cuidados completos para suas mãos, com atenção especial às cutículas e unhas.',
-    benefits: ['Limpeza das unhas', 'Cutícula tratada', 'Esmalte simples', 'Hidratação das mãos'],
-    process: ['Higienização', 'Cutícula', 'Modelagem', 'Esmalte', 'Hidratação']
-  },
-  { 
-    id: '2', 
-    name: 'Manicure + Esmaltação', 
-    price: 45, 
-    duration: 45,
-    description: 'Manicure completa com esmaltação profissional e duração prolongada.',
-    benefits: ['Tudo da manicure simples', 'Esmalte gel ou妖嬢', 'Maior durabilidade', 'Brilho intenso'],
-    process: ['Higienização', 'Cutícula', 'Modelagem', 'Esmalte Profissional', 'Secagem UV', 'Hidratação']
-  },
-  { 
-    id: '3', 
-    name: 'Pedicure SPA', 
-    price: 65, 
-    duration: 60,
-    description: 'Tratamento relaxante e rejuvenescente para os pés com produtos premium.',
-    benefits: ['Esfoliação profunda', 'Hidratação intensiva', 'Massagem relaxante', 'Esmalte premium'],
-    process: ['Banho de pés', 'Esfoliação', 'Remoção de calos', 'Hidratação', 'Massagem', 'Esmalte']
-  },
-  { 
-    id: '4', 
-    name: 'Extensão de Cílios', 
-    price: 150, 
-    duration: 90,
-    description: 'Olhares mais marcantes e naturais com técnica profissional.',
-    benefits: ['Volume natural', 'Cílios mais longos', 'Sem necessidade de rímel', 'Duração de 30 dias'],
-    process: ['Consulta inicial', 'Preparação dos cílios', 'Aplicação fio a fio', 'Secagem', 'Recomendações']
-  },
-  { 
-    id: '5', 
-    name: 'Design de Sobrancelha', 
-    price: 30, 
-    duration: 20,
-    description: 'Designer personalizado para valorizar seu rosto.',
-    benefits: ['Formato ideal para seu rosto', 'Simetria perfeita', 'Produto henna natural', 'Duração de 15 dias'],
-    process: ['Avaliação do rosto', 'Desenho inicial', 'Ajuste conforme偏好', 'Aplicação de henna', 'Finalização']
-  },
-  { 
-    id: '6', 
-    name: 'Massagem Relaxante', 
-    price: 80, 
-    duration: 60,
-    description: 'Massagem profissional para relaxamento completo do corpo.',
-    benefits: ['Alívio do estresse', 'Melhora da circulação', 'Relaxamento muscular', 'Sensação de bem-estar'],
-    process: ['Aromaterapia', 'Massagem corporal', 'Focus em áreas tensionadas', 'Hidratação corporal']
-  },
-]
-
-const professionals = [
-  { id: '1', name: 'Carla Silva', specialty: 'Manicure' },
-  { id: '2', name: 'Juliana Santos', specialty: 'Sobrancelha' },
-  { id: '3', name: 'Marina Oliveira', specialty: 'Massagem' },
-  { id: '4', name: 'Patrícia Lima', specialty: 'Cílios' },
-]
 
 const months = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -109,6 +46,9 @@ const timeSlots = generateTimeSlots('08:00', '20:00', 30)
 
 export default function AgendamentoPage() {
   const contentRef = useRef<HTMLDivElement>(null)
+  const { servicos, loading: loadingServicos } = useServicos()
+  const { profissionais, loading: loadingProfissionais } = useProfissionais()
+  
   const [activeTab, setActiveTab] = useState('servicos')
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [selectedProfessional, setSelectedProfessional] = useState<string>('')
@@ -120,10 +60,27 @@ export default function AgendamentoPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
   const [showSuccess, setShowSuccess] = useState(false)
-  const [selectedServiceDetail, setSelectedServiceDetail] = useState<typeof services[0] | null>(null)
+  const [selectedServiceDetail, setSelectedServiceDetail] = useState<any>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
+
+  const services = servicos.map(s => ({
+    id: s.id,
+    name: s.nome,
+    price: s.preco,
+    duration: s.duracao,
+    description: s.descricao,
+    benefits: s.beneficios || [],
+    process: s.processo || []
+  }))
+
+  const professionals = profissionais.map(p => ({
+    id: p.id,
+    name: p.nome,
+    specialty: p.especialidade
+  }))
 
   const toggleService = (id: string) => {
     setSelectedServices(prev => 
@@ -168,14 +125,26 @@ export default function AgendamentoPage() {
     }
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!canProceed()) return
     
     if (activeTab === 'servicos') setActiveTab('profissional')
     else if (activeTab === 'profissional') setActiveTab('data')
     else if (activeTab === 'data') setActiveTab('dados')
     else if (activeTab === 'dados') {
-      setShowSuccess(true)
+      setIsSubmitting(true)
+      const result = await createAgendamento({
+        servico_id: selectedServices[0],
+        profissional_id: selectedProfessional,
+        data: selectedDate,
+        horario: selectedTime,
+        telefone: clientPhone,
+      })
+      setIsSubmitting(false)
+      
+      if (result.success) {
+        setShowSuccess(true)
+      }
     }
     
     setTimeout(scrollToTop, 100)
@@ -227,6 +196,14 @@ export default function AgendamentoPage() {
     const isPast = date < today
     const isSunday = date.getDay() === 0
     days.push({ day: i, disabled: isPast || isSunday })
+  }
+
+  if (loadingServicos || loadingProfissionais) {
+    return (
+      <div className="min-h-screen bg-bg-primary pt-24 pb-12 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
+      </div>
+    )
   }
 
   return (
@@ -571,8 +548,8 @@ export default function AgendamentoPage() {
                 </Button>
               ) : <div />}
               
-              <Button onClick={handleNext} disabled={!canProceed()} className="w-full sm:w-auto">
-                {activeTab === 'dados' ? 'Confirmar Agendamento' : 'Continuar'}
+              <Button onClick={handleNext} disabled={!canProceed() || isSubmitting} className="w-full sm:w-auto">
+                {isSubmitting ? 'Salvando...' : activeTab === 'dados' ? 'Confirmar Agendamento' : 'Continuar'}
               </Button>
             </div>
           </Tabs>

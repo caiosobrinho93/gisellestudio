@@ -1,14 +1,21 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useGaleria } from '@/hooks/useSupabase'
 
-const galleryImages = [
+const defaultImages = [
   { src: '/gisellestudio/images/pes.jpeg', alt: 'Tratamento de pés', title: 'Spa dos Pés' },
   { src: '/gisellestudio/images/fazendo-a-unha.jfif', alt: 'Manicure profissional', title: 'Manicure' },
   { src: '/gisellestudio/images/unha1.jfif', alt: 'Design de unhas', title: 'Design' },
 ]
 
 export function Gallery() {
+  const { galeria, loading } = useGaleria()
+
+  const images = galeria.length > 0 
+    ? galeria.map((item: any) => ({ src: item.imagem, alt: item.titulo, title: item.titulo }))
+    : defaultImages
+
   return (
     <section id="galeria" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary/30 to-bg-primary" />
@@ -31,30 +38,36 @@ export function Gallery() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {galleryImages.map((img, i) => (
-            <motion.div
-              key={img.src}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="group relative aspect-[4/5] rounded-3xl overflow-hidden"
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="absolute bottom-6 left-6 right-6">
-                  <p className="text-xl font-bold text-text-primary">{img.title}</p>
-                  <p className="text-text-secondary">{img.alt}</p>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-6">
+            {images.map((img: any, i: number) => (
+              <motion.div
+                key={img.src + i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="group relative aspect-[4/5] rounded-3xl overflow-hidden"
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <p className="text-xl font-bold text-text-primary">{img.title}</p>
+                    <p className="text-text-secondary">{img.alt}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

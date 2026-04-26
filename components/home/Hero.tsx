@@ -15,10 +15,10 @@ const stats = [
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
-      <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary" />
+      <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary pointer-events-none" />
       
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/30 rounded-full blur-[120px]" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px]" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/30 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-12">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">

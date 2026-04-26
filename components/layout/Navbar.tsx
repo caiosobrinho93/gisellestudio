@@ -1,22 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Scissors, Instagram } from 'lucide-react'
+import { Menu, X, Scissors } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useConfiguracoes } from '@/hooks/useSupabase'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { config } = useConfiguracoes()
+
+  const isOpen = config.status_loja === 'ABERTO'
+
+  const handleScroll = useCallback(() => {
+    if (window.scrollY > 50) {
+      setIsScrolled(true)
+    } else {
+      setIsScrolled(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [handleScroll])
 
   const navLinks = [
     { href: '#servicos', label: 'Serviços', action: () => scrollTo('servicos') },
@@ -34,12 +44,10 @@ export function Navbar() {
   }
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-bg-primary/80 backdrop-blur-2xl border-b border-white/5'
+          ? 'bg-bg-primary/95 backdrop-blur-xl border-b border-white/5 shadow-lg'
           : 'bg-transparent'
       }`}
     >
@@ -49,7 +57,6 @@ export function Navbar() {
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
               <Scissors className="w-5 h-5 text-white" />
             </div>
-            <div className="absolute inset-0 rounded-2xl bg-accent-primary/50 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div>
             <span className="text-xl font-bold text-text-primary tracking-wider">BELLEZA</span>
@@ -62,15 +69,23 @@ export function Navbar() {
             <button
               key={link.href}
               onClick={link.action}
-              className="text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors relative group"
+              className="text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors"
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-primary group-hover:w-full transition-all duration-300" />
             </button>
           ))}
         </div>
 
         <div className="flex items-center gap-4">
+          <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
+            isOpen 
+              ? 'bg-success/20 text-success' 
+              : 'bg-error/20 text-error'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-success' : 'bg-error'} animate-pulse`} />
+            {isOpen ? 'ABERTO' : 'FECHADO'}
+          </div>
+
           <Link href="/login" className="hidden sm:block">
             <Button size="sm" variant="secondary">
               Área do Cliente
@@ -125,6 +140,6 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   )
 }
