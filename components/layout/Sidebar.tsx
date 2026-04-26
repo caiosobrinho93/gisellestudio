@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
   Users,
@@ -37,8 +37,10 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
     checkMobile()
     window.addEventListener('resize', checkMobile)
@@ -46,17 +48,18 @@ export function Sidebar() {
   }, [])
 
   useEffect(() => {
-    if (!isMobile) {
+    if (!isMobile && mounted) {
       setMobileOpen(false)
     }
-  }, [isMobile])
+  }, [isMobile, mounted])
+
+  if (!mounted) return null
 
   return (
     <>
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 p-2 bg-bg-card rounded-lg border border-border-light"
-        style={{ display: isMobile ? 'block' : 'none' }}
+        className="fixed top-4 left-4 z-50 p-2 bg-bg-card rounded-lg border border-border-light md:hidden"
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -69,19 +72,14 @@ export function Sidebar() {
         }}
         className={cn(
           "fixed left-0 top-0 bottom-0 bg-bg-card border-r border-border-light z-40 flex flex-col",
-          "max-md:w-[280px]",
-          isMobile && !mobileOpen && "max-md:translate-x-[-100%]"
+          "w-[280px] md:w-auto",
+          isMobile && !mobileOpen && "hidden"
         )}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
         <div className="h-18 flex items-center justify-between px-4 py-3 border-b border-border-light">
-          <Link href="/" className="font-display font-bold text-lg text-text-primary overflow-hidden whitespace-nowrap">
-            <motion.span
-              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
-              className="block"
-            >
-              Belleza
-            </motion.span>
+          <Link href="/" className="font-display font-bold text-lg text-text-primary">
+            <span className={cn(collapsed && "hidden")}>Belleza</span>
           </Link>
           <button
             onClick={() => setCollapsed(!collapsed)}
@@ -104,20 +102,15 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => isMobile && setMobileOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
+                  'flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200',
                   isActive
                     ? 'bg-accent-primary/20 text-accent-primary'
                     : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary',
-                  collapsed && 'justify-center px-3'
+                  collapsed && 'justify-center px-0'
                 )}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                <motion.span
-                  animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
-                  className="text-sm font-medium overflow-hidden whitespace-nowrap block"
-                >
-                  {item.label}
-                </motion.span>
+                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
               </Link>
             )
           })}
@@ -127,24 +120,19 @@ export function Sidebar() {
           <Link
             href="/"
             className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary hover:bg-bg-secondary hover:text-text-primary transition-colors',
-              collapsed && 'justify-center px-3'
+              'flex items-center gap-3 px-3 py-3 rounded-xl text-text-secondary hover:bg-bg-secondary hover:text-text-primary transition-colors',
+              collapsed && 'justify-center px-0'
             )}
           >
             <LogOut className="w-5 h-5" />
-            <motion.span
-              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
-              className="text-sm font-medium overflow-hidden whitespace-nowrap block"
-            >
-              Sair
-            </motion.span>
+            {!collapsed && <span className="text-sm font-medium">Sair</span>}
           </Link>
         </div>
       </motion.aside>
 
       {isMobile && mobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-30"
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}

@@ -120,14 +120,13 @@ export default function ServicosPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-3xl font-bold text-text-primary">Serviços</h1>
-          <p className="text-text-secondary">Gerencie os serviços ({servicos.length})</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Serviços</h1>
+          <p className="text-text-secondary text-sm md:text-base">({servicos.length})</p>
         </div>
-        <Button onClick={() => handleOpenModal()}>
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Serviço
+        <Button onClick={() => handleOpenModal()} className="w-10 h-10 p-0">
+          <Plus className="w-5 h-5" />
         </Button>
       </div>
 
