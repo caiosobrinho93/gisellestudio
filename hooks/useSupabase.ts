@@ -11,7 +11,7 @@ export function useServicos() {
   const fetchServicos = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Servicos] Fetching...')
+    console.log('[Servicos] Buscando...')
     try {
       const { data, error } = await supabase
         .from('servicos')
@@ -20,13 +20,13 @@ export function useServicos() {
         .order('nome')
       
       if (error) {
-        console.error('[Servicos] Error:', error)
+        console.error('[Servicos] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Servicos] Found:', data?.length, 'items')
+        console.log('[Servicos] Encontrados:', data?.length, 'itens')
         setServicos(data || [])
       }
     } catch (e) {
-      console.error('[Servicos] Exception:', e)
+      console.error('[Servicos] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -83,7 +83,7 @@ export function useGaleria() {
   const fetchGaleria = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Galeria] Fetching...')
+    console.log('[Galeria] Buscando...')
     try {
       const { data, error } = await supabase
         .from('galeria')
@@ -92,13 +92,13 @@ export function useGaleria() {
         .order('created_at', { ascending: false })
       
       if (error) {
-        console.error('[Galeria] Error:', error)
+        console.error('[Galeria] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Galeria] Found:', data?.length, 'items')
+        console.log('[Galeria] Encontradas:', data?.length, 'imagens')
         setGaleria(data || [])
       }
     } catch (e) {
-      console.error('[Galeria] Exception:', e)
+      console.error('[Galeria] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -157,7 +157,7 @@ export function useAgendamentos() {
   const fetchAgendamentos = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Agendamentos] Fetching...')
+    console.log('[Agendamentos] Buscando...')
     try {
       const { data, error } = await supabase
         .from('agendamentos')
@@ -165,13 +165,13 @@ export function useAgendamentos() {
         .order('data', { ascending: true })
       
       if (error) {
-        console.error('[Agendamentos] Error:', error)
+        console.error('[Agendamentos] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Agendamentos] Found:', data?.length, 'items')
+        console.log('[Agendamentos] Encontrados:', data?.length, 'agendamentos')
         setAgendamentos(data || [])
       }
     } catch (e) {
-      console.error('[Agendamentos] Exception:', e)
+      console.error('[Agendamentos] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -192,7 +192,7 @@ export async function createAgendamento(data: {
   telefone: string
   status?: string
 }) {
-  console.log('[createAgendamento] Saving:', data)
+  console.log('[createAgendamento] Salvando:', data)
   try {
     const { error } = await supabase
       .from('agendamentos')
@@ -206,12 +206,12 @@ export async function createAgendamento(data: {
       }])
 
     if (error) {
-      console.error('[createAgendamento] Error:', error)
+      console.error('[createAgendamento] Erro:', error)
       return { success: false, error }
     }
-    console.log('[createAgendamento] Success!')
+    console.log('[createAgendamento] Sucesso!')
   } catch (e) {
-    console.error('[createAgendamento] Exception:', e)
+    console.error('[createAgendamento] Exceção:', e)
     return { success: false, error: e }
   }
 

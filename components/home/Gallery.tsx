@@ -10,9 +10,9 @@ const defaultImages = [
 ]
 
 export function Gallery() {
-  console.log('[Gallery] Rendering...')
+  console.log('[Gallery] Renderizando...')
   const { galeria, loading, refetch } = useGaleria()
-  console.log('[Gallery] galeria:', galeria)
+  console.log('[Gallery] Dados recebidos:', galeria)
 
   const images = galeria.length > 0 
     ? galeria.map((item: any) => {
