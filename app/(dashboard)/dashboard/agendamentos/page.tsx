@@ -43,35 +43,17 @@ export default function AgendamentosPage() {
     profissional: getProfissionalNome(a.profissional_id)
   }))
 
-  const filteredAgendamentos = useMemo(() => {
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    const nextWeek = new Date(today)
-    nextWeek.setDate(nextWeek.getDate() + 7)
+  const hoje = new Date().toLocaleDateString('pt-BR')
+  const amanha = new Date(Date.now() + 86400000).toLocaleDateString('pt-BR')
+  const proximaSemana = new Date(Date.now() + 7 * 86400000).toLocaleDateString('pt-BR')
 
-    const formatDate = (date: Date) => {
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const year = date.getFullYear()
-      return `${day}/${month}/${year}`
-    }
-
-    const todayStr = formatDate(today)
-    const tomorrowStr = formatDate(tomorrow)
-
-    if (filtro === 'todos') return displayItens
-    
-    return displayItens.filter(agend => {
-      if (filtro === 'hoje') return agend.data === todayStr
-      if (filtro === 'amanha') return agend.data === tomorrowStr
-      if (filtro === 'semana') {
-        const agendDate = new Date(agend.data.split('/').reverse().join('-'))
-        return agendDate >= today && agendDate <= nextWeek
-      }
-      return true
-    })
-  }, [displayItens, filtro])
+  const filteredAgendamentos = displayItens.filter(agend => {
+    if (filtro === 'todos') return true
+    if (filtro === 'hoje') return agend.data === hoje
+    if (filtro === 'amanha') return agend.data === amanha
+    if (filtro === 'semana') return agend.data >= hoje && agend.data <= proximaSemana
+    return true
+  })
 
   const handleDelete = async () => {
     if (agendamentoToDelete) {

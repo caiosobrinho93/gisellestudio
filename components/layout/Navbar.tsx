@@ -52,7 +52,7 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/gisellestudio/" className="flex items-center gap-3 group">
           <div className="relative">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
               <Scissors className="w-5 h-5 text-white" />
@@ -90,17 +90,17 @@ export function Navbar() {
             </div>
           )}
 
-          <Link href="/login">
+          <Link href="/gisellestudio/login">
             <Button size="sm" variant="secondary">
               Área do Cliente
             </Button>
           </Link>
-          <Link href="/dashboard">
+          <Link href="/gisellestudio/dashboard">
             <Button size="sm" variant="ghost">
               Painel
             </Button>
           </Link>
-          <Link href="/agendar">
+          <Link href="/gisellestudio/agendar">
             <Button size="sm" className="px-6">
               Agendar
             </Button>
