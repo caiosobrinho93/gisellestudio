@@ -69,7 +69,7 @@ export default function AgendamentosPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-2 md:p-8 page-content">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Agendamentos</h1>
@@ -77,7 +77,7 @@ export default function AgendamentosPage() {
         </div>
       </div>
 
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
         {['todos', 'hoje', 'amanha', 'semana'].map(f => (
           <button
             key={f}

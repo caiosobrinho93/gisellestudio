@@ -124,7 +124,7 @@ export default function GaleriaPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-2 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Galeria</h1>
@@ -184,7 +184,7 @@ export default function GaleriaPage() {
                     </button>
                   </div>
                 </div>
-                <div className="p-3">
+                <div className="p-0">
                   <h3 className="font-medium text-text-primary text-sm">{item.titulo}</h3>
                   <p className="text-xs text-text-secondary">{item.categoria}</p>
                   <button 

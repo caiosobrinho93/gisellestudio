@@ -23,7 +23,7 @@ const recentTransactions = [
 
 export default function FinanceiroPage() {
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-2 md:p-8">
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold text-text-primary">Financeiro</h1>
         <p className="text-text-secondary">Controle financeiro do salão</p>
