@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
   Users,
@@ -32,11 +32,33 @@ const menuItems = [
   { href: '/dashboard/configuracoes', icon: Settings, label: 'Configurações' },
 ]
 
+interface SidebarContextType {
+  collapsed: boolean
+  setCollapsed: (v: boolean) => void
+  isMobile: boolean
+  mobileOpen: boolean
+  setMobileOpen: (v: boolean) => void
+  sidebarWidth: number
+}
+
+const SidebarContext = createContext<SidebarContextType>({
+  collapsed: false,
+  setCollapsed: () => {},
+  isMobile: true,
+  mobileOpen: false,
+  setMobileOpen: () => {},
+  sidebarWidth: 280,
+})
+
+export function useSidebarContext() {
+  return useContext(SidebarContext)
+}
+
 export function Sidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -55,11 +77,13 @@ export function Sidebar() {
 
   if (!mounted) return null
 
+  const sidebarWidth = collapsed ? 80 : 280
+
   return (
-    <>
+    <SidebarContext.Provider value={{ collapsed, setCollapsed, isMobile, mobileOpen, setMobileOpen, sidebarWidth }}>
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 p-2 bg-bg-card rounded-lg border border-border-light md:hidden"
+        className="fixed top-4 left-4 z-50 p-2 bg-bg-primary/90 backdrop-blur-md rounded-lg border border-border-light md:hidden"
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -67,7 +91,7 @@ export function Sidebar() {
       <motion.aside
         initial={false}
         animate={{ 
-          width: collapsed ? 80 : 280,
+          width: sidebarWidth,
           x: isMobile ? (mobileOpen ? 0 : -320) : 0
         }}
         className={cn(
@@ -79,7 +103,12 @@ export function Sidebar() {
       >
         <div className="h-18 flex items-center justify-between px-4 py-3 border-b border-border-light">
           <Link href="/" className="font-display font-bold text-lg text-text-primary">
-            <span className={cn(collapsed && "hidden")}>Belleza</span>
+            <motion.span
+              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+              className="block overflow-hidden whitespace-nowrap"
+            >
+              Belleza
+            </motion.span>
           </Link>
           <button
             onClick={() => setCollapsed(!collapsed)}
@@ -99,6 +128,7 @@ export function Sidebar() {
             const itemHrefWithoutSlash = item.href.replace(/\/$/, '')
             const isActive = pathnameWithoutSlash === itemHrefWithoutSlash || 
               (item.href !== '/dashboard' && pathname.startsWith(item.href))
+            
             return (
               <Link
                 key={item.href}
@@ -113,7 +143,19 @@ export function Sidebar() {
                 )}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                <AnimatePresence>
+                  {!collapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-sm font-medium overflow-hidden whitespace-nowrap"
+                    >
+                      {item.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Link>
             )
           })}
@@ -122,13 +164,26 @@ export function Sidebar() {
         <div className="p-4 border-t border-border-light">
           <Link
             href="/"
+            onClick={() => isMobile && setMobileOpen(false)}
             className={cn(
               'flex items-center gap-3 px-3 py-3 rounded-xl text-text-secondary hover:bg-bg-secondary hover:text-text-primary transition-colors',
               collapsed && 'justify-center px-0'
             )}
           >
             <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="text-sm font-medium">Sair</span>}
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-sm font-medium overflow-hidden whitespace-nowrap"
+                >
+                  Sair
+                </motion.span>
+              )}
+            </AnimatePresence>
           </Link>
         </div>
       </motion.aside>
@@ -139,6 +194,6 @@ export function Sidebar() {
           onClick={() => setMobileOpen(false)}
         />
       )}
-    </>
+    </SidebarContext.Provider>
   )
 }
