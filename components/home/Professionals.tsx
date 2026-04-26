@@ -65,7 +65,7 @@ export function Professionals() {
   }
 
   return (
-    <section id="sobre" className="scroll-mt-24 md:scroll-mt-32 py-16 md:py-24 relative overflow-hidden">
+    <section id="sobre" className="py-16 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-bg-secondary/50 via-bg-primary to-bg-secondary/30" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-primary/10 rounded-full blur-[120px]" />
 
