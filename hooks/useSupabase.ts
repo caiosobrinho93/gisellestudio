@@ -106,6 +106,23 @@ export function useGaleria() {
   useEffect(() => {
     mounted.current = true
     fetchGaleria()
+
+    let channel: any = null
+    try {
+      channel = supabase
+        .channel('galeria-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'galeria' }, () => {
+          fetchGaleria()
+        })
+        .subscribe()
+    } catch (e) {
+      console.warn('Realtime não disponível:', e)
+    }
+
+    return () => {
+      mounted.current = false
+      if (channel) supabase.removeChannel(channel)
+    }
   }, [fetchGaleria])
 
   return { galeria, loading, refetch: fetchGaleria }

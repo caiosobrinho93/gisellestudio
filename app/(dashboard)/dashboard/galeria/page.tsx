@@ -29,6 +29,11 @@ export default function GaleriaPage() {
     if (galeria.length > 0) {
       const fixedItens = galeria.map((item: any) => {
         let imgPath = item.imagem || ''
+        // Se é base64, usa direto
+        if (imgPath.startsWith('data:')) {
+          return { ...item }
+        }
+        // Se não tem gisellestudio, adiciona
         if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
           if (imgPath.startsWith('/images/')) {
             imgPath = '/gisellestudio' + imgPath

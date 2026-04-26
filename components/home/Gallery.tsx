@@ -18,7 +18,12 @@ export function Gallery() {
     ? galeria.map((item: any) => {
         let imgPath = item.imagem || ''
         console.log('[Gallery] Imagem do banco:', imgPath)
-        // Adiciona /gisellestudio se não tem
+        // Se é base64, usa direto
+        if (imgPath.startsWith('data:')) {
+          console.log('[Gallery] Imagem é base64, usando direto')
+          return { src: imgPath, alt: item.titulo, title: item.titulo }
+        }
+        // Se não starts com /gisellestudio/, adicione
         if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
           if (imgPath.startsWith('/images/')) {
             imgPath = '/gisellestudio' + imgPath
