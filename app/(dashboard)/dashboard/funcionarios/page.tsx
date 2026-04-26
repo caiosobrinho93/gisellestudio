@@ -7,6 +7,8 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { ImageUploader } from '@/components/ui/ImageUploader'
+import { useNotification } from '@/components/ui/NotificationContext'
 
 interface Funcionario {
   id: string
@@ -15,16 +17,18 @@ interface Funcionario {
   telefone: string
   especialidade: string
   ativo: boolean
+  foto?: string
 }
 
 const especialidadeOptions = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Skincare', 'Depilação', 'Harmonização']
 
 export default function FuncionariosPage() {
+  const { showNotification } = useNotification()
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([
-    { id: '1', nome: 'Carla Silva', email: 'carla@email.com', telefone: '(11) 99999-9999', especialidade: 'Manicure', ativo: true },
-    { id: '2', nome: 'Juliana Santos', email: 'juliana@email.com', telefone: '(11) 98888-8888', especialidade: 'Sobrancelha', ativo: true },
-    { id: '3', nome: 'Marina Oliveira', email: 'marina@email.com', telefone: '(11) 97777-7777', especialidade: 'Massagem', ativo: true },
-    { id: '4', nome: 'Patrícia Lima', email: 'patricia@email.com', telefone: '(11) 96666-6666', especialidade: 'Cílios', ativo: true },
+    { id: '1', nome: 'Carla Silva', email: 'carla@email.com', telefone: '(11) 99999-9999', especialidade: 'Manicure', ativo: true, foto: '/gisellestudio/images/pes.jpeg' },
+    { id: '2', nome: 'Juliana Santos', email: 'juliana@email.com', telefone: '(11) 98888-8888', especialidade: 'Sobrancelha', ativo: true, foto: '' },
+    { id: '3', nome: 'Marina Oliveira', email: 'marina@email.com', telefone: '(11) 97777-7777', especialidade: 'Massagem', ativo: true, foto: '' },
+    { id: '4', nome: 'Patrícia Lima', email: 'patricia@email.com', telefone: '(11) 96666-6666', especialidade: 'Cílios', ativo: true, foto: '' },
   ])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -38,6 +42,7 @@ export default function FuncionariosPage() {
     email: '',
     telefone: '',
     especialidade: '',
+    foto: '',
   })
 
   const filteredFuncionarios = funcionarios.filter(func => 
@@ -54,10 +59,11 @@ export default function FuncionariosPage() {
         email: func.email,
         telefone: func.telefone,
         especialidade: func.especialidade,
+        foto: func.foto || '',
       })
     } else {
       setEditingFuncionario(null)
-      setFormData({ nome: '', email: '', telefone: '', especialidade: '' })
+      setFormData({ nome: '', email: '', telefone: '', especialidade: '', foto: '' })
     }
     setIsModalOpen(true)
   }
@@ -71,6 +77,7 @@ export default function FuncionariosPage() {
           ? { ...f, ...formData }
           : f
       ))
+      showNotification('success', 'Profissional atualizado!')
     } else {
       const newFuncionario: Funcionario = {
         id: Date.now().toString(),
@@ -78,16 +85,18 @@ export default function FuncionariosPage() {
         ativo: true,
       }
       setFuncionarios(prev => [...prev, newFuncionario])
+      showNotification('success', 'Profissional adicionado!')
     }
     
     setIsModalOpen(false)
-    setFormData({ nome: '', email: '', telefone: '', especialidade: '' })
+    setFormData({ nome: '', email: '', telefone: '', especialidade: '', foto: '' })
     setEditingFuncionario(null)
   }
 
   const handleDelete = () => {
     if (funcionarioToDelete) {
       setFuncionarios(prev => prev.filter(f => f.id !== funcionarioToDelete.id))
+      showNotification('success', 'Profissional removido!')
     }
     setIsDeleteModalOpen(false)
     setFuncionarioToDelete(null)
@@ -135,9 +144,17 @@ export default function FuncionariosPage() {
           >
             <Card className="h-full">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
-                  <User className="w-6 h-6 text-accent-primary" />
-                </div>
+                {func.foto ? (
+                  <img 
+                    src={func.foto} 
+                    alt={func.nome}
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                    <User className="w-6 h-6 text-accent-primary" />
+                  </div>
+                )}
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-text-primary">{func.nome}</h3>
                   <p className="text-sm text-text-secondary">{func.email}</p>
@@ -185,6 +202,11 @@ export default function FuncionariosPage() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingFuncionario ? 'Editar Profissional' : 'Novo Profissional'}>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <ImageUploader
+            value={formData.foto}
+            onChange={(foto) => setFormData({ ...formData, foto })}
+            label="Foto de perfil"
+          />
           <div>
             <label className="block text-sm text-text-secondary mb-2">Nome</label>
             <input

@@ -65,21 +65,24 @@ export function Sidebar() {
         initial={false}
         animate={{ 
           width: collapsed ? 80 : 280,
-          x: isMobile ? (mobileOpen ? 0 : -300) : 0
+          x: isMobile ? (mobileOpen ? 0 : -320) : 0
         }}
         className={cn(
           "fixed left-0 top-0 bottom-0 bg-bg-card border-r border-border-light z-40 flex flex-col",
-          "transition-all duration-300",
-          "max-md:left-0 max-md:w-[280px]",
-          isMobile && !mobileOpen && "max-md:hidden"
+          "max-md:w-[280px]",
+          isMobile && !mobileOpen && "max-md:translate-x-[-100%]"
         )}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
-        <div className="h-18 flex items-center justify-between px-4 border-b border-border-light">
-          {!collapsed && (
-            <Link href="/" className="font-display font-bold text-lg text-text-primary">
+        <div className="h-18 flex items-center justify-between px-4 py-3 border-b border-border-light">
+          <Link href="/" className="font-display font-bold text-lg text-text-primary overflow-hidden whitespace-nowrap">
+            <motion.span
+              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+              className="block"
+            >
               Belleza
-            </Link>
-          )}
+            </motion.span>
+          </Link>
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="p-2 rounded-lg hover:bg-bg-secondary transition-colors hidden md:block"
@@ -94,22 +97,27 @@ export function Sidebar() {
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => isMobile && setMobileOpen(false)}
                 className={cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
                   isActive
-                    ? 'bg-accent-primary/20 text-text-primary'
+                    ? 'bg-accent-primary/20 text-accent-primary'
                     : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary',
                   collapsed && 'justify-center px-3'
                 )}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                <motion.span
+                  animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+                  className="text-sm font-medium overflow-hidden whitespace-nowrap block"
+                >
+                  {item.label}
+                </motion.span>
               </Link>
             )
           })}
@@ -124,7 +132,12 @@ export function Sidebar() {
             )}
           >
             <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="text-sm font-medium">Sair</span>}
+            <motion.span
+              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+              className="text-sm font-medium overflow-hidden whitespace-nowrap block"
+            >
+              Sair
+            </motion.span>
           </Link>
         </div>
       </motion.aside>

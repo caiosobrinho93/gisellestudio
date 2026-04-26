@@ -7,6 +7,8 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { ImageUploader } from '@/components/ui/ImageUploader'
+import { useNotification } from '@/components/ui/NotificationContext'
 
 interface Cliente {
   id: string
@@ -16,14 +18,16 @@ interface Cliente {
   observacoes: string
   ativo: boolean
   dataCadastro: string
+  foto?: string
 }
 
 export default function ClientesPage() {
+  const { showNotification } = useNotification()
   const [clientes, setClientes] = useState<Cliente[]>([
-    { id: '1', nome: 'Ana Paula', email: 'ana@email.com', telefone: '(11) 99999-9999', observacoes: 'Cliente há 2 anos', ativo: true, dataCadastro: '2024-01-15' },
-    { id: '2', nome: 'Carla Silva', email: 'carla@email.com', telefone: '(11) 98888-8888', observacoes: 'Alérgica a acetona', ativo: true, dataCadastro: '2024-02-20' },
-    { id: '3', nome: 'Juliana Santos', email: 'juliana@email.com', telefone: '(11) 97777-7777', observacoes: 'Prefere horário matinal', ativo: true, dataCadastro: '2024-03-10' },
-    { id: '4', nome: 'Marina Oliveira', email: 'marina@email.com', telefone: '(11) 96666-6666', observacoes: '', ativo: false, dataCadastro: '2024-03-25' },
+    { id: '1', nome: 'Ana Paula', email: 'ana@email.com', telefone: '(11) 99999-9999', observacoes: 'Cliente há 2 anos', ativo: true, dataCadastro: '2024-01-15', foto: '' },
+    { id: '2', nome: 'Carla Silva', email: 'carla@email.com', telefone: '(11) 98888-8888', observacoes: 'Alérgica a acetona', ativo: true, dataCadastro: '2024-02-20', foto: '' },
+    { id: '3', nome: 'Juliana Santos', email: 'juliana@email.com', telefone: '(11) 97777-7777', observacoes: 'Prefere horário matinal', ativo: true, dataCadastro: '2024-03-10', foto: '' },
+    { id: '4', nome: 'Marina Oliveira', email: 'marina@email.com', telefone: '(11) 96666-6666', observacoes: '', ativo: false, dataCadastro: '2024-03-25', foto: '' },
   ])
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -37,6 +41,7 @@ export default function ClientesPage() {
     email: '',
     telefone: '',
     observacoes: '',
+    foto: '',
   })
 
   const filteredClientes = clientes.filter(c => 
@@ -53,10 +58,11 @@ export default function ClientesPage() {
         email: cliente.email,
         telefone: cliente.telefone,
         observacoes: cliente.observacoes,
+        foto: cliente.foto || '',
       })
     } else {
       setEditingCliente(null)
-      setFormData({ nome: '', email: '', telefone: '', observacoes: '' })
+      setFormData({ nome: '', email: '', telefone: '', observacoes: '', foto: '' })
     }
     setIsModalOpen(true)
   }
@@ -70,6 +76,7 @@ export default function ClientesPage() {
           ? { ...c, ...formData }
           : c
       ))
+      showNotification('success', 'Cliente atualizado!')
     } else {
       const newCliente: Cliente = {
         id: Date.now().toString(),
@@ -78,16 +85,18 @@ export default function ClientesPage() {
         dataCadastro: new Date().toISOString().split('T')[0],
       }
       setClientes(prev => [...prev, newCliente])
+      showNotification('success', 'Cliente adicionado!')
     }
     
     setIsModalOpen(false)
-    setFormData({ nome: '', email: '', telefone: '', observacoes: '' })
+    setFormData({ nome: '', email: '', telefone: '', observacoes: '', foto: '' })
     setEditingCliente(null)
   }
 
   const handleDelete = () => {
     if (clienteToDelete) {
       setClientes(prev => prev.filter(c => c.id !== clienteToDelete.id))
+      showNotification('success', 'Cliente removido!')
     }
     setIsDeleteModalOpen(false)
     setClienteToDelete(null)

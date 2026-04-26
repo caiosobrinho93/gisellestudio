@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Search, Calendar as CalIcon, Clock, CheckCircle, XCircle, AlertCircle, Edit2, Trash2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { useNotification } from '@/components/ui/NotificationContext'
 
 interface Agendamento {
   id: string
@@ -19,8 +20,8 @@ interface Agendamento {
   telefone: string
 }
 
-const mockClientes = ['Ana Paula', 'Carla Silva', 'Juliana Santos', 'Marina Oliveira']
-const mockServicos = ['Manicure', 'Pedicure', 'Extensão Cílios', 'Design Sobrancelha', 'Massagem']
+const mockClientes = ['Ana Paula', 'Carla Silva', 'Juliana Santos', 'Marina Oliveira', 'Patrícia Lima', 'Fernanda Silva', 'Camila Rodrigues', 'Beatriz Santos']
+const mockServicos = ['Manicure', 'Pedicure', 'Extensão Cílios', 'Design Sobrancelha', 'Massagem', 'Manicure SPA', 'Pedicure SPA']
 const mockProfissionais = ['Carla', 'Juliana', 'Patrícia', 'Marina']
 
 const statusConfig = {
@@ -31,12 +32,18 @@ const statusConfig = {
 }
 
 export default function AgendamentosPage() {
+  const { showNotification } = useNotification()
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([
-    { id: '1', data: '25/04/2026', horario: '09:00', cliente: 'Ana Paula', servico: 'Manicure', profissional: 'Carla', status: 'CONFIRMADO', telefone: '(11) 99999-9999' },
-    { id: '2', data: '25/04/2026', horario: '10:30', cliente: 'Carla Silva', servico: 'Pedicure', profissional: 'Juliana', status: 'PENDENTE', telefone: '(11) 98888-8888' },
-    { id: '3', data: '25/04/2026', horario: '14:00', cliente: 'Juliana Santos', servico: 'Extensão Cílios', profissional: 'Patrícia', status: 'CONFIRMADO', telefone: '(11) 97777-7777' },
-    { id: '4', data: '25/04/2026', horario: '15:30', cliente: 'Marina Oliveira', servico: 'Massagem', profissional: 'Marina', status: 'CONFIRMADO', telefone: '(11) 96666-6666' },
-    { id: '5', data: '26/04/2026', horario: '09:00', cliente: 'Ana Paula', servico: 'Design Sobrancelha', profissional: 'Juliana', status: 'PENDENTE', telefone: '(11) 99999-9999' },
+    { id: '1', data: '26/04/2026', horario: '09:00', cliente: 'Ana Paula', servico: 'Manicure', profissional: 'Carla', status: 'CONFIRMADO', telefone: '(11) 99999-9999' },
+    { id: '2', data: '26/04/2026', horario: '10:30', cliente: 'Carla Silva', servico: 'Pedicure', profissional: 'Juliana', status: 'PENDENTE', telefone: '(11) 98888-8888' },
+    { id: '3', data: '26/04/2026', horario: '14:00', cliente: 'Juliana Santos', servico: 'Extensão Cílios', profissional: 'Patrícia', status: 'CONFIRMADO', telefone: '(11) 97777-7777' },
+    { id: '4', data: '26/04/2026', horario: '15:30', cliente: 'Marina Oliveira', servico: 'Massagem', profissional: 'Marina', status: 'CONFIRMADO', telefone: '(11) 96666-6666' },
+    { id: '5', data: '26/04/2026', horario: '16:30', cliente: 'Patrícia Lima', servico: 'Design Sobrancelha', profissional: 'Juliana', status: 'PENDENTE', telefone: '(11) 95555-5555' },
+    { id: '6', data: '27/04/2026', horario: '09:00', cliente: 'Fernanda Silva', servico: 'Manicure SPA', profissional: 'Carla', status: 'PENDENTE', telefone: '(11) 94444-4444' },
+    { id: '7', data: '27/04/2026', horario: '11:00', cliente: 'Camila Rodrigues', servico: 'Pedicure SPA', profissional: 'Juliana', status: 'PENDENTE', telefone: '(11) 93333-3333' },
+    { id: '8', data: '27/04/2026', horario: '14:00', cliente: 'Beatriz Santos', servico: 'Extensão Cílios', profissional: 'Patrícia', status: 'PENDENTE', telefone: '(11) 92222-2222' },
+    { id: '9', data: '28/04/2026', horario: '10:00', cliente: 'Ana Paula', servico: 'Massagem', profissional: 'Marina', status: 'PENDENTE', telefone: '(11) 99999-9999' },
+    { id: '10', data: '28/04/2026', horario: '15:00', cliente: 'Marina Oliveira', servico: 'Manicure', profissional: 'Carla', status: 'PENDENTE', telefone: '(11) 96666-6666' },
   ])
 
   const [filtro, setFiltro] = useState('todos')
@@ -52,6 +59,36 @@ export default function AgendamentosPage() {
     servico: '',
     profissional: '',
   })
+
+  const filteredAgendamentos = useMemo(() => {
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const nextWeek = new Date(today)
+    nextWeek.setDate(nextWeek.getDate() + 7)
+
+    const formatDate = (date: Date) => {
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}/${month}/${year}`
+    }
+
+    const todayStr = formatDate(today)
+    const tomorrowStr = formatDate(tomorrow)
+
+    if (filtro === 'todos') return agendamentos
+    
+    return agendamentos.filter(agend => {
+      if (filtro === 'hoje') return agend.data === todayStr
+      if (filtro === 'amanha') return agend.data === tomorrowStr
+      if (filtro === 'semana') {
+        const agendDate = new Date(agend.data.split('/').reverse().join('-'))
+        return agendDate >= today && agendDate <= nextWeek
+      }
+      return true
+    })
+  }, [agendamentos, filtro])
 
   const handleOpenModal = (agendamento?: Agendamento) => {
     if (agendamento) {
@@ -90,8 +127,10 @@ export default function AgendamentosPage() {
       setAgendamentos(prev => prev.map(a => 
         a.id === editingAgendamento.id ? novoAgendamento : a
       ))
+      showNotification('success', 'Agendamento atualizado!')
     } else {
       setAgendamentos(prev => [...prev, novoAgendamento])
+      showNotification('success', 'Agendamento criado!')
     }
     
     setIsModalOpen(false)
@@ -102,6 +141,7 @@ export default function AgendamentosPage() {
   const handleDelete = () => {
     if (agendamentoToDelete) {
       setAgendamentos(prev => prev.filter(a => a.id !== agendamentoToDelete.id))
+      showNotification('success', 'Agendamento removido!')
     }
     setIsDeleteModalOpen(false)
     setAgendamentoToDelete(null)
@@ -112,7 +152,7 @@ export default function AgendamentosPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-3xl font-bold text-text-primary">Agendamentos</h1>
-          <p className="text-text-secondary">Gerencie a agenda</p>
+          <p className="text-text-secondary">Gerencie a agenda ({filteredAgendamentos.length})</p>
         </div>
         <Button onClick={() => handleOpenModal()}>
           <Plus className="w-4 h-4 mr-2" />
@@ -120,8 +160,8 @@ export default function AgendamentosPage() {
         </Button>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        {['todos', 'hoje', 'amanhã', 'semana'].map((f) => (
+      <div className="flex gap-2 mb-6 flex-wrap">
+        {['todos', 'hoje', 'amanha', 'semana'].map((f) => (
           <button
             key={f}
             onClick={() => setFiltro(f)}
@@ -155,7 +195,7 @@ export default function AgendamentosPage() {
               </tr>
             </thead>
             <tbody>
-              {agendamentos.map((agend) => {
+              {filteredAgendamentos.map((agend) => {
                 const status = statusConfig[agend.status]
                 const StatusIcon = status.icon
                 return (
