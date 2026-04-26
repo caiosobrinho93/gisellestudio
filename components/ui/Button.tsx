@@ -17,10 +17,28 @@ interface Ripple {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { className, variant = 'primary', size = 'md', loading, children, disabled, type = 'button', ...rest },
+  { className, variant = 'primary', size = 'md', loading, children, disabled, type = 'button', onClick, ...rest },
   ref
 ) {
   const [ripples, setRipples] = useState<Ripple[]>([])
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget
+    const rect = button.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    const newRipple: Ripple = { id: Date.now(), x, y }
+    
+    setRipples((prev) => [...prev, newRipple])
+    
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id))
+    }, 600)
+
+    if (onClick) {
+      onClick(event)
+    }
+  }, [onClick])
 
   const variants = {
     primary: 'bg-accent-primary hover:bg-accent-secondary text-bg-primary font-semibold shadow-[0_0_20px_rgba(255,51,102,0.4)] hover:shadow-[0_0_30px_rgba(255,51,102,0.6)]',
@@ -62,7 +80,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         sizes[size],
         className
       )}
-      onClick={createRipple}
+      onClick={handleClick}
       onMouseEnter={rest.onMouseEnter}
       onMouseLeave={rest.onMouseLeave}
     >
