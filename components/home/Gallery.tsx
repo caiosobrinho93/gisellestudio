@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 
 const galleryImages = [
   { src: '/images/pes.jpeg', alt: 'Tratamento de pés', title: 'Spa dos Pés' },
@@ -42,11 +41,10 @@ export function Gallery() {
               transition={{ delay: i * 0.15 }}
               className="group relative aspect-[4/5] rounded-3xl overflow-hidden"
             >
-              <Image
+              <img
                 src={img.src}
                 alt={img.alt}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="absolute bottom-6 left-6 right-6">

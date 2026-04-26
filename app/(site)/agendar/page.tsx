@@ -353,7 +353,7 @@ export default function AgendamentoPage() {
         </motion.div>
 
         <div className="mb-6">
-          <Tabs defaultValue="servicos" className="mb-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="servicos" className="mb-6">
             <TabsList className="w-full overflow-x-auto">
               {steps.map((step, index) => (
                 <TabsTrigger 

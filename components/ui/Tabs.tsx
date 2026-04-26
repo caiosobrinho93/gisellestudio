@@ -12,16 +12,20 @@ interface TabsContextType {
 const TabsContext = createContext<TabsContextType | null>(null)
 
 interface TabsProps {
+  value?: string
+  onValueChange?: (value: string) => void
   defaultValue?: string
   children: ReactNode
   className?: string
 }
 
-export function Tabs({ defaultValue = 'servicos', children, className }: TabsProps) {
-  const [value, setValue] = useState(defaultValue)
+export function Tabs({ value: externalValue, onValueChange: externalOnChange, defaultValue = 'servicos', children, className }: TabsProps) {
+  const [internalValue, setInternalValue] = useState(defaultValue)
+  const value = externalValue ?? internalValue
+  const onValueChange = externalOnChange ?? setInternalValue
   
   return (
-    <TabsContext.Provider value={{ value, onValueChange: setValue }}>
+    <TabsContext.Provider value={{ value, onValueChange }}>
       <div className={className}>{children}</div>
     </TabsContext.Provider>
   )

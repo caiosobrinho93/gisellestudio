@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Image,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +27,7 @@ const menuItems = [
   { href: '/dashboard/agendamentos', icon: Calendar, label: 'Agendamentos' },
   { href: '/dashboard/servicos', icon: Scissors, label: 'Serviços' },
   { href: '/dashboard/funcionarios', icon: UserCog, label: 'Profissionais' },
+  { href: '/dashboard/galeria', icon: Image, label: 'Galeria' },
   { href: '/dashboard/financeiro', icon: DollarSign, label: 'Financeiro' },
   { href: '/dashboard/configuracoes', icon: Settings, label: 'Configurações' },
 ]
