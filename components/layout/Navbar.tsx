@@ -51,20 +51,20 @@ export function Navbar() {
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 h-14 md:h-20 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group">
           <div className="relative">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
-              <Scissors className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
+              <Scissors className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
           </div>
           <div>
-            <span className="text-xl font-bold text-text-primary tracking-wider">BELLEZA</span>
-            <p className="text-[10px] text-accent-primary tracking-[0.3em] uppercase">Premium</p>
+            <span className="text-base md:text-xl font-bold text-text-primary tracking-wider">BELLEZA</span>
+            <p className="text-[8px] md:text-[10px] text-accent-primary tracking-[0.3em] uppercase">Premium</p>
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <button
               key={link.href}
@@ -76,39 +76,30 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           {loading ? (
-            <div className="w-20 h-8 bg-white/5 animate-pulse rounded-full" />
+            <div className="w-16 h-6 md:h-8 bg-white/5 animate-pulse rounded-full" />
           ) : (
-            <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
+            <div className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 rounded-full text-xs font-medium ${
               isOpen 
                 ? 'bg-success/20 text-success' 
                 : 'bg-error/20 text-error'
             }`}>
-              <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-success' : 'bg-error'} animate-pulse`} />
-              {isOpen ? 'ABERTO' : 'FECHADO'}
+              <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isOpen ? 'bg-success' : 'bg-error'} animate-pulse`} />
+              <span className="hidden sm:inline">{isOpen ? 'ABERTO' : 'FECHADO'}</span>
             </div>
           )}
 
-          <Link href="/login">
-            <Button size="sm" variant="secondary">
-              Área do Cliente
-            </Button>
-          </Link>
-          <Link href="/dashboard">
-            <Button size="sm" variant="ghost">
-              Painel
-            </Button>
-          </Link>
           <Link href="/agendar">
-            <Button size="sm" className="px-6">
-              Agendar
+            <Button size="sm" className="px-3 md:px-6">
+              <span className="md:hidden">+</span>
+              <span className="hidden md:inline">Agendar</span>
             </Button>
           </Link>
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2"
+            className="lg:hidden p-2"
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6 text-text-primary" />
@@ -125,14 +116,14 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-bg-secondary/95 backdrop-blur-xl border-t border-white/5"
+            className="lg:hidden absolute top-full left-0 right-0 bg-bg-secondary/95 backdrop-blur-xl border-t border-white/5"
           >
-            <div className="p-6 space-y-4">
+            <div className="p-4 space-y-2">
               {navLinks.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => { link.action(); setIsMobileMenuOpen(false); }}
-                  className="block py-3 text-text-secondary hover:text-accent-primary transition-colors text-lg w-full text-left"
+                  className="block py-3 px-4 text-text-secondary hover:text-accent-primary transition-colors text-base w-full text-left rounded-lg hover:bg-white/5"
                 >
                   {link.label}
                 </button>
