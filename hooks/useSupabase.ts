@@ -164,7 +164,7 @@ export function useAgendamentos() {
 
 export async function createAgendamento(data: {
   servico_id: string
-  profissional_id: string
+  profissional_id?: string
   data: string
   horario: string
   telefone: string
@@ -176,7 +176,7 @@ export async function createAgendamento(data: {
       .from('agendamentos')
       .insert([{
         servico_id: data.servico_id,
-        profissional_id: data.profissional_id,
+        profissional_id: data.profissional_id || null,
         data: data.data,
         horario: data.horario,
         telefone: data.telefone,

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
 import { X, Clock, DollarSign, Check, Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
@@ -23,23 +22,12 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
   if (!service) return null
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <motion.div 
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div 
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0, y: 50 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.5, opacity: 0, y: 50 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="relative bg-bg-card rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-border-light shadow-2xl max-h-[90vh] overflow-y-auto"
-      >
+      <div className="relative bg-bg-card rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-border-light shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-full bg-bg-secondary hover:bg-accent-primary/20 transition-colors"
@@ -47,39 +35,19 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
           <X className="w-5 h-5 text-text-secondary" />
         </button>
 
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center mb-4 shadow-lg shadow-accent-primary/30"
-        >
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center mb-4 shadow-lg shadow-accent-primary/30">
           <Sparkles className="w-8 h-8 text-white" />
-        </motion.div>
+        </div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="text-2xl font-bold text-text-primary mb-2"
-        >
+        <h2 className="text-2xl font-bold text-text-primary mb-2">
           {service.name}
-        </motion.h2>
+        </h2>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-text-secondary mb-6"
-        >
+        <p className="text-text-secondary mb-6">
           {service.description}
-        </motion.p>
+        </p>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="flex items-center gap-4 mb-6"
-        >
+        <div className="flex items-center gap-4 mb-6">
           <div className="flex items-center gap-2 px-4 py-2 bg-bg-secondary rounded-xl">
             <Clock className="w-5 h-5 text-accent-primary" />
             <span className="text-text-primary font-medium">{service.duration} min</span>
@@ -88,14 +56,9 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
             <DollarSign className="w-5 h-5 text-accent-primary" />
             <span className="text-accent-primary font-bold">R$ {service.price}</span>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <h3 className="text-text-primary font-semibold mb-3">Inclui:</h3>
           <ul className="space-y-2">
             {service.benefits.map((benefit, i) => (
@@ -105,14 +68,9 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
               </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <h3 className="text-text-primary font-semibold mb-3">Como funciona:</h3>
           <ol className="space-y-2">
             {service.process.map((step, i) => (
@@ -124,14 +82,9 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
               </li>
             ))}
           </ol>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-col sm:flex-row gap-3"
-        >
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button onClick={onClose} variant="secondary" className="flex-1">
             Fechar
           </Button>
@@ -141,8 +94,8 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </div>
+      </div>
+    </div>
   )
 }

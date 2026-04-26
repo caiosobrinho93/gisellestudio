@@ -71,28 +71,40 @@ export function Services() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="group relative p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-accent-primary/50 transition-all duration-300 hover:-translate-y-2"
+                  className="group relative rounded-3xl bg-white/5 border border-white/10 hover:border-accent-primary/50 transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col"
                 >
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-accent-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
-                  <div className="relative z-10">
+                  {service.imagem ? (
+                    <div className="w-full h-48 relative overflow-hidden flex-shrink-0">
+                      <img 
+                        src={service.imagem} 
+                        alt={service.nome}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bg-card to-transparent opacity-90" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 bg-bg-secondary flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-12 h-12 text-accent-primary/20" />
+                    </div>
+                  )}
+
+                  <div className="p-6 relative z-10 flex-1 flex flex-col">
                     <button
                       onClick={() => setSelectedService(service)}
-                      className="absolute top-4 right-4 p-2 rounded-lg bg-bg-secondary hover:bg-accent-primary/20 transition-colors z-10"
+                      className="absolute top-4 right-4 p-2 rounded-lg bg-black/40 backdrop-blur-md hover:bg-accent-primary transition-colors z-20 text-white"
+                      title="Detalhes do Serviço"
                     >
-                      <Info className="w-5 h-5 text-text-secondary" />
+                      <Info className="w-5 h-5" />
                     </button>
                     
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center mb-4 shadow-lg shadow-accent-primary/30 group-hover:scale-110 transition-transform">
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-1 pr-10">
                       <h3 className="text-xl font-bold text-text-primary">{service.nome}</h3>
-                      <span className="text-accent-primary font-semibold">R$ {service.preco}</span>
                     </div>
+                    <span className="text-accent-primary font-bold text-xl mb-3 block">R$ {service.preco}</span>
                     
-                    <p className="text-text-secondary mb-4">{service.descricao}</p>
+                    <p className="text-text-secondary mb-4 flex-1">{service.descricao}</p>
                     
                     <ul className="space-y-2 mb-6">
                       {(service.benefits || defaultBenefits).slice(0, 3).map((feature: string, idx: number) => (
@@ -103,7 +115,7 @@ export function Services() {
                       ))}
                     </ul>
                     
-                    <Link href="/agendar">
+                    <Link href="/agendar" className="mt-auto">
                       <Button variant="secondary" className="w-full group-hover:bg-accent-primary group-hover:text-white transition-colors">
                         Agendar
                         <ArrowRight className="ml-2 w-4 h-4" />

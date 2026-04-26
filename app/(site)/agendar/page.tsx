@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@/components/ui/Tabs'
 import { ServiceDetailModal } from '@/components/ui/ServiceDetailModal'
-import { useServicos, useProfissionais, createAgendamento } from '@/hooks/useSupabase'
+import { useServicos, createAgendamento } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -18,9 +18,8 @@ const months = [
 
 const steps = [
   { id: 'servicos', label: 'Serviços' },
-  { id: 'profissional', label: 'Profissional' },
-  { id: 'data', label: 'Data/Hora' },
-  { id: 'dados', label: 'Dados' },
+  { id: 'data', label: 'Data e Hora' },
+  { id: 'dados', label: 'Seus Dados' },
 ]
 
 function generateTimeSlots(start: string, end: string, interval: number) {
@@ -48,11 +47,9 @@ const timeSlots = generateTimeSlots('08:00', '20:00', 30)
 export default function AgendamentoPage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const { servicos, loading: loadingServicos } = useServicos()
-  const { profissionais, loading: loadingProfissionais } = useProfissionais()
   
   const [activeTab, setActiveTab] = useState('servicos')
   const [selectedServices, setSelectedServices] = useState<string[]>([])
-  const [selectedProfessional, setSelectedProfessional] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [clientName, setClientName] = useState('')
@@ -78,12 +75,6 @@ export default function AgendamentoPage() {
     process: s.processo || []
   }))
 
-  const professionals = profissionais.map(p => ({
-    id: p.id,
-    name: p.nome,
-    specialty: p.especialidade
-  }))
-
   const toggleService = (id: string) => {
     setSelectedServices(prev => 
       prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
@@ -102,15 +93,10 @@ export default function AgendamentoPage() {
     return services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(', ')
   }
 
-  const getSelectedProfessionalName = () => {
-    return professionals.find(p => p.id === selectedProfessional)?.name || ''
-  }
-
   const isStepCompleted = (stepId: string) => {
     if (stepId === 'servicos') return selectedServices.length > 0
-    if (stepId === 'profissional') return !!selectedProfessional
     if (stepId === 'data') return !!selectedDate && !!selectedTime
-    if (stepId === 'dados') return clientName && clientPhone && clientEmail
+    if (stepId === 'dados') return clientName && clientPhone
     return false
   }
 
@@ -130,14 +116,12 @@ export default function AgendamentoPage() {
   const handleNext = async () => {
     if (!canProceed()) return
     
-    if (activeTab === 'servicos') setActiveTab('profissional')
-    else if (activeTab === 'profissional') setActiveTab('data')
+    if (activeTab === 'servicos') setActiveTab('data')
     else if (activeTab === 'data') setActiveTab('dados')
     else if (activeTab === 'dados') {
       setIsSubmitting(true)
       const result = await createAgendamento({
         servico_id: selectedServices[0],
-        profissional_id: selectedProfessional,
         data: selectedDate,
         horario: selectedTime,
         telefone: clientPhone,
@@ -154,8 +138,7 @@ export default function AgendamentoPage() {
   }
 
   const handleBack = () => {
-    if (activeTab === 'profissional') setActiveTab('servicos')
-    else if (activeTab === 'data') setActiveTab('profissional')
+    if (activeTab === 'data') setActiveTab('servicos')
     else if (activeTab === 'dados') setActiveTab('data')
     setTimeout(scrollToTop, 100)
   }
@@ -164,7 +147,6 @@ export default function AgendamentoPage() {
     setShowSuccess(false)
     setActiveTab('servicos')
     setSelectedServices([])
-    setSelectedProfessional('')
     setSelectedDate('')
     setSelectedTime('')
     setClientName('')
@@ -201,7 +183,7 @@ export default function AgendamentoPage() {
     days.push({ day: i, disabled: isPast || isSunday })
   }
 
-  if (loadingServicos || loadingProfissionais) {
+  if (loadingServicos) {
     return (
       <div className="min-h-[100dvh] bg-bg-primary pt-24 pb-12 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
@@ -274,10 +256,6 @@ export default function AgendamentoPage() {
                   <span className="text-text-primary">{getSelectedServicesNames()}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-accent-primary" />
-                  <span className="text-text-primary">{getSelectedProfessionalName()}</span>
-                </div>
-                <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-accent-primary" />
                   <span className="text-text-primary">{selectedDate} às {selectedTime}</span>
                 </div>
@@ -328,19 +306,19 @@ export default function AgendamentoPage() {
             Agende seu <span className="text-accent-primary">horário</span>
           </h1>
           <p className="text-text-secondary mt-2 text-sm sm:text-base">
-            Escolha os serviços e encontre o melhor horário
+            Selecione o tratamento e o momento perfeito para você.
           </p>
         </motion.div>
 
         <div className="mb-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="servicos" className="mb-6">
-            <TabsList className="w-full overflow-x-auto">
+            <TabsList className="w-full overflow-x-auto justify-center">
               {steps.map((step, index) => (
                 <TabsTrigger 
                   key={step.id} 
                   value={step.id}
                   className={cn(
-                    'whitespace-nowrap',
+                    'whitespace-nowrap px-6',
                     isStepCompleted(step.id) && 'text-accent-primary',
                     getCurrentStepIndex() > index && isStepCompleted(step.id) && 'text-success'
                   )}
@@ -353,39 +331,60 @@ export default function AgendamentoPage() {
               ))}
             </TabsList>
 
-            <Card className="mt-6">
+            <Card className="mt-6 border-white/5 bg-bg-card/40 backdrop-blur-sm">
               <TabsPanel value="servicos">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {services.map((service) => (
-                    <div key={service.id} className="relative group">
+                    <div key={service.id} className="relative group h-full flex flex-col">
                       <button
                         onClick={() => toggleService(service.id)}
                         className={cn(
-                          'w-full p-3 sm:p-4 rounded-xl border text-left transition-all overflow-hidden',
+                          'w-full h-full flex flex-col rounded-2xl border text-left transition-all overflow-hidden relative',
                           selectedServices.includes(service.id)
-                            ? 'border-accent-primary bg-accent-primary/20'
-                            : 'border-border-light hover:border-accent-primary'
+                            ? 'border-accent-primary ring-1 ring-accent-primary shadow-[0_0_20px_rgba(255,51,102,0.15)] bg-bg-secondary'
+                            : 'border-border-light bg-bg-card hover:border-accent-primary/50'
                         )}
                       >
-                        {service.imagem && (
-                          <div className="w-full h-20 sm:h-24 mb-3 rounded-lg overflow-hidden">
+                        {service.imagem ? (
+                          <div className="w-full h-40 sm:h-48 relative overflow-hidden flex-shrink-0">
                             <img 
                               src={service.imagem} 
                               alt={service.name}
-                              className="w-full h-full object-cover"
+                              className={cn(
+                                "w-full h-full object-cover transition-transform duration-700",
+                                selectedServices.includes(service.id) ? "scale-105" : "group-hover:scale-105"
+                              )}
                             />
+                            <div className="absolute inset-0 bg-gradient-to-t from-bg-card to-transparent opacity-90" />
+                          </div>
+                        ) : (
+                          <div className="w-full h-40 sm:h-48 bg-bg-secondary flex items-center justify-center flex-shrink-0">
+                            <Sparkles className="w-8 h-8 text-accent-primary/20" />
                           </div>
                         )}
-                        <div className="flex items-center justify-between">
+
+                        <div className={cn(
+                          "flex-1 p-5 sm:p-6 flex flex-col justify-between z-10",
+                          service.imagem ? "-mt-16" : ""
+                        )}>
                           <div>
-                            <p className="font-medium text-text-primary text-sm sm:text-base">{service.name}</p>
-                            <p className="text-xs sm:text-sm text-text-secondary">{service.duration} min</p>
+                            <div className="flex justify-between items-start mb-2">
+                              <p className="font-bold text-text-primary text-lg sm:text-xl drop-shadow-md">{service.name}</p>
+                              {selectedServices.includes(service.id) && (
+                                <div className="w-6 h-6 rounded-full bg-accent-primary flex items-center justify-center flex-shrink-0">
+                                  <Check className="w-4 h-4 text-white" />
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-sm sm:text-base text-text-secondary line-clamp-2 mb-4">{service.description}</p>
                           </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-accent-primary text-sm sm:text-base">R$ {service.price}</p>
-                            {selectedServices.includes(service.id) && (
-                              <Check className="w-4 h-4 text-accent-primary ml-auto mt-1" />
-                            )}
+                          
+                          <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
+                            <div className="flex items-center gap-1.5 text-text-tertiary">
+                              <Clock className="w-4 h-4" />
+                              <span className="text-sm font-medium">{service.duration} min</span>
+                            </div>
+                            <p className="font-bold text-accent-primary text-lg">R$ {service.price}</p>
                           </div>
                         </div>
                       </button>
@@ -394,81 +393,53 @@ export default function AgendamentoPage() {
                           e.stopPropagation()
                           setSelectedServiceDetail(service)
                         }}
-                        className="absolute top-3 right-3 p-2 rounded-lg bg-bg-secondary/80 hover:bg-accent-primary/20 transition-colors z-10"
+                        className="absolute top-4 right-4 p-2.5 rounded-full bg-black/40 backdrop-blur-md hover:bg-accent-primary transition-colors z-20 text-white"
+                        title="Detalhes do Serviço"
                       >
-                        <Info className="w-4 h-4 text-text-secondary" />
+                        <Info className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
+                  
                   {selectedServices.length > 0 && (
-                    <div className="col-span-full p-3 sm:p-4 bg-bg-secondary rounded-xl mt-2 sm:mt-4">
-                      <div className="flex justify-between">
-                        <span className="text-text-secondary text-sm">Total:</span>
-                        <span className="font-semibold text-accent-primary text-sm sm:text-base">R$ {getTotalPrice()} ({getTotalDuration()} min)</span>
+                    <div className="col-span-full p-4 sm:p-5 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-text-primary font-medium">Total Selecionado:</span>
+                        <div className="text-right">
+                          <span className="font-bold text-accent-primary text-xl">R$ {getTotalPrice()}</span>
+                          <span className="text-text-secondary text-sm ml-2">({getTotalDuration()} min)</span>
+                        </div>
                       </div>
                     </div>
                   )}
                 </div>
               </TabsPanel>
 
-              <TabsPanel value="profissional">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  {professionals.map((pro) => (
-                    <button
-                      key={pro.id}
-                      onClick={() => setSelectedProfessional(pro.id)}
-                      className={cn(
-                        'p-3 sm:p-4 rounded-xl border text-left transition-all',
-                        selectedProfessional === pro.id
-                          ? 'border-accent-primary bg-accent-primary/20'
-                          : 'border-border-light hover:border-accent-primary'
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
-                          <User className="w-5 h-5 text-accent-primary" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-text-primary text-sm sm:text-base truncate">{pro.name}</p>
-                          <p className="text-xs sm:text-sm text-text-secondary">{pro.specialty}</p>
-                        </div>
-                        {selectedProfessional === pro.id && (
-                          <Check className="w-4 h-4 text-accent-primary ml-auto flex-shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </TabsPanel>
-
               <TabsPanel value="data">
-                <div className="space-y-4 sm:space-y-6">
+                <div className="space-y-6 sm:space-y-8">
                   <div>
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex items-center justify-between mb-4">
                       <button
                         onClick={handlePrevMonth}
-                        className="p-2 rounded-lg bg-bg-secondary hover:bg-accent-primary/20 transition-colors"
+                        className="p-2 rounded-xl bg-bg-secondary hover:bg-accent-primary/20 hover:text-accent-primary transition-all"
                       >
-                        <ChevronLeft className="w-5 h-5 text-text-secondary" />
+                        <ChevronLeft className="w-5 h-5" />
                       </button>
-                      <span className="font-medium text-text-primary">
+                      <span className="font-bold text-lg text-text-primary tracking-wide">
                         {months[currentMonth]} {currentYear}
                       </span>
                       <button
                         onClick={handleNextMonth}
-                        className="p-2 rounded-lg bg-bg-secondary hover:bg-accent-primary/20 transition-colors"
+                        className="p-2 rounded-xl bg-bg-secondary hover:bg-accent-primary/20 hover:text-accent-primary transition-all"
                       >
-                        <ChevronRight className="w-5 h-5 text-text-secondary" />
+                        <ChevronRight className="w-5 h-5" />
                       </button>
                     </div>
-                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
-                      <div className="text-center text-xs text-text-tertiary py-2">Dom</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Seg</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Ter</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Qua</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Qui</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Sex</div>
-                      <div className="text-center text-xs text-text-tertiary py-2">Sáb</div>
+                    
+                    <div className="grid grid-cols-7 gap-2">
+                      {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(dia => (
+                        <div key={dia} className="text-center text-xs font-medium text-text-tertiary py-2 uppercase tracking-wider">{dia}</div>
+                      ))}
                       {[...Array(firstDayOfMonth)].map((_, i) => (
                         <div key={`empty-${i}`} />
                       ))}
@@ -478,11 +449,11 @@ export default function AgendamentoPage() {
                           disabled={d.disabled}
                           onClick={() => setSelectedDate(`${d.day} de ${months[currentMonth]}`)}
                           className={cn(
-                            'p-2 sm:p-3 rounded-lg text-center text-xs sm:text-sm transition-all',
-                            d.disabled ? 'opacity-30 cursor-not-allowed' :
+                            'aspect-square p-2 rounded-xl flex items-center justify-center text-sm font-medium transition-all',
+                            d.disabled ? 'opacity-20 cursor-not-allowed' :
                             selectedDate === `${d.day} de ${months[currentMonth]}`
-                              ? 'bg-accent-primary text-text-primary'
-                              : 'bg-bg-secondary hover:bg-accent-primary/20 text-text-primary'
+                              ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30 scale-105'
+                              : 'bg-bg-secondary hover:bg-bg-secondary/80 text-text-primary hover:scale-105'
                           )}
                         >
                           {d.day}
@@ -492,20 +463,26 @@ export default function AgendamentoPage() {
                   </div>
 
                   {selectedDate && (
-                    <div>
-                      <label className="block text-sm font-medium text-text-secondary mb-3">
-                        Horário disponível ({getTotalDuration()} min total)
-                      </label>
-                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    <div className="pt-6 border-t border-white/5">
+                      <div className="flex items-center justify-between mb-4">
+                        <label className="text-sm font-semibold text-text-primary">
+                          Horários Disponíveis
+                        </label>
+                        <span className="text-xs font-medium text-text-tertiary bg-bg-secondary px-2 py-1 rounded-md">
+                          {getTotalDuration()} min
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                         {timeSlots.map((time) => (
                           <button
                             key={time}
                             onClick={() => setSelectedTime(time)}
                             className={cn(
-                              'p-2 rounded-lg text-center text-xs sm:text-sm transition-all',
+                              'py-2.5 rounded-xl text-center text-sm font-medium transition-all border',
                               selectedTime === time
-                                ? 'bg-accent-primary text-text-primary'
-                                : 'bg-bg-secondary hover:bg-accent-primary/20'
+                                ? 'bg-accent-primary text-white border-accent-primary shadow-lg shadow-accent-primary/30 scale-105'
+                                : 'bg-bg-card border-border-light text-text-primary hover:border-accent-primary/50 hover:scale-105'
                             )}
                           >
                             {time}
@@ -518,50 +495,76 @@ export default function AgendamentoPage() {
               </TabsPanel>
 
               <TabsPanel value="dados">
-                <div className="space-y-3 sm:space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Seu nome"
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary text-sm sm:text-base"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Seu telefone"
-                    value={clientPhone}
-                    onChange={(e) => setClientPhone(e.target.value)}
-                    className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary text-sm sm:text-base"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Seu email"
-                    value={clientEmail}
-                    onChange={(e) => setClientEmail(e.target.value)}
-                    className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary text-sm sm:text-base"
-                  />
+                <div className="space-y-4 sm:space-y-5">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">Nome Completo *</label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Maria Joaquina"
+                      value={clientName}
+                      onChange={(e) => setClientName(e.target.value)}
+                      className="w-full h-14 px-4 bg-bg-card border border-border-light rounded-2xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all text-base"
+                    />
+                  </div>
                   
-                  <div className="p-3 sm:p-4 bg-bg-secondary rounded-xl">
-                    <h4 className="font-medium text-text-primary mb-2 text-sm sm:text-base">Resumo do Agendamento</h4>
-                    <p className="text-xs sm:text-sm text-text-secondary">Serviços: {getSelectedServicesNames()}</p>
-                    <p className="text-xs sm:text-sm text-text-secondary">Profissional: {getSelectedProfessionalName()}</p>
-                    <p className="text-xs sm:text-sm text-text-secondary">Data: {selectedDate}</p>
-                    <p className="text-xs sm:text-sm text-text-secondary">Horário: {selectedTime}</p>
-                    <p className="font-semibold text-accent-primary mt-2 text-sm sm:text-base">Total: R$ {getTotalPrice()}</p>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">WhatsApp *</label>
+                    <input
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={clientPhone}
+                      onChange={(e) => setClientPhone(e.target.value)}
+                      className="w-full h-14 px-4 bg-bg-card border border-border-light rounded-2xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all text-base"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">E-mail (Opcional)</label>
+                    <input
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={clientEmail}
+                      onChange={(e) => setClientEmail(e.target.value)}
+                      className="w-full h-14 px-4 bg-bg-card border border-border-light rounded-2xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all text-base"
+                    />
+                  </div>
+                  
+                  <div className="p-5 sm:p-6 bg-bg-secondary rounded-2xl border border-white/5 mt-6">
+                    <h4 className="font-bold text-text-primary mb-4 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-accent-primary" />
+                      Resumo do seu Momento
+                    </h4>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-start pb-3 border-b border-white/5">
+                        <span className="text-text-secondary text-sm">Serviço(s)</span>
+                        <span className="text-text-primary text-sm font-medium text-right max-w-[60%]">{getSelectedServicesNames()}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pb-3 border-b border-white/5">
+                        <span className="text-text-secondary text-sm">Data e Hora</span>
+                        <span className="text-text-primary text-sm font-medium">{selectedDate} às {selectedTime}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-2">
+                        <span className="text-text-primary font-medium">Total Estimado</span>
+                        <span className="font-bold text-accent-primary text-xl">R$ {getTotalPrice()}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </TabsPanel>
             </Card>
 
-            <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
               {activeTab !== 'servicos' ? (
-                <Button variant="secondary" onClick={handleBack} className="w-full sm:w-auto">
+                <Button variant="secondary" onClick={handleBack} className="w-full sm:w-auto h-12 px-8">
                   Voltar
                 </Button>
               ) : <div />}
               
-              <Button onClick={handleNext} disabled={!canProceed() || isSubmitting} className="w-full sm:w-auto">
-                {isSubmitting ? 'Salvando...' : activeTab === 'dados' ? 'Confirmar Agendamento' : 'Continuar'}
+              <Button onClick={handleNext} disabled={!canProceed() || isSubmitting} className="w-full sm:w-auto h-12 px-10 text-base font-semibold shadow-lg shadow-accent-primary/20">
+                {isSubmitting ? 'Finalizando...' : activeTab === 'dados' ? 'Confirmar Agendamento' : 'Próxima Etapa'}
               </Button>
             </div>
           </Tabs>

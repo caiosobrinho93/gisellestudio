@@ -6,11 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 
-const stats = [
-  { icon: Users, value: '2.500+', label: 'Clientes' },
-  { icon: Award, value: '8+', label: 'Anos' },
-  { icon: Star, value: '4.9', label: 'Nota' },
-]
+
 
 export function Hero() {
   return (
@@ -83,22 +79,7 @@ export function Hero() {
               </Link>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex items-center gap-4 md:gap-8"
-            >
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-accent-primary/10 mb-1 md:mb-2 mx-auto">
-                    <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-accent-primary" />
-                  </div>
-                  <p className="text-lg md:text-2xl font-bold text-text-primary">{stat.value}</p>
-                  <p className="text-xs md:text-sm text-text-tertiary">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
+
           </motion.div>
 
           <motion.div
@@ -133,12 +114,7 @@ export function Hero() {
                       <p className="text-sm text-text-secondary">Extensão de Cílios</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="w-4 h-4 fill-accent-primary text-accent-primary" />
-                    ))}
-                    <span className="text-sm text-text-secondary ml-2">(4.9)</span>
-                  </div>
+
                 </motion.div>
               </div>
 

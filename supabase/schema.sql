@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS servicos (
   ativo BOOLEAN DEFAULT true,
   beneficios TEXT[],
   processo TEXT[],
+  imagem TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -102,40 +103,46 @@ INSERT INTO configuracoes (chave, valor) VALUES
 ON CONFLICT (chave) DO NOTHING;
 
 -- Seed de Serviços (apenas se vazio)
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Manicure', 'Cuidados completos para suas mãos', 35, 30, 'Manicure', 
   ARRAY['Limpeza das unhas', 'Cutícula tratada', 'Esmalte simples', 'Hidratação das mãos'],
-  ARRAY['Higienização', 'Cutícula', 'Modelagem', 'Esmalte', 'Hidratação']
+  ARRAY['Higienização', 'Cutícula', 'Modelagem', 'Esmalte', 'Hidratação'],
+  '/gisellestudio/images/fazendo-a-unha.jfif'
 WHERE NOT EXISTS (SELECT 1 FROM servicos);
 
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Manicure + Esmaltação', 'Esmalte gel que dura semanas', 45, 45, 'Manicure',
   ARRAY['Tudo da manicure simples', 'Esmalte gel', 'Maior durabilidade', 'Brilho intenso'],
-  ARRAY['Higienização', 'Cutícula', 'Modelagem', 'Esmalte Profissional', 'Secagem UV', 'Hidratação']
+  ARRAY['Higienização', 'Cutícula', 'Modelagem', 'Esmalte Profissional', 'Secagem UV', 'Hidratação'],
+  '/gisellestudio/images/unha1.jfif'
 WHERE NOT EXISTS (SELECT 1 FROM servicos WHERE nome = 'Manicure + Esmaltação');
 
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Pedicure SPA', 'Pés renovada e relaxamento garantido', 65, 60, 'Pedicure',
   ARRAY['Esfoliação profunda', 'Hidratação intensiva', 'Massagem relaxante', 'Esmalte premium'],
-  ARRAY['Banho de pés', 'Esfoliação', 'Remoção de calos', 'Hidratação', 'Massagem', 'Esmalte']
+  ARRAY['Banho de pés', 'Esfoliação', 'Remoção de calos', 'Hidratação', 'Massagem', 'Esmalte'],
+  '/gisellestudio/images/pes.jpeg'
 WHERE NOT EXISTS (SELECT 1 FROM servicos WHERE nome = 'Pedicure SPA');
 
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Extensão de Cílios', 'Olhar mais bonito sem esforço', 150, 90, 'Cílios',
   ARRAY['Volume natural', 'Cílios mais longos', 'Sem necessidade de rímel', 'Duração de 30 dias'],
-  ARRAY['Consulta inicial', 'Preparação dos cílios', 'Aplicação fio a fio', 'Secagem', 'Recomendações']
+  ARRAY['Consulta inicial', 'Preparação dos cílios', 'Aplicação fio a fio', 'Secagem', 'Recomendações'],
+  'https://images.unsplash.com/photo-1512496015851-a1fbaf6998c2?q=80&w=600&auto=format&fit=crop'
 WHERE NOT EXISTS (SELECT 1 FROM servicos WHERE nome = 'Extensão de Cílios');
 
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Design de Sobrancelha', 'O formato ideal para seu rosto', 30, 20, 'Sobrancelha',
   ARRAY['Formato ideal para seu rosto', 'Simetria perfeita', 'Produto henna natural', 'Duração de 15 dias'],
-  ARRAY['Avaliação do rosto', 'Desenho inicial', 'Ajuste conforme preferência', 'Aplicação de henna', 'Finalização']
+  ARRAY['Avaliação do rosto', 'Desenho inicial', 'Ajuste conforme preferência', 'Aplicação de henna', 'Finalização'],
+  'https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=600&auto=format&fit=crop'
 WHERE NOT EXISTS (SELECT 1 FROM servicos WHERE nome = 'Design de Sobrancelha');
 
-INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo) 
+INSERT INTO servicos (nome, descricao, preco, duracao, categoria, beneficios, processo, imagem) 
 SELECT 'Massagem Relaxante', 'Uma hora só para você', 80, 60, 'Massagem',
   ARRAY['Alívio do estresse', 'Melhora da circulação', 'Relaxamento muscular', 'Sensação de bem-estar'],
-  ARRAY['Aromaterapia', 'Massagem corporal', 'Foco em áreas tensionadas', 'Hidratação corporal']
+  ARRAY['Aromaterapia', 'Massagem corporal', 'Foco em áreas tensionadas', 'Hidratação corporal'],
+  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop'
 WHERE NOT EXISTS (SELECT 1 FROM servicos WHERE nome = 'Massagem Relaxante');
 
 -- Seed de Profissionais

@@ -54,10 +54,8 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-bg-primary/95 backdrop-blur-xl border-b border-white/5 shadow-lg'
-          : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-bg-primary border-b border-white/5 ${
+        isScrolled ? 'shadow-lg shadow-black/50' : ''
       }`}
     >
       <div className="max-w-7xl mx-auto px-3 md:px-8 h-14 md:h-20 flex items-center justify-between">
