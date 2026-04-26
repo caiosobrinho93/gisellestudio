@@ -1,11 +1,6 @@
-import '../globals.css'
-import type { Metadata } from 'next'
-import { Sidebar } from '@/components/layout/Sidebar'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Dashboard - Belleza Premium',
-  description: 'Painel de administração',
-}
+import { Sidebar } from '@/components/layout/Sidebar'
 
 export default function DashboardLayout({
   children,
@@ -13,13 +8,11 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR">
-      <body className="bg-bg-primary">
-        <Sidebar />
-        <main className="md:ml-[280px] p-4 md:p-8 pt-16 md:pt-20">
-          {children}
-        </main>
-      </body>
-    </html>
+    <div className="min-h-screen bg-bg-primary">
+      <Sidebar />
+      <main className="md:ml-[280px] p-4 md:p-8 pt-16 md:pt-20">
+        {children}
+      </main>
+    </div>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, createContext, useContext, ReactNode } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface TabsContextType {
@@ -12,15 +12,16 @@ interface TabsContextType {
 const TabsContext = createContext<TabsContextType | null>(null)
 
 interface TabsProps {
-  value: string
-  onValueChange?: (value: string) => void
+  defaultValue?: string
   children: ReactNode
   className?: string
 }
 
-export function Tabs({ value, onValueChange, children, className }: TabsProps) {
+export function Tabs({ defaultValue = 'servicos', children, className }: TabsProps) {
+  const [value, setValue] = useState(defaultValue)
+  
   return (
-    <TabsContext.Provider value={{ value, onValueChange: onValueChange || (() => {}) }}>
+    <TabsContext.Provider value={{ value, onValueChange: setValue }}>
       <div className={className}>{children}</div>
     </TabsContext.Provider>
   )
@@ -28,7 +29,7 @@ export function Tabs({ value, onValueChange, children, className }: TabsProps) {
 
 export function TabsList({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('flex gap-1 p-1.5 bg-bg-secondary rounded-2xl', className)}>
+    <div className={cn('flex gap-1 p-1.5 bg-bg-secondary rounded-2xl overflow-x-auto', className)}>
       {children}
     </div>
   )
@@ -50,8 +51,9 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
     <button
       onClick={() => context.onValueChange(value)}
       className={cn(
-        'relative flex-1 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300',
+        'relative flex-1 min-w-[80px] px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-300',
         'text-text-secondary hover:text-text-primary',
+        isSelected && 'text-accent-primary font-semibold',
         className
       )}
     >
@@ -82,17 +84,9 @@ export function TabsPanel({ value, children, className }: TabsPanelProps) {
   return (
     <motion.div
       key={value}
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ 
-        opacity: 0, 
-        y: 20,
-        transition: { duration: 0.3 }
-      }}
-      transition={{ 
-        delay: 0.15,
-        duration: 0.3 
-      }}
+      transition={{ delay: 0.1, duration: 0.2 }}
       className={cn('min-h-[100px]', className)}
     >
       {children}
