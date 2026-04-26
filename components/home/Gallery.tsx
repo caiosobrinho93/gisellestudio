@@ -17,10 +17,16 @@ export function Gallery() {
   const images = galeria.length > 0 
     ? galeria.map((item: any) => {
         let imgPath = item.imagem || ''
-        console.log('[Gallery] imagem path:', imgPath)
-        if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
-          imgPath = '/gisellestudio/images/' + imgPath.replace(/^\//, '')
+        console.log('[Gallery] Imagem do banco:', imgPath)
+        // Se tem só nome, cria caminho completo
+        if (imgPath && !imgPath.startsWith('/') && !imgPath.startsWith('http')) {
+          imgPath = '/images/' + imgPath
         }
+        // Se começa com /gisellestudio/, muda para /
+        if (imgPath.startsWith('/gisellestudio/')) {
+          imgPath = imgPath.replace('/gisellestudio/', '/')
+        }
+        console.log('[Gallery] Imagem final:', imgPath)
         return { src: imgPath, alt: item.titulo, title: item.titulo }
       })
     : defaultImages
