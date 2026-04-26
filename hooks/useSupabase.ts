@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 
+console.log('[useSupabase] Loading hooks...')
+
 export function useServicos() {
   const [servicos, setServicos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -32,23 +34,6 @@ export function useServicos() {
   useEffect(() => {
     mounted.current = true
     fetchServicos()
-
-    let channel: any = null
-    try {
-      channel = supabase
-        .channel('servicos-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'servicos' }, () => {
-          fetchServicos()
-        })
-        .subscribe()
-    } catch (e) {
-      console.warn('Realtime not available:', e)
-    }
-
-    return () => {
-      mounted.current = false
-      if (channel) supabase.removeChannel(channel)
-    }
   }, [fetchServicos])
 
   return { servicos, loading, refetch: fetchServicos }
@@ -62,6 +47,7 @@ export function useProfissionais() {
   const fetchProfissionais = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
+    console.log('[Profissionais] Fetching...')
     try {
       const { data, error } = await supabase
         .from('profissionais')
@@ -70,12 +56,13 @@ export function useProfissionais() {
         .order('nome')
       
       if (error) {
-        console.error('Error fetching profissionais:', error)
+        console.error('[Profissionais] Error:', error)
       } else if (mounted.current) {
+        console.log('[Profissionais] Found:', data?.length, 'items')
         setProfissionais(data || [])
       }
     } catch (e) {
-      console.error('Supabase error:', e)
+      console.error('[Profissionais] Exception:', e)
     }
     setLoading(false)
   }, [])
@@ -83,23 +70,6 @@ export function useProfissionais() {
   useEffect(() => {
     mounted.current = true
     fetchProfissionais()
-
-    let channel: any = null
-    try {
-      channel = supabase
-        .channel('profissionais-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'profissionais' }, () => {
-          fetchProfissionais()
-        })
-        .subscribe()
-    } catch (e) {
-      console.warn('Realtime not available:', e)
-    }
-
-    return () => {
-      mounted.current = false
-      if (channel) supabase.removeChannel(channel)
-    }
   }, [fetchProfissionais])
 
   return { profissionais, loading, refetch: fetchProfissionais }
@@ -136,23 +106,6 @@ export function useGaleria() {
   useEffect(() => {
     mounted.current = true
     fetchGaleria()
-
-    let channel: any = null
-    try {
-      channel = supabase
-        .channel('galeria-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'galeria' }, () => {
-          fetchGaleria()
-        })
-        .subscribe()
-    } catch (e) {
-      console.warn('Realtime not available:', e)
-    }
-
-    return () => {
-      mounted.current = false
-      if (channel) supabase.removeChannel(channel)
-    }
   }, [fetchGaleria])
 
   return { galeria, loading, refetch: fetchGaleria }
@@ -166,14 +119,16 @@ export function useConfiguracoes() {
   const fetchConfig = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
+    console.log('[Config] Fetching...')
     try {
       const { data, error } = await supabase
         .from('configuracoes')
         .select('chave, valor')
       
       if (error) {
-        console.error('Error fetching config:', error)
+        console.error('[Config] Error:', error)
       } else if (mounted.current) {
+        console.log('[Config] Found:', data?.length, 'items')
         const configMap: Record<string, string> = {}
         data?.forEach((item) => {
           configMap[item.chave] = item.valor
@@ -181,7 +136,7 @@ export function useConfiguracoes() {
         setConfig(configMap)
       }
     } catch (e) {
-      console.error('Supabase error:', e)
+      console.error('[Config] Exception:', e)
     }
     setLoading(false)
   }, [])
@@ -202,6 +157,7 @@ export function useAgendamentos() {
   const fetchAgendamentos = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
+    console.log('[Agendamentos] Fetching...')
     try {
       const { data, error } = await supabase
         .from('agendamentos')
@@ -209,12 +165,13 @@ export function useAgendamentos() {
         .order('data', { ascending: true })
       
       if (error) {
-        console.error('Error fetching agendamentos:', error)
+        console.error('[Agendamentos] Error:', error)
       } else if (mounted.current) {
+        console.log('[Agendamentos] Found:', data?.length, 'items')
         setAgendamentos(data || [])
       }
     } catch (e) {
-      console.error('Supabase error:', e)
+      console.error('[Agendamentos] Exception:', e)
     }
     setLoading(false)
   }, [])
@@ -222,23 +179,6 @@ export function useAgendamentos() {
   useEffect(() => {
     mounted.current = true
     fetchAgendamentos()
-
-    let channel: any = null
-    try {
-      channel = supabase
-        .channel('agendamentos-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'agendamentos' }, () => {
-          fetchAgendamentos()
-        })
-        .subscribe()
-    } catch (e) {
-      console.warn('Realtime not available:', e)
-    }
-
-    return () => {
-      mounted.current = false
-      if (channel) supabase.removeChannel(channel)
-    }
   }, [fetchAgendamentos])
 
   return { agendamentos, loading, refetch: fetchAgendamentos }
@@ -252,6 +192,7 @@ export async function createAgendamento(data: {
   telefone: string
   status?: string
 }) {
+  console.log('[createAgendamento] Saving:', data)
   try {
     const { error } = await supabase
       .from('agendamentos')
@@ -265,11 +206,12 @@ export async function createAgendamento(data: {
       }])
 
     if (error) {
-      console.error('Error creating agendamento:', error)
+      console.error('[createAgendamento] Error:', error)
       return { success: false, error }
     }
+    console.log('[createAgendamento] Success!')
   } catch (e) {
-    console.error('Error creating agendamento:', e)
+    console.error('[createAgendamento] Exception:', e)
     return { success: false, error: e }
   }
 

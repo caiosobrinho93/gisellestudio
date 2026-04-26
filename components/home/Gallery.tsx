@@ -10,11 +10,22 @@ const defaultImages = [
 ]
 
 export function Gallery() {
-  const { galeria, loading } = useGaleria()
+  console.log('[Gallery] Rendering...')
+  const { galeria, loading, refetch } = useGaleria()
+  console.log('[Gallery] galeria:', galeria)
 
   const images = galeria.length > 0 
-    ? galeria.map((item: any) => ({ src: item.imagem, alt: item.titulo, title: item.titulo }))
+    ? galeria.map((item: any) => {
+        let imgPath = item.imagem || ''
+        console.log('[Gallery] imagem path:', imgPath)
+        if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
+          imgPath = '/gisellestudio/images/' + imgPath.replace(/^\//, '')
+        }
+        return { src: imgPath, alt: item.titulo, title: item.titulo }
+      })
     : defaultImages
+
+  console.log('[Gallery] final images:', images)
 
   return (
     <section id="galeria" className="py-24 relative">
@@ -41,6 +52,17 @@ export function Gallery() {
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
+          </div>
+        ) : images.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-text-secondary mb-4">Nenhuma imagem na galeria ainda.</p>
+            <div className="flex justify-center gap-4">
+              {defaultImages.map((img: any, i: number) => (
+                <div key={i} className="w-32 h-40 rounded-xl overflow-hidden">
+                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">

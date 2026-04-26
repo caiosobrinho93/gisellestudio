@@ -10,7 +10,7 @@ import { useConfiguracoes } from '@/hooks/useSupabase'
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { config } = useConfiguracoes()
+  const { config, loading } = useConfiguracoes()
 
   const isOpen = config.status_loja === 'ABERTO'
 
@@ -28,12 +28,6 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
-  const navLinks = [
-    { href: '#servicos', label: 'Serviços', action: () => scrollTo('servicos') },
-    { href: '#galeria', label: 'Galeria', action: () => scrollTo('galeria') },
-    { href: '#sobre', label: 'Sobre', action: () => scrollTo('sobre') },
-  ]
-
   const scrollTo = (id: string) => {
     const element = document.getElementById(id)
     if (element) {
@@ -42,6 +36,12 @@ export function Navbar() {
       window.location.href = `/#${id}`
     }
   }
+
+  const navLinks = [
+    { href: '#servicos', label: 'Serviços', action: () => scrollTo('servicos') },
+    { href: '#galeria', label: 'Galeria', action: () => scrollTo('galeria') },
+    { href: '#sobre', label: 'Sobre', action: () => scrollTo('sobre') },
+  ]
 
   return (
     <nav
@@ -77,26 +77,30 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
-            isOpen 
-              ? 'bg-success/20 text-success' 
-              : 'bg-error/20 text-error'
-          }`}>
-            <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-success' : 'bg-error'} animate-pulse`} />
-            {isOpen ? 'ABERTO' : 'FECHADO'}
-          </div>
+          {loading ? (
+            <div className="w-20 h-8 bg-white/5 animate-pulse rounded-full" />
+          ) : (
+            <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
+              isOpen 
+                ? 'bg-success/20 text-success' 
+                : 'bg-error/20 text-error'
+            }`}>
+              <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-success' : 'bg-error'} animate-pulse`} />
+              {isOpen ? 'ABERTO' : 'FECHADO'}
+            </div>
+          )}
 
-          <Link href="/login" className="hidden sm:block">
+          <Link href="/login">
             <Button size="sm" variant="secondary">
               Área do Cliente
             </Button>
           </Link>
-          <Link href="/dashboard" className="hidden sm:block">
+          <Link href="/dashboard">
             <Button size="sm" variant="ghost">
               Painel
             </Button>
           </Link>
-          <Link href="/agendar" className="hidden sm:block">
+          <Link href="/agendar">
             <Button size="sm" className="px-6">
               Agendar
             </Button>

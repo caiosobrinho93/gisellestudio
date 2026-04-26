@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@/components/ui/Tabs'
 import { ServiceDetailModal } from '@/components/ui/ServiceDetailModal'
 import { useServicos, useProfissionais, createAgendamento } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 const months = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -48,6 +49,9 @@ export default function AgendamentoPage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const { servicos, loading: loadingServicos } = useServicos()
   const { profissionais, loading: loadingProfissionais } = useProfissionais()
+  
+  console.log('[Agendar] servicos:', servicos)
+  console.log('[Agendar] profissionais:', profissionais)
   
   const [activeTab, setActiveTab] = useState('servicos')
   const [selectedServices, setSelectedServices] = useState<string[]>([])
@@ -290,12 +294,12 @@ export default function AgendamentoPage() {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col sm:flex-row gap-3"
               >
-                <a href="/" className="flex-1">
+                <Link href="/gisellestudio/" className="flex-1">
                   <Button variant="secondary" className="w-full">
                     <Home className="w-5 h-5 mr-2" />
                     Início
                   </Button>
-                </a>
+                </Link>
                 <Button onClick={resetForm} className="flex-1">
                   <Plus className="w-5 h-5 mr-2" />
                   Novo
