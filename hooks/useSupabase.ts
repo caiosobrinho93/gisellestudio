@@ -217,3 +217,23 @@ export async function createAgendamento(data: {
 
   return { success: true }
 }
+
+export async function deleteGaleriaItem(id: string) {
+  console.log('[deleteGaleriaItem] Excluindo:', id)
+  try {
+    const { error } = await supabase
+      .from('galeria')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('[deleteGaleriaItem] Erro:', error)
+      return { success: false, error }
+    }
+    console.log('[deleteGaleriaItem] Sucesso!')
+  } catch (e) {
+    console.error('[deleteGaleriaItem] Exceção:', e)
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
