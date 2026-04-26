@@ -6,6 +6,7 @@ import { Plus, Trash2, Image, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { ImageUploader } from '@/components/ui/ImageUploader'
 import { cn } from '@/lib/utils'
 
 interface GaleriaItem {
@@ -17,12 +18,6 @@ interface GaleriaItem {
 }
 
 const categorias = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Geral']
-
-const imagensDefault = [
-  '/images/pes.jpeg',
-  '/images/fazendo-a-unha.jfif',
-  '/images/unha1.jfif',
-]
 
 export default function GaleriaPage() {
   const [itens, setItens] = useState<GaleriaItem[]>([
@@ -57,7 +52,7 @@ export default function GaleriaPage() {
       })
     } else {
       setEditingItem(null)
-      setFormData({ titulo: '', imagem: imagensDefault[0], categoria: '' })
+      setFormData({ titulo: '', imagem: '', categoria: '' })
     }
     setIsModalOpen(true)
   }
@@ -194,20 +189,11 @@ export default function GaleriaPage() {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm text-text-secondary mb-2">Imagem</label>
-            <select
-              value={formData.imagem}
-              onChange={(e) => setFormData({ ...formData, imagem: e.target.value })}
-              className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-              required
-            >
-              <option value="">Selecione uma imagem</option>
-              {imagensDefault.map(img => (
-                <option key={img} value={img}>{img}</option>
-              ))}
-            </select>
-          </div>
+          <ImageUploader
+            value={formData.imagem}
+            onChange={(img) => setFormData({ ...formData, imagem: img })}
+            label="Imagem"
+          />
           <div>
             <label className="block text-sm text-text-secondary mb-2">Categoria</label>
             <select
