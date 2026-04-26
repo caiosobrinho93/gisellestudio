@@ -107,16 +107,24 @@ export function useGaleria() {
     mounted.current = true
     fetchGaleria()
 
+    console.log('[Galeria] Configurando realtime...')
     let channel: any = null
     try {
       channel = supabase
         .channel('galeria-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'galeria' }, () => {
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'galeria' }, (payload) => {
+          console.log('[Galeria] Nova imagem detectada:', payload)
           fetchGaleria()
         })
-        .subscribe()
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'galeria' }, (payload) => {
+          console.log('[Galeria] Imagem deletada:', payload)
+          fetchGaleria()
+        })
+        .subscribe((status) => {
+          console.log('[Galeria] Realtime status:', status)
+        })
     } catch (e) {
-      console.warn('Realtime não disponível:', e)
+      console.error('[Galeria] Realtime erro:', e)
     }
 
     return () => {

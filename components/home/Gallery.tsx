@@ -21,7 +21,7 @@ export function Gallery() {
         // Se é base64, usa direto
         if (imgPath.startsWith('data:')) {
           console.log('[Gallery] Imagem é base64, usando direto')
-          return { src: imgPath, alt: item.titulo, title: item.titulo }
+          return { src: imgPath, alt: item.categoria || '', title: item.titulo }
         }
         // Se não starts com /gisellestudio/, adicione
         if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
@@ -34,7 +34,7 @@ export function Gallery() {
           }
         }
         console.log('[Gallery] Imagem final:', imgPath)
-        return { src: imgPath, alt: item.titulo, title: item.titulo }
+        return { src: imgPath, alt: item.categoria || '', title: item.titulo }
       })
     : defaultImages
 
