@@ -18,13 +18,15 @@ export function Gallery() {
     ? galeria.map((item: any) => {
         let imgPath = item.imagem || ''
         console.log('[Gallery] Imagem do banco:', imgPath)
-        // Se tem só nome, cria caminho completo
-        if (imgPath && !imgPath.startsWith('/') && !imgPath.startsWith('http')) {
-          imgPath = '/images/' + imgPath
-        }
-        // Se começa com /gisellestudio/, muda para /
-        if (imgPath.startsWith('/gisellestudio/')) {
-          imgPath = imgPath.replace('/gisellestudio/', '/')
+        // Adiciona /gisellestudio se não tem
+        if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
+          if (imgPath.startsWith('/images/')) {
+            imgPath = '/gisellestudio' + imgPath
+          } else if (imgPath.startsWith('/')) {
+            imgPath = '/gisellestudio' + imgPath
+          } else {
+            imgPath = '/gisellestudio/images/' + imgPath
+          }
         }
         console.log('[Gallery] Imagem final:', imgPath)
         return { src: imgPath, alt: item.titulo, title: item.titulo }
