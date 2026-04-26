@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion'
 
 const galleryImages = [
-  { src: '/images/pes.jpeg', alt: 'Tratamento de pés', title: 'Spa dos Pés' },
-  { src: '/images/fazendo-a-unha.jfif', alt: 'Manicure profissional', title: 'Manicure' },
-  { src: '/images/unha1.jfif', alt: 'Design de unhas', title: 'Design' },
+  { src: '/gisellestudio/images/pes.jpeg', alt: 'Tratamento de pés', title: 'Spa dos Pés' },
+  { src: '/gisellestudio/images/fazendo-a-unha.jfif', alt: 'Manicure profissional', title: 'Manicure' },
+  { src: '/gisellestudio/images/unha1.jfif', alt: 'Design de unhas', title: 'Design' },
 ]
 
 export function Gallery() {

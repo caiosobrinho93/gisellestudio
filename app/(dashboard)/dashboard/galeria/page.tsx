@@ -21,9 +21,9 @@ const categorias = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem'
 
 export default function GaleriaPage() {
   const [itens, setItens] = useState<GaleriaItem[]>([
-    { id: '1', titulo: 'Spa dos Pés', imagem: '/images/pes.jpeg', categoria: 'Pedicure', ativo: true },
-    { id: '2', titulo: 'Manicure Profissional', imagem: '/images/fazendo-a-unha.jfif', categoria: 'Manicure', ativo: true },
-    { id: '3', titulo: 'Design de Unhas', imagem: '/images/unha1.jfif', categoria: 'Manicure', ativo: true },
+    { id: '1', titulo: 'Spa dos Pés', imagem: '/gisellestudio/images/pes.jpeg', categoria: 'Pedicure', ativo: true },
+    { id: '2', titulo: 'Manicure Profissional', imagem: '/gisellestudio/images/fazendo-a-unha.jfif', categoria: 'Manicure', ativo: true },
+    { id: '3', titulo: 'Design de Unhas', imagem: '/gisellestudio/images/unha1.jfif', categoria: 'Manicure', ativo: true },
   ])
 
   const [isModalOpen, setIsModalOpen] = useState(false)

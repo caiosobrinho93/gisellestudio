@@ -111,7 +111,7 @@ export function Hero() {
               <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/40 via-pink-500/20 to-transparent rounded-[3rem] blur-2xl" />
               <div className="relative w-full h-full rounded-[3rem] overflow-hidden border border-white/10 bg-bg-card/50 backdrop-blur-sm">
                 <Image
-                  src="/images/pes.jpeg"
+                  src="/gisellestudio/images/pes.jpeg"
                   alt="Tratamento de beleza premium"
                   fill
                   className="object-cover"
