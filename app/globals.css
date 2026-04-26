@@ -57,6 +57,9 @@
     scroll-behavior: smooth;
     scroll-padding-top: 5rem; /* Navbar offset */
   }
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
   html, body {
     max-width: 100%;
     overflow-x: hidden;
