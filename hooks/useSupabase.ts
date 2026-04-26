@@ -237,3 +237,31 @@ export async function deleteGaleriaItem(id: string) {
   }
   return { success: true }
 }
+
+export async function createGaleriaItem(data: {
+  titulo: string
+  imagem: string
+  categoria: string
+}) {
+  console.log('[createGaleriaItem] Criando:', data)
+  try {
+    const { error } = await supabase
+      .from('galeria')
+      .insert([{
+        titulo: data.titulo,
+        imagem: data.imagem,
+        categoria: data.categoria,
+        ativo: true
+      }])
+
+    if (error) {
+      console.error('[createGaleriaItem] Erro:', error)
+      return { success: false, error }
+    }
+    console.log('[createGaleriaItem] Sucesso!')
+  } catch (e) {
+    console.error('[createGaleriaItem] Exceção:', e)
+    return { success: false, error: e }
+  }
+  return { success: true }
+}

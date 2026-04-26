@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Trash2, Image, Eye, EyeOff } from 'lucide-react'
+import { Plus, Trash2, Image as ImageIcon, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { ImageUploader } from '@/components/ui/ImageUploader'
-import { useGaleria, deleteGaleriaItem } from '@/hooks/useSupabase'
+import { useGaleria, deleteGaleriaItem, createGaleriaItem } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
 
 const categorias = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Geral']
@@ -20,10 +20,27 @@ export default function GaleriaPage() {
   const [itemToDelete, setItemToDelete] = useState<any>(null)
   const [editingItem, setEditingItem] = useState<any>(null)
   const [filterCategoria, setFilterCategoria] = useState('')
+  const [newTitulo, setNewTitulo] = useState('')
+  const [newCategoria, setNewCategoria] = useState('Geral')
+  const [newImagem, setNewImagem] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (galeria.length > 0) {
-      setItens(galeria)
+      const fixedItens = galeria.map((item: any) => {
+        let imgPath = item.imagem || ''
+        if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
+          if (imgPath.startsWith('/images/')) {
+            imgPath = '/gisellestudio' + imgPath
+          } else if (imgPath.startsWith('/')) {
+            imgPath = '/gisellestudio' + imgPath
+          } else {
+            imgPath = '/gisellestudio/images/' + imgPath
+          }
+        }
+        return { ...item, imagem: imgPath }
+      })
+      setItens(fixedItens)
     }
   }, [galeria])
 
@@ -37,8 +54,14 @@ export default function GaleriaPage() {
   const handleOpenModal = (item?: any) => {
     if (item) {
       setEditingItem(item)
+      setNewTitulo(item.titulo)
+      setNewCategoria(item.categoria)
+      setNewImagem(item.imagem)
     } else {
       setEditingItem(null)
+      setNewTitulo('')
+      setNewCategoria('Geral')
+      setNewImagem('')
     }
     setIsModalOpen(true)
   }
@@ -46,6 +69,33 @@ export default function GaleriaPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setEditingItem(null)
+  }
+
+  const handleSave = async () => {
+    if (!newTitulo || !newImagem) {
+      alert('Preencha o título e selecione uma imagem')
+      return
+    }
+    
+    setIsSaving(true)
+    console.log('[GaleriaPage] Salvando item:', { titulo: newTitulo, categoria: newCategoria, imagem: newImagem })
+    
+    const result = await createGaleriaItem({
+      titulo: newTitulo,
+      imagem: newImagem,
+      categoria: newCategoria
+    })
+    
+    setIsSaving(false)
+    
+    if (result.success) {
+      console.log('[GaleriaPage] Item salvo com sucesso!')
+      refetch()
+      handleCloseModal()
+    } else {
+      console.error('[GaleriaPage] Erro ao salvar:', result.error)
+      alert('Erro ao salvar. Tente novamente.')
+    }
   }
 
   const handleDelete = async () => {
@@ -118,7 +168,7 @@ export default function GaleriaPage() {
                       onClick={() => handleOpenModal(item)}
                       className="p-2 bg-bg-card rounded-lg"
                     >
-                      <Image className="w-5 h-5" />
+                      <ImageIcon className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => { setItemToDelete(item); setIsDeleteModalOpen(true) }}
@@ -153,6 +203,45 @@ export default function GaleriaPage() {
           ))}
         </div>
       )}
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4">
+            {editingItem ? 'Editar Imagem' : 'Nova Imagem'}
+          </h2>
+          
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Título"
+              value={newTitulo}
+              onChange={(e) => setNewTitulo(e.target.value)}
+              className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
+            />
+            
+            <select
+              value={newCategoria}
+              onChange={(e) => setNewCategoria(e.target.value)}
+              className="w-full h-12 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary"
+            >
+              {categorias.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            
+            <ImageUploader value={newImagem} onChange={setNewImagem} />
+          </div>
+          
+          <div className="flex gap-3 mt-6">
+            <Button variant="secondary" onClick={handleCloseModal} className="flex-1">
+              Cancelar
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving} className="flex-1">
+              {isSaving ? 'Salvando...' : 'Salvar'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <div className="p-6">
