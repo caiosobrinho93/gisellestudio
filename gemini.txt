@@ -1,0 +1,163 @@
+# Prompts para Imagens Premium — Belleza Premium
+
+Este arquivo contém prompts ultra detalhados para geração de imagens cinematográficas premium para o site, seguindo a identidade visual definida no design_system.md.
+
+---
+
+## 1. HERO IMAGE
+
+**Prompt completo:**
+
+Cinematic photograph of a modern luxury beauty salon, ultra premium aesthetic, Apple-inspired minimalist design with soft volumetric lighting, SPA atmosphere, sophisticated nude champagne tones, elegant reflections, clean sophisticated environment, cinematic depth of field, premium editorial composition, 85mm lens, soft volumetric lighting, refined details, modern feminine luxury, ultra clean sophisticated, high-end interior design, marble and gold accents, warm inviting atmosphere, professional photography, 8k resolution, photorealistic, trending on instagram, luxury branding, minimalist elegance.
+
+---
+
+## 2. MANICURE IMAGE
+
+**Prompt completo:**
+
+Ultra premium professional manicure close-up, elegant hands with perfect nails, sophisticated nail art, minimal luxury aesthetic, soft cinematic lighting, champagne and nude tones, refined focus, premium depth of field, editorial luxury photography, white marble countertop, golden accents, professional workspace, clean sophisticated environment, soft natural lighting from window, high-end beauty salon atmosphere, photorealistic, 8k resolution, detailed skin texture, elegant feminine hands, luxury manicure aesthetic.
+
+---
+
+## 3. PEDICURE SPA IMAGE
+
+**Prompt completo:**
+
+Luxury spa pedicure treatment, elegant foot care, ceramic pedicure bowl with rose gold finish, soft spa lighting, minimal luxury aesthetic, champagne and nude tones, warm relaxing atmosphere, professional spa environment, clean and sophisticated, soft towels, essential oils visible, zen spa atmosphere, cinematic lighting, editorial composition, photorealistic, high-end aesthetic, feminine luxury, 8k resolution, professional beauty treatment photography.
+
+---
+
+## 4. ESTÉTICA CLINIC IMAGE
+
+**Prompt completo:**
+
+Futuristic minimalist aesthetic clinic, clean white sophisticated interior, soft indirect elegant lighting, luxury spa feeling, white marble and gold accents, modern medical aesthetics, premium technology visible, clean clinical environment, soft shadows, spacious design, glass and metal elements, ultra premium aesthetic, Apple-inspired design, photorealistic, 8k resolution, cinematic composition, professional beauty technology.
+
+---
+
+## 5. CÍLIOS IMAGE
+
+**Prompt completo:**
+
+Professional lash extension application, close-up of eyes with beautiful lashes, dramatic lashes, luxury lash treatment, soft lighting, elegant feminine eyes, clean sophisticated environment, champagne tones, premium beauty aesthetic, photorealistic, 8k resolution, soft focus, professional beauty work, ultra clean, luxury aesthetic.
+
+---
+
+## 6. SOBRANCELHA IMAGE
+
+**Prompt completo:**
+
+Perfectly shaped eyebrows, professional brow shaping, natural elegant shape, soft lighting, feminine face detail, clean sophisticated beauty environment, champagne tones, premium brow aesthetic, photorealistic, 8k resolution, professional beauty work, ultra clean.
+
+---
+
+## 7. MASSAGEM SPA IMAGE
+
+**Prompt completo:**
+
+Luxury spa massage treatment, professional therapist performing massage, relaxed luxury atmosphere, soft spa lighting, clean white linens, warm champagne tones, zen environment, essential oils visible, stone therapy elements, ultra premium aesthetic, photorealistic, 8k resolution, cinematic composition, relaxing spa atmosphere.
+
+---
+
+## 8. SKINCARE TREATMENT IMAGE
+
+**Prompt completo:**
+
+Premium facial treatment, professional skincare, clean face being treated, soft champagne lighting, luxury spa environment, modern aesthetic equipment, clean sophisticated, ultra premium aesthetic, photorealistic, 8k resolution, professional beauty treatment, feminine luxury, soft focus.
+
+---
+
+## 9. DEPILAÇÃO IMAGE
+
+**Prompt completo:**
+
+Professional waxing treatment area, clean spa environment, soft lighting, minimal luxury aesthetic, champagne tones, professional beauty work space, ultra clean, sophisticate aesthetic, photorealistic, 8k resolution.
+
+---
+
+## 10. HARMONIZAÇÃO FACIAL IMAGE
+
+**Prompt completo:**
+
+Professional dermal filler application, close-up of face treatment, soft lighting, clinical environment, luxury medical aesthetics, professional beauty technology, clean sophisticated, ultra premium aesthetic, photorealistic, 8k resolution.
+
+---
+
+## 11. PROFISSIONAIS TEAM IMAGE
+
+**Prompt completo:**
+
+ Professional beauty specialists team, elegant professionals in Premium uniforms, modern luxury salon environment, soft cinematic lighting, champagne tones, team collaboration, professional atmosphere, photorealistic, 8k resolution, editorial composition, luxury aesthetic.
+
+---
+
+## 12. AMBIENTE GERAL SALÃO IMAGE
+
+**Prompt completo:**
+
+Full view of luxury beauty salon, modern minimalist interior, elegant furniture, soft lighting throughout, champagne and gold accents, spacious design, clean sophisticated, ultra premium aesthetic, Apple-inspired, photorealistic, 8k resolution, cinematic depth, luxury interior design photography.
+
+---
+
+## 13. RECEPÇÃO IMAGE
+
+**Prompt completo:**
+
+Luxury salon reception area, elegant reception desk, modern minimalist design, soft lighting, champagne tones, welcome atmosphere, clean sophisticated, ultra premium aesthetic, photorealistic, 8k resolution, welcoming environment.
+
+---
+
+## 14. CABINE PRIVATIVA IMAGE
+
+**Prompt completo:**
+
+Private beauty cabin, elegant treatment room, soft lighting, clean sophisticated, premium equipment visible, luxury spa feeling, champagne tones, ultra clean, photorealistic, 8k resolution, intimate sophisticated space.
+
+---
+
+## 15. BACKGROUND TEXTURE
+
+**Prompt completo:**
+
+Abstract premium minimalist texture, modern luxury, soft waves, sophisticated gradients, nude champagne rose gold, ultra clean, subtle gold particles, elegant abstract pattern, luxury modern aesthetic, 4k resolution, usable as background, subtle texture, high-end branding, clean sophisticated.
+
+---
+
+## 16. LOGO PLACEHOLDER
+
+**Prompt completo:**
+
+Minimal luxury logo design, elegant text based, clean sophisticated, champagne gold color, premium aesthetic, usable for branding, high-end beauty salon, modern minimalist.
+
+---
+
+## 17. SOCIAL MEDIA POST
+
+**Prompt completo:**
+
+Elegant Instagram post template, minimalist luxury aesthetic, champagne tones, modern design, professional photography overlay ready, clean sophisticated, ultra premium, trending aesthetic, 1080x1080 composition, 4k resolution.
+
+---
+
+## 18. BANNER PROMO
+
+**Prompt completo:**
+
+Luxury promotional banner, elegant design, champagne gradient, minimalist luxury aesthetic, modern typography ready, premium branding, clean sophisticated, ultra premium aesthetic, horizontal composition, 1920x1080, 4k resolution.
+
+---
+
+## Instruções de Uso
+
+1. **Plataforma recomendada**: Midjourney, DALL-E 3, ou Stable Diffusion
+2. **Parâmetros sugeridos**:
+   - `--ar 16:9` (para maioria das imagens)
+   - `--ar 1:1` (para redes sociais)
+   - `--ar 9:16` (para stories/reels)
+   - `--v 6` (versão mais recente)
+   - `--stylize 250` (para estilo artístico)
+   - `--quality 1` (para detalhamento)
+3. **Consistência**: Manter paleta de cores champagne, nude, rose gold em todas as imagens
+4. **Iluminação**: Preferir luz suave, indireta, volumétrica
+5. **Estilo**: Fotografia editorial premium, não看起来 "stock photo"
