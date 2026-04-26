@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -36,12 +36,27 @@ export function Sidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileOpen(false)
+    }
+  }, [isMobile])
 
   return (
     <>
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-bg-card rounded-lg border border-border-light"
+        className="fixed top-4 left-4 z-50 p-2 bg-bg-card rounded-lg border border-border-light"
+        style={{ display: isMobile ? 'block' : 'none' }}
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -50,14 +65,13 @@ export function Sidebar() {
         initial={false}
         animate={{ 
           width: collapsed ? 80 : 280,
-          x: mobileOpen ? 0 : -300
+          x: isMobile ? (mobileOpen ? 0 : -300) : 0
         }}
         className={cn(
           "fixed left-0 top-0 bottom-0 bg-bg-card border-r border-border-light z-40 flex flex-col",
           "transition-all duration-300",
           "max-md:left-0 max-md:w-[280px]",
-          "max-md:hidden",
-          mobileOpen && "max-md:block"
+          isMobile && !mobileOpen && "max-md:hidden"
         )}
       >
         <div className="h-18 flex items-center justify-between px-4 border-b border-border-light">
@@ -115,9 +129,9 @@ export function Sidebar() {
         </div>
       </motion.aside>
 
-      {mobileOpen && (
+      {isMobile && mobileOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-30"
+          className="fixed inset-0 bg-black/50 z-30"
           onClick={() => setMobileOpen(false)}
         />
       )}
