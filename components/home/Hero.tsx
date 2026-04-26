@@ -14,13 +14,13 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100dvh] flex flex-col overflow-hidden pt-24 md:pt-28 pb-12">
+    <section className="relative min-h-[100dvh] flex flex-col justify-start lg:justify-center overflow-hidden pt-32 md:pt-40 pb-16">
       <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary pointer-events-none" />
       
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/20 rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-pink-500/10 rounded-full pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-8 my-auto">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
