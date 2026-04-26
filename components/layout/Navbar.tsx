@@ -137,7 +137,7 @@ export function Navbar() {
                   {link.label}
                 </button>
               ))}
-              <Link href="/agendar" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/gisellestudio/agendar" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button className="w-full mt-4">Agendar Agora</Button>
               </Link>
             </div>

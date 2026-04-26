@@ -70,7 +70,7 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-4 mb-12"
             >
-              <Link href="/agendar">
+              <Link href="/gisellestudio/agendar">
                 <Button size="lg" className="px-8 py-4 text-lg">
                   Agendar
                   <ArrowRight className="ml-2 w-5 h-5" />

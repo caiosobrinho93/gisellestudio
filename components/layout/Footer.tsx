@@ -85,10 +85,10 @@ export function Footer() {
             © {currentYear} Belleza Premium. Todos os direitos reservados.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href="/privacidade" className="text-text-tertiary hover:text-accent-primary transition-colors">
+            <Link href="/gisellestudio/privacidade" className="text-text-tertiary hover:text-accent-primary transition-colors">
               Privacidade
             </Link>
-            <Link href="/termos" className="text-text-tertiary hover:text-accent-primary transition-colors">
+            <Link href="/gisellestudio/termos" className="text-text-tertiary hover:text-accent-primary transition-colors">
               Termos
             </Link>
           </div>

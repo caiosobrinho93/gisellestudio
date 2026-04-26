@@ -103,7 +103,7 @@ export function Services() {
                       ))}
                     </ul>
                     
-                    <Link href="/agendar">
+                    <Link href="/gisellestudio/agendar">
                       <Button variant="secondary" className="w-full group-hover:bg-accent-primary group-hover:text-white transition-colors">
                         Agendar
                         <ArrowRight className="ml-2 w-4 h-4" />
@@ -122,7 +122,7 @@ export function Services() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Link href="/agendar">
+          <Link href="/gisellestudio/agendar">
             <Button size="lg" className="px-8">
               Ver Todos os Serviços
               <ArrowRight className="ml-2 w-5 h-5" />
