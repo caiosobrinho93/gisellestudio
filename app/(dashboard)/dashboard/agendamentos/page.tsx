@@ -180,8 +180,44 @@ export default function AgendamentosPage() {
           <CardTitle>Lista de Agendamentos</CardTitle>
         </CardHeader>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="block lg:overflow-x-auto">
+          <div className="lg:table w-full lg:hidden space-y-3">
+            {filteredAgendamentos.map((agend) => {
+              const status = statusConfig[agend.status]
+              const StatusIcon = status.icon
+              return (
+                <div key={agend.id} className="p-4 rounded-xl bg-bg-secondary/30 border border-border-light">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-text-primary">{agend.cliente}</span>
+                    <Badge variant={status.variant}>
+                      <StatusIcon className="w-3 h-3 mr-1" />
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                    <Clock className="w-3 h-3" />
+                    {agend.data} às {agend.horario}
+                  </div>
+                  <div className="text-xs text-text-tertiary">
+                    {agend.servico} • {agend.profissional}
+                  </div>
+                  <div className="flex items-center justify-end gap-2 mt-3">
+                    <Button size="sm" variant="secondary" onClick={() => handleOpenModal(agend)}>
+                      <Edit2 className="w-3 h-3" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="danger"
+                      onClick={() => { setAgendamentoToDelete(agend); setIsDeleteModalOpen(true) }}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <table className="hidden lg:table w-full">
             <thead>
               <tr className="border-b border-border-light">
                 <th className="text-left py-4 px-6 text-sm font-semibold text-text-primary">Data</th>
