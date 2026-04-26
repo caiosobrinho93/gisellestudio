@@ -22,14 +22,14 @@ import {
 import { cn } from '@/lib/utils'
 
 const menuItems = [
-  { href: '/gisellestudio/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/gisellestudio/dashboard/clientes', icon: Users, label: 'Clientes' },
-  { href: '/gisellestudio/dashboard/agendamentos', icon: Calendar, label: 'Agendamentos' },
-  { href: '/gisellestudio/dashboard/servicos', icon: Scissors, label: 'Serviços' },
-  { href: '/gisellestudio/dashboard/funcionarios', icon: UserCog, label: 'Profissionais' },
-  { href: '/gisellestudio/dashboard/galeria', icon: Image, label: 'Galeria' },
-  { href: '/gisellestudio/dashboard/financeiro', icon: DollarSign, label: 'Financeiro' },
-  { href: '/gisellestudio/dashboard/configuracoes', icon: Settings, label: 'Configurações' },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/dashboard/clientes', icon: Users, label: 'Clientes' },
+  { href: '/dashboard/agendamentos', icon: Calendar, label: 'Agendamentos' },
+  { href: '/dashboard/servicos', icon: Scissors, label: 'Serviços' },
+  { href: '/dashboard/funcionarios', icon: UserCog, label: 'Profissionais' },
+  { href: '/dashboard/galeria', icon: Image, label: 'Galeria' },
+  { href: '/dashboard/financeiro', icon: DollarSign, label: 'Financeiro' },
+  { href: '/dashboard/configuracoes', icon: Settings, label: 'Configurações' },
 ]
 
 interface SidebarContextType {

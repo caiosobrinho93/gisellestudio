@@ -214,7 +214,7 @@ export function Professionals() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <Link href="/gisellestudio/agendar">
+          <Link href="/agendar">
             <Button size="lg" className="px-6 md:px-8">
               Quero me cuidar
               <ArrowRight className="ml-2 w-4 md:w-5 h-4 md:h-5" />

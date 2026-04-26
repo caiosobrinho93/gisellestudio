@@ -14,7 +14,7 @@ export function Footer() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div className="lg:col-span-2">
-            <Link href="/gisellestudio/" className="flex items-center gap-3 mb-6">
+            <Link href="/" className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
                 <Scissors className="w-5 h-5 text-white" />
               </div>
@@ -71,7 +71,7 @@ export function Footer() {
               </div>
             </div>
             
-            <Link href="/gisellestudio/agendar">
+            <Link href="/agendar">
               <Button className="w-full mt-6">
                 Quero me cuidar
                 <ArrowRight className="ml-2 w-4 h-4" />
@@ -85,10 +85,10 @@ export function Footer() {
             © {currentYear} Belleza Premium. Todos os direitos reservados.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href="/gisellestudio/privacidade" className="text-text-tertiary hover:text-accent-primary transition-colors">
+            <Link href="/privacidade" className="text-text-tertiary hover:text-accent-primary transition-colors">
               Privacidade
             </Link>
-            <Link href="/gisellestudio/termos" className="text-text-tertiary hover:text-accent-primary transition-colors">
+            <Link href="/termos" className="text-text-tertiary hover:text-accent-primary transition-colors">
               Termos
             </Link>
           </div>

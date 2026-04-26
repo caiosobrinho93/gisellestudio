@@ -135,7 +135,7 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
           <Button onClick={onClose} variant="secondary" className="flex-1">
             Fechar
           </Button>
-          <Link href="/gisellestudio/agendar" className="flex-1" onClick={onClose}>
+          <Link href="/agendar" className="flex-1" onClick={onClose}>
             <Button className="w-full">
               Agendar
               <ArrowRight className="w-4 h-4 ml-2" />

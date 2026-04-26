@@ -52,7 +52,7 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
-        <Link href="/gisellestudio/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-3 group">
           <div className="relative">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-pink-400 flex items-center justify-center shadow-lg shadow-accent-primary/30">
               <Scissors className="w-5 h-5 text-white" />
@@ -90,17 +90,17 @@ export function Navbar() {
             </div>
           )}
 
-          <Link href="/gisellestudio/login">
+          <Link href="/login">
             <Button size="sm" variant="secondary">
               Área do Cliente
             </Button>
           </Link>
-          <Link href="/gisellestudio/dashboard">
+          <Link href="/dashboard">
             <Button size="sm" variant="ghost">
               Painel
             </Button>
           </Link>
-          <Link href="/gisellestudio/agendar">
+          <Link href="/agendar">
             <Button size="sm" className="px-6">
               Agendar
             </Button>
@@ -137,7 +137,7 @@ export function Navbar() {
                   {link.label}
                 </button>
               ))}
-              <Link href="/gisellestudio/agendar" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/agendar" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button className="w-full mt-4">Agendar Agora</Button>
               </Link>
             </div>
