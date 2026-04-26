@@ -10,20 +10,14 @@ const defaultImages = [
 ]
 
 export function Gallery() {
-  console.log('[Gallery] Renderizando...')
-  const { galeria, loading, refetch } = useGaleria()
-  console.log('[Gallery] Dados recebidos:', galeria)
+  const { galeria, loading } = useGaleria()
 
   const images = galeria.length > 0 
     ? galeria.map((item: any) => {
         let imgPath = item.imagem || ''
-        console.log('[Gallery] Imagem do banco:', imgPath)
-        // Se é base64, usa direto
         if (imgPath.startsWith('data:')) {
-          console.log('[Gallery] Imagem é base64, usando direto')
           return { src: imgPath, alt: item.categoria || '', title: item.titulo }
         }
-        // Se não starts com /gisellestudio/, adicione
         if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
           if (imgPath.startsWith('/images/')) {
             imgPath = '/gisellestudio' + imgPath
@@ -33,12 +27,9 @@ export function Gallery() {
             imgPath = '/gisellestudio/images/' + imgPath
           }
         }
-        console.log('[Gallery] Imagem final:', imgPath)
         return { src: imgPath, alt: item.categoria || '', title: item.titulo }
       })
     : defaultImages
-
-  console.log('[Gallery] final images:', images)
 
   return (
     <section id="galeria" className="py-24 relative">

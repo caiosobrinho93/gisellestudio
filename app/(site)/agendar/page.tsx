@@ -50,9 +50,6 @@ export default function AgendamentoPage() {
   const { servicos, loading: loadingServicos } = useServicos()
   const { profissionais, loading: loadingProfissionais } = useProfissionais()
   
-  console.log('[Agendar] servicos:', servicos)
-  console.log('[Agendar] profissionais:', profissionais)
-  
   const [activeTab, setActiveTab] = useState('servicos')
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [selectedProfessional, setSelectedProfessional] = useState<string>('')

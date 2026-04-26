@@ -29,11 +29,9 @@ export default function GaleriaPage() {
     if (galeria.length > 0) {
       const fixedItens = galeria.map((item: any) => {
         let imgPath = item.imagem || ''
-        // Se é base64, usa direto
         if (imgPath.startsWith('data:')) {
           return { ...item }
         }
-        // Se não tem gisellestudio, adiciona
         if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
           if (imgPath.startsWith('/images/')) {
             imgPath = '/gisellestudio' + imgPath
@@ -48,9 +46,6 @@ export default function GaleriaPage() {
       setItens(fixedItens)
     }
   }, [galeria])
-
-  console.log('[GaleriaPage] galeria:', galeria)
-  console.log('[GaleriaPage] itens:', itens)
 
   const filteredItens = filterCategoria 
     ? itens.filter(i => i.categoria === filterCategoria)
@@ -83,7 +78,6 @@ export default function GaleriaPage() {
     }
     
     setIsSaving(true)
-    console.log('[GaleriaPage] Salvando item:', { titulo: newTitulo, categoria: newCategoria, imagem: newImagem })
     
     const result = await createGaleriaItem({
       titulo: newTitulo,
@@ -94,18 +88,15 @@ export default function GaleriaPage() {
     setIsSaving(false)
     
     if (result.success) {
-      console.log('[GaleriaPage] Item salvo com sucesso!')
       refetch()
       handleCloseModal()
     } else {
-      console.error('[GaleriaPage] Erro ao salvar:', result.error)
       alert('Erro ao salvar. Tente novamente.')
     }
   }
 
   const handleDelete = async () => {
     if (itemToDelete) {
-      console.log('[GaleriaPage] Excluindo item:', itemToDelete.id)
       const result = await deleteGaleriaItem(itemToDelete.id)
       if (result.success) {
         setItens(prev => prev.filter(i => i.id !== itemToDelete.id))

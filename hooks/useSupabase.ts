@@ -11,7 +11,6 @@ export function useServicos() {
   const fetchServicos = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Servicos] Buscando...')
     try {
       const { data, error } = await supabase
         .from('servicos')
@@ -22,7 +21,6 @@ export function useServicos() {
       if (error) {
         console.error('[Servicos] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Servicos] Encontrados:', data?.length, 'itens')
         setServicos(data || [])
       }
     } catch (e) {
@@ -47,7 +45,6 @@ export function useProfissionais() {
   const fetchProfissionais = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Profissionais] Fetching...')
     try {
       const { data, error } = await supabase
         .from('profissionais')
@@ -56,13 +53,12 @@ export function useProfissionais() {
         .order('nome')
       
       if (error) {
-        console.error('[Profissionais] Error:', error)
+        console.error('[Profissionais] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Profissionais] Found:', data?.length, 'items')
         setProfissionais(data || [])
       }
     } catch (e) {
-      console.error('[Profissionais] Exception:', e)
+      console.error('[Profissionais] Exceção:', e)
     }
     setLoading(false)
   }, [])
@@ -83,7 +79,6 @@ export function useGaleria() {
   const fetchGaleria = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Galeria] Buscando...')
     try {
       const { data, error } = await supabase
         .from('galeria')
@@ -94,7 +89,6 @@ export function useGaleria() {
       if (error) {
         console.error('[Galeria] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Galeria] Encontradas:', data?.length, 'imagens')
         setGaleria(data || [])
       }
     } catch (e) {
@@ -106,31 +100,6 @@ export function useGaleria() {
   useEffect(() => {
     mounted.current = true
     fetchGaleria()
-
-    console.log('[Galeria] Configurando realtime...')
-    let channel: any = null
-    try {
-      channel = supabase
-        .channel('galeria-changes')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'galeria' }, (payload) => {
-          console.log('[Galeria] Nova imagem detectada:', payload)
-          fetchGaleria()
-        })
-        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'galeria' }, (payload) => {
-          console.log('[Galeria] Imagem deletada:', payload)
-          fetchGaleria()
-        })
-        .subscribe((status) => {
-          console.log('[Galeria] Realtime status:', status)
-        })
-    } catch (e) {
-      console.error('[Galeria] Realtime erro:', e)
-    }
-
-    return () => {
-      mounted.current = false
-      if (channel) supabase.removeChannel(channel)
-    }
   }, [fetchGaleria])
 
   return { galeria, loading, refetch: fetchGaleria }
@@ -144,16 +113,14 @@ export function useConfiguracoes() {
   const fetchConfig = useCallback(async () => {
     if (!mounted.current) return
     setLoading(true)
-    console.log('[Config] Fetching...')
     try {
       const { data, error } = await supabase
         .from('configuracoes')
         .select('chave, valor')
       
       if (error) {
-        console.error('[Config] Error:', error)
+        console.error('[Config] Erro:', error)
       } else if (mounted.current) {
-        console.log('[Config] Found:', data?.length, 'items')
         const configMap: Record<string, string> = {}
         data?.forEach((item) => {
           configMap[item.chave] = item.valor
@@ -161,7 +128,7 @@ export function useConfiguracoes() {
         setConfig(configMap)
       }
     } catch (e) {
-      console.error('[Config] Exception:', e)
+      console.error('[Config] Exceção:', e)
     }
     setLoading(false)
   }, [])
