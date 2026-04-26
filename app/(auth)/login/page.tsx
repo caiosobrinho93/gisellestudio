@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { signIn } from 'next-auth/react'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+
+const ADMIN_EMAIL = 'admin@belleza.com'
+const ADMIN_PASSWORD = 'belleza123'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,26 +18,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError('Email ou senha inválidos')
-      } else {
-        router.push('/dashboard')
-      }
-    } catch {
-      setError('Erro ao fazer login')
-    } finally {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      localStorage.setItem('isAdmin', 'true')
+      router.push('/dashboard')
+    } else {
+      setError('Email ou senha inválidos')
       setLoading(false)
     }
   }
@@ -64,7 +56,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Seu email"
-              className="w-full h-12 pl-12 pr-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-rose/20 focus:border-accent-primary"
+              className="w-full h-12 pl-12 pr-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
               required
             />
           </div>
@@ -76,7 +68,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Sua senha"
-              className="w-full h-12 pl-12 pr-12 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-rose/20 focus:border-accent-primary"
+              className="w-full h-12 pl-12 pr-12 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
               required
             />
             <button
