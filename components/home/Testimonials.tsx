@@ -29,7 +29,7 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section id="depoimentos" className="py-24 bg-bg-secondary">
+    <section id="depoimentos" className="scroll-mt-24 md:scroll-mt-32 py-24 bg-bg-secondary">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <motion.span

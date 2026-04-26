@@ -42,7 +42,7 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section id="faq" className="py-24 relative">
+    <section id="faq" className="scroll-mt-24 md:scroll-mt-32 py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary/50 to-bg-primary" />
       
       <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8">

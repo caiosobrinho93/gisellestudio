@@ -32,7 +32,7 @@ export function Gallery() {
     : defaultImages
 
   return (
-    <section id="galeria" className="py-24 relative">
+    <section id="galeria" className="scroll-mt-24 md:scroll-mt-32 py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary/30 to-bg-primary" />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8">
