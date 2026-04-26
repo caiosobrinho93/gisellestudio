@@ -203,14 +203,14 @@ export default function AgendamentoPage() {
 
   if (loadingServicos || loadingProfissionais) {
     return (
-      <div className="min-h-screen bg-bg-primary pt-24 pb-12 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-bg-primary pt-24 pb-12 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary pt-24 pb-12" ref={contentRef}>
+    <div className="min-h-[100dvh] bg-bg-primary pt-24 pb-12" ref={contentRef}>
       <AnimatePresence>
         {showSuccess && (
           <motion.div

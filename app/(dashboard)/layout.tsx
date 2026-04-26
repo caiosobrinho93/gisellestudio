@@ -10,7 +10,7 @@ export default function DashboardLayout({
 }) {
   return (
     <NotificationProvider>
-      <div className="min-h-screen bg-bg-primary">
+      <div className="min-h-[100dvh] bg-bg-primary">
         <Sidebar />
         <main className="md:ml-[280px] transition-all duration-300 pt-16 md:pt-20 p-4 md:p-8">
           {children}

@@ -63,7 +63,7 @@ export function Gallery() {
             <div className="flex justify-center gap-4">
               {defaultImages.map((img: any, i: number) => (
                 <div key={i} className="w-32 h-40 rounded-xl overflow-hidden">
-                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+                  <img src={img.src} alt={img.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -82,6 +82,8 @@ export function Gallery() {
                 <img
                   src={img.src}
                   alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

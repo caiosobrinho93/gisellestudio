@@ -8,7 +8,7 @@ interface GradientBackgroundProps {
 
 export function GradientBackground({ children }: GradientBackgroundProps) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#030205]">
+    <div className="relative min-h-[100dvh] overflow-hidden bg-[#030205]">
       <div 
         className="absolute inset-0"
         style={{

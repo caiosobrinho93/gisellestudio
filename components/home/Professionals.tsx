@@ -191,7 +191,7 @@ export function Professionals() {
                 <div key={prof.id} className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-accent-primary/20">
                     {prof.foto ? (
-                      <img src={prof.foto} alt={prof.nome} className="w-full h-full object-cover" />
+                      <img src={prof.foto} alt={prof.nome} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-accent-primary font-bold">
                         {prof.nome.charAt(0)}
