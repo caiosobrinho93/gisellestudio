@@ -399,6 +399,7 @@ export default function AgendamentoPage() {
                         <Info className="w-4 h-4" />
                       </button>
                     </div>
+                  ))}
                 </div>
                 
                 {selectedServices.length > 0 && (
