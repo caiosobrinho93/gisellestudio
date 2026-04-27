@@ -8,10 +8,10 @@ import { cn } from '@/lib/utils'
 interface ServiceDetailModalProps {
   service: {
     id: string
-    name: string
-    price: number
-    duration: number
-    description: string
+    nome: string
+    preco: number
+    duracao: number
+    descricao: string
     benefits: string[]
     process: string[]
   } | null
@@ -40,21 +40,21 @@ export function ServiceDetailModal({ service, onClose }: ServiceDetailModalProps
         </div>
 
         <h2 className="text-2xl font-bold text-text-primary mb-2">
-          {service.name}
+          {service.nome}
         </h2>
 
         <p className="text-text-secondary mb-6">
-          {service.description}
+          {service.descricao}
         </p>
 
         <div className="flex items-center gap-4 mb-6">
           <div className="flex items-center gap-2 px-4 py-2 bg-bg-secondary rounded-xl">
             <Clock className="w-5 h-5 text-accent-primary" />
-            <span className="text-text-primary font-medium">{service.duration} min</span>
+            <span className="text-text-primary font-medium">{service.duracao} min</span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-bg-secondary rounded-xl">
             <DollarSign className="w-5 h-5 text-accent-primary" />
-            <span className="text-accent-primary font-bold">R$ {service.price}</span>
+            <span className="text-accent-primary font-bold">R$ {service.preco}</span>
           </div>
         </div>
 

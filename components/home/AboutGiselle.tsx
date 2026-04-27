@@ -6,12 +6,11 @@ import { Sparkles, Star, ArrowRight, Quote, ChevronLeft, ChevronRight } from 'lu
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useProfissionais } from '@/hooks/useSupabase'
 
 const testimonials = [
   {
     name: 'Ana Paula',
-    text: 'Sempre venho aqui porque me sinto em casa. As meninas são tão atenciosas...',
+    text: 'A Giselle é maravilhosa! O atendimento é super exclusivo e impecável...',
     rating: 5,
   },
   {
@@ -31,7 +30,7 @@ const testimonials = [
   },
   {
     name: 'Patrícia Lima',
-    text: 'Saiu de lá me sentindo outra pessoa. Ambiente maravilhoso!',
+    text: 'Saio de lá me sentindo renovada. Atendimento premium de verdade!',
     rating: 5,
   },
   {
@@ -41,8 +40,7 @@ const testimonials = [
   },
 ]
 
-export function Professionals() {
-  const { profissionais, loading } = useProfissionais()
+export function AboutGiselle() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
@@ -90,9 +88,10 @@ export function Professionals() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col items-center"
+            className="group flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
           >
-            <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-accent-primary mb-6 md:mb-8">
+            <div className="absolute inset-0 bg-gradient-to-tr from-accent-primary/20 to-transparent opacity-50 transition-opacity group-hover:opacity-70"></div>
+            <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-accent-primary/50 shadow-[0_0_50px_rgba(238,175,210,0.5)] mb-8 group-hover:scale-105 transition-transform duration-500">
               <Image
                 src="/gisellestudio/images/giselle-02.png"
                 alt="Giselle Soares"
@@ -100,13 +99,15 @@ export function Professionals() {
                 className="object-cover"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-accent-primary/20 to-transparent" />
             </div>
-            <div className="text-center max-w-md">
-              <p className="text-lg md:text-xl text-text-primary font-medium mb-2">Fundadora</p>
-              <p className="text-text-secondary">
-                Com mais de 8 anos de experiência em beleza e estética, 
-                Giselle criou este espaço pensando em cada mulher que merece 
-                ser tratada com carinho e atenção especial.
+            <div className="text-center max-w-md relative z-10">
+              <h3 className="text-3xl md:text-4xl text-text-primary font-display font-bold mb-2 tracking-tight">Giselle Soares</h3>
+              <p className="text-accent-primary font-medium mb-4 tracking-widest uppercase text-xs">Especialista em Estética Avançada</p>
+              <p className="text-text-secondary leading-relaxed text-sm md:text-base">
+                Unindo técnica refinada e um olhar artístico, Giselle dedica sua carreira a proporcionar experiências 
+                que transcendem o cuidado estético. Cada detalhe no Studio é pensado para que você se sinta 
+                única, valorizada e em sua melhor versão.
               </p>
             </div>
           </motion.div>
@@ -178,35 +179,7 @@ export function Professionals() {
           </motion.div>
         </div>
 
-        {!loading && profissionais.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-8"
-          >
-            <h3 className="text-xl font-bold text-text-primary mb-4">Nossa Equipe</h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              {profissionais.map((prof: any) => (
-                <div key={prof.id} className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-accent-primary/20">
-                    {prof.foto ? (
-                      <img src={prof.foto} alt={prof.nome} loading="lazy" decoding="async" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-accent-primary font-bold">
-                        {prof.nome.charAt(0)}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-text-primary">{prof.nome}</p>
-                    <p className="text-xs text-text-secondary">{prof.especialidade}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

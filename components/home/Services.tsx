@@ -107,7 +107,7 @@ export function Services() {
                     <p className="text-text-secondary mb-4 flex-1">{service.descricao}</p>
                     
                     <ul className="space-y-2 mb-6">
-                      {(service.benefits || defaultBenefits).slice(0, 3).map((feature: string, idx: number) => (
+                      {(service.beneficios?.length ? service.beneficios : defaultBenefits).slice(0, 3).map((feature: string, idx: number) => (
                         <li key={idx} className="flex items-center gap-2 text-sm text-text-tertiary">
                           <Check className="w-4 h-4 text-accent-primary" />
                           {feature}
@@ -147,8 +147,8 @@ export function Services() {
         <ServiceDetailModal 
           service={{
             ...selectedService,
-            benefits: selectedService.benefits || defaultBenefits,
-            process: selectedService.process || defaultProcess
+            benefits: selectedService.beneficios?.length ? selectedService.beneficios : defaultBenefits,
+            process: selectedService.processo?.length ? selectedService.processo : defaultProcess
           }} 
           onClose={() => setSelectedService(null)} 
         />

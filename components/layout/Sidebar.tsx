@@ -26,7 +26,7 @@ const menuItems = [
   { href: '/dashboard/clientes', icon: Users, label: 'Clientes' },
   { href: '/dashboard/agendamentos', icon: Calendar, label: 'Agendamentos' },
   { href: '/dashboard/servicos', icon: Scissors, label: 'Serviços' },
-  { href: '/dashboard/funcionarios', icon: UserCog, label: 'Profissionais' },
+
   { href: '/dashboard/galeria', icon: Image, label: 'Galeria' },
   { href: '/dashboard/financeiro', icon: DollarSign, label: 'Financeiro' },
   { href: '/dashboard/configuracoes', icon: Settings, label: 'Configurações' },
@@ -83,7 +83,7 @@ export function Sidebar() {
     <SidebarContext.Provider value={{ collapsed, setCollapsed, isMobile, mobileOpen, setMobileOpen, sidebarWidth }}>
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 p-2 bg-bg-primary/90 backdrop-blur-md rounded-lg border border-border-light md:hidden"
+        className="fixed top-3 left-3 z-[60] p-2 bg-bg-card/80 backdrop-blur-md rounded-lg border border-border-light md:hidden shadow-lg"
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -107,7 +107,7 @@ export function Sidebar() {
               animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
               className="block overflow-hidden whitespace-nowrap"
             >
-              Belleza
+              Giselle Studio
             </motion.span>
           </Link>
           <button

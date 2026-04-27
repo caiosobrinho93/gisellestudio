@@ -124,7 +124,7 @@ export default function GaleriaPage() {
   }
 
   return (
-    <div className="p-2 md:p-8">
+    <div className="p-2.5">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Galeria</h1>
@@ -162,7 +162,7 @@ export default function GaleriaPage() {
               transition={{ delay: i * 0.05 }}
               className={cn('relative group', !item.ativo && 'opacity-50')}
             >
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden p-0">
                 <div className="aspect-square relative">
                   <img
                     src={item.imagem}
@@ -184,7 +184,7 @@ export default function GaleriaPage() {
                     </button>
                   </div>
                 </div>
-                <div className="p-0">
+                <div className="p-2">
                   <h3 className="font-medium text-text-primary text-sm">{item.titulo}</h3>
                   <p className="text-xs text-text-secondary">{item.categoria}</p>
                   <button 

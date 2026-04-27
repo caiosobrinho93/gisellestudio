@@ -92,10 +92,10 @@
   }
   
   /* Constrain all containers */
-  section, main, div[class*="container"], div[class*="max-w"] {
+  section, div[class*="container"], div[class*="max-w"] {
     max-width: 100% !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
     box-sizing: border-box !important;
   }
   
@@ -135,5 +135,15 @@
   /* Gap reductions */
   .gap-8, .gap-6, .gap-4 {
     gap: 8px !important;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

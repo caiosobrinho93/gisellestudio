@@ -109,7 +109,7 @@ export default function ClientesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-2.5">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Clientes</h1>
@@ -133,8 +133,57 @@ export default function ClientesPage() {
         </div>
       </div>
 
-      <Card>
-        <div className="overflow-x-auto">
+      <Card className="overflow-hidden">
+        {/* Mobile View */}
+        <div className="md:hidden divide-y divide-border-light">
+          {filteredClientes.map((cliente) => (
+            <motion.div 
+              key={cliente.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-3 flex items-center justify-between gap-3 h-[80px]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                {cliente.foto ? (
+                  <img src={cliente.foto} alt={cliente.nome} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-accent-primary" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="font-medium text-text-primary text-sm truncate">{cliente.nome}</p>
+                  <p className="text-[11px] text-text-secondary truncate">{cliente.telefone}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button onClick={() => toggleAtivo(cliente.id)}>
+                  <Badge variant={cliente.ativo ? 'success' : 'default'} className="text-[10px] px-1.5 py-0">
+                    {cliente.ativo ? 'Ativo' : 'Inativo'}
+                  </Badge>
+                </button>
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => handleOpenModal(cliente)} 
+                    className="p-1.5 rounded-lg hover:bg-bg-secondary"
+                  >
+                    <Edit2 className="w-4 h-4 text-text-secondary" />
+                  </button>
+                  <button 
+                    onClick={() => { setClienteToDelete(cliente); setIsDeleteModalOpen(true) }}
+                    className="p-1.5 rounded-lg hover:bg-error/10"
+                  >
+                    <Trash2 className="w-4 h-4 text-error" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border-light">
@@ -154,7 +203,7 @@ export default function ClientesPage() {
                   animate={{ opacity: 1 }}
                   className="border-b border-border-light hover:bg-bg-secondary/50"
                 >
-                  <td className="py-4 px-6">
+                  <td className="py-2 px-4">
                     <div className="flex items-center gap-3">
                       {cliente.foto ? (
                         <img src={cliente.foto} alt={cliente.nome} className="w-10 h-10 rounded-full object-cover" />
@@ -169,29 +218,29 @@ export default function ClientesPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-2 px-4">
                     <div className="flex items-center gap-2 text-text-secondary">
                       <Mail className="w-4 h-4" />
                       {cliente.email}
                     </div>
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-2 px-4">
                     <div className="flex items-center gap-2 text-text-secondary">
                       <Phone className="w-4 h-4" />
                       {cliente.telefone}
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-text-secondary text-sm max-w-xs truncate">
+                  <td className="py-2 px-4 text-text-secondary text-sm max-w-xs truncate">
                     {cliente.observacoes || '-'}
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-2 px-4">
                     <button onClick={() => toggleAtivo(cliente.id)}>
                       <Badge variant={cliente.ativo ? 'success' : 'default'}>
                         {cliente.ativo ? 'Ativo' : 'Inativo'}
                       </Badge>
                     </button>
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-2 px-4">
                     <div className="flex items-center justify-end gap-2">
                       <button 
                         onClick={() => handleOpenModal(cliente)} 
@@ -246,7 +295,7 @@ export default function ClientesPage() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full h-11 px-4 bg-bg-card border border-border-light rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary"
-              required
+              required={false}
             />
           </div>
           <div>

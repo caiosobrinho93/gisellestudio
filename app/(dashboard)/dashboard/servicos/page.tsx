@@ -32,6 +32,8 @@ export default function ServicosPage() {
   const [newCategoria, setNewCategoria] = useState('Manicure')
   const [newDescricao, setNewDescricao] = useState('')
   const [newImagem, setNewImagem] = useState('')
+  const [newProcesso, setNewProcesso] = useState('')
+  const [newBeneficios, setNewBeneficios] = useState('')
 
   useEffect(() => {
     if (servicos.length > 0) {
@@ -53,6 +55,8 @@ export default function ServicosPage() {
       setNewCategoria(servico.categoria)
       setNewDescricao(servico.descricao || '')
       setNewImagem(servico.imagem || '')
+      setNewProcesso(Array.isArray(servico.processo) ? servico.processo.join('\n') : '')
+      setNewBeneficios(Array.isArray(servico.beneficios) ? servico.beneficios.join('\n') : '')
     } else {
       setEditingServico(null)
       setNewNome('')
@@ -61,6 +65,8 @@ export default function ServicosPage() {
       setNewCategoria('Manicure')
       setNewDescricao('')
       setNewImagem('')
+      setNewProcesso('')
+      setNewBeneficios('')
     }
     setIsModalOpen(true)
   }
@@ -87,7 +93,9 @@ export default function ServicosPage() {
         descricao: newDescricao,
         categoria: newCategoria,
         ativo: editingServico.ativo,
-        imagem: newImagem
+        imagem: newImagem,
+        processo: newProcesso.split('\n').filter(Boolean),
+        beneficios: newBeneficios.split('\n').filter(Boolean)
       })
     } else {
       result = await createServico({
@@ -96,7 +104,9 @@ export default function ServicosPage() {
         duracao: Number(newDuracao),
         descricao: newDescricao,
         categoria: newCategoria,
-        imagem: newImagem
+        imagem: newImagem,
+        processo: newProcesso.split('\n').filter(Boolean),
+        beneficios: newBeneficios.split('\n').filter(Boolean)
       })
     }
     
@@ -129,7 +139,7 @@ export default function ServicosPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-2.5">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Serviços</h1>
@@ -166,21 +176,21 @@ export default function ServicosPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <Card className={`p-4 ${!servico.ativo && 'opacity-50'}`}>
-                <div className="flex items-center justify-between">
+              <Card className={`p-2 h-[80px] flex items-center overflow-hidden ${!servico.ativo && 'opacity-50'}`}>
+                <div className="flex items-center justify-between w-full gap-2">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-medium text-text-primary">{servico.nome}</h3>
-                      <Badge>{servico.categoria}</Badge>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-medium text-text-primary text-sm truncate">{servico.nome}</h3>
+                      <Badge className="text-[10px] px-1 py-0">{servico.categoria}</Badge>
                     </div>
-                    <p className="text-sm text-text-secondary mb-2">{servico.descricao}</p>
-                    <div className="flex items-center gap-4 text-sm">
+                    <p className="text-[11px] text-text-secondary truncate max-w-[150px] md:max-w-md mb-1">{servico.descricao}</p>
+                    <div className="flex items-center gap-4 text-[10px]">
                       <span className="flex items-center gap-1 text-accent-primary font-medium">
-                        <DollarSign className="w-4 h-4" />
+                        <DollarSign className="w-2.5 h-2.5" />
                         {formatCurrency(servico.preco)}
                       </span>
                       <span className="flex items-center gap-1 text-text-secondary">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-2.5 h-2.5" />
                         {servico.duracao} min
                       </span>
                     </div>
@@ -258,6 +268,22 @@ export default function ServicosPage() {
               placeholder="Descrição (opcional)"
               value={newDescricao}
               onChange={(e) => setNewDescricao(e.target.value)}
+              rows={2}
+              className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
+            />
+
+            <textarea
+              placeholder="Passo a passo do processo (um por linha)"
+              value={newProcesso}
+              onChange={(e) => setNewProcesso(e.target.value)}
+              rows={3}
+              className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
+            />
+
+            <textarea
+              placeholder="Benefícios (um por linha)"
+              value={newBeneficios}
+              onChange={(e) => setNewBeneficios(e.target.value)}
               rows={3}
               className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
             />

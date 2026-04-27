@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Tabs, TabsList, TabsTrigger, TabsPanel } from '@/components/ui/Tabs'
 import { ServiceDetailModal } from '@/components/ui/ServiceDetailModal'
-import { useServicos, createAgendamento } from '@/hooks/useSupabase'
+import { useServicos, createAgendamento, useAgendamentos } from '@/hooks/useSupabase'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -47,6 +47,7 @@ const timeSlots = generateTimeSlots('08:00', '20:00', 30)
 export default function AgendamentoPage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const { servicos, loading: loadingServicos } = useServicos()
+  const { agendamentos } = useAgendamentos()
   
   const [activeTab, setActiveTab] = useState('servicos')
   const [selectedServices, setSelectedServices] = useState<string[]>([])
@@ -76,9 +77,7 @@ export default function AgendamentoPage() {
   }))
 
   const toggleService = (id: string) => {
-    setSelectedServices(prev => 
-      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
-    )
+    setSelectedServices(prev => prev.includes(id) ? [] : [id])
   }
 
   const getTotalPrice = () => {
@@ -126,6 +125,7 @@ export default function AgendamentoPage() {
         horario: selectedTime,
         telefone: clientPhone,
         cliente: clientName,
+        status: 'CONFIRMADO'
       })
       setIsSubmitting(false)
       
@@ -333,9 +333,9 @@ export default function AgendamentoPage() {
 
             <Card className="mt-6 border-white/5 bg-bg-card/40 backdrop-blur-sm">
               <TabsPanel value="servicos">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 snap-x hide-scrollbar">
                   {services.map((service) => (
-                    <div key={service.id} className="relative group h-full flex flex-col">
+                    <div key={service.id} className="relative group h-full flex flex-col flex-none w-[280px] sm:w-[320px] snap-center">
                       <button
                         onClick={() => toggleService(service.id)}
                         className={cn(
@@ -402,7 +402,7 @@ export default function AgendamentoPage() {
                   ))}
                   
                   {selectedServices.length > 0 && (
-                    <div className="col-span-full p-4 sm:p-5 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mt-2">
+                    <div className="p-4 sm:p-5 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mt-2 mx-4 mb-4">
                       <div className="flex items-center justify-between">
                         <span className="text-text-primary font-medium">Total Selecionado:</span>
                         <div className="text-right">
@@ -474,20 +474,26 @@ export default function AgendamentoPage() {
                       </div>
                       
                       <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-                        {timeSlots.map((time) => (
-                          <button
-                            key={time}
-                            onClick={() => setSelectedTime(time)}
-                            className={cn(
-                              'py-2.5 rounded-xl text-center text-sm font-medium transition-all border',
-                              selectedTime === time
-                                ? 'bg-accent-primary text-white border-accent-primary shadow-lg shadow-accent-primary/30 scale-105'
-                                : 'bg-bg-card border-border-light text-text-primary hover:border-accent-primary/50 hover:scale-105'
-                            )}
-                          >
-                            {time}
-                          </button>
-                        ))}
+                        {timeSlots.map((time) => {
+                          const isOccupied = agendamentos.some(a => a.data === selectedDate && a.horario === time)
+                          
+                          return (
+                            <button
+                              key={time}
+                              disabled={isOccupied}
+                              onClick={() => setSelectedTime(time)}
+                              className={cn(
+                                'py-2.5 rounded-xl text-center text-sm font-medium transition-all border',
+                                isOccupied ? 'opacity-30 cursor-not-allowed bg-bg-secondary border-border-light text-text-tertiary line-through' :
+                                selectedTime === time
+                                  ? 'bg-accent-primary text-white border-accent-primary shadow-lg shadow-accent-primary/30 scale-105'
+                                  : 'bg-bg-card border-border-light text-text-primary hover:border-accent-primary/50 hover:scale-105'
+                              )}
+                            >
+                              {time}
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
                   )}

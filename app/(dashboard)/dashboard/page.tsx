@@ -15,13 +15,13 @@ const stats = [
 const todayAgenda = [
   { time: '09:00', client: 'Ana Paula', service: 'Manicure', status: 'CONFIRMADO' },
   { time: '10:30', client: 'Carla Silva', service: 'Pedicure', status: 'CONFIRMADO' },
-  { time: '14:00', client: 'Juliana Santos', service: 'Extensão Cílios', status: 'PENDENTE' },
+  { time: '14:00', client: 'Juliana Santos', service: 'Extensão Cílios', status: 'CONFIRMADO' },
   { time: '15:30', client: 'Marina Oliveira', service: 'Massagem', status: 'CONFIRMADO' },
 ]
 
 export default function DashboardPage() {
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-2.5">
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold text-text-primary">Dashboard</h1>
         <p className="text-text-secondary">Visão geral do seu salão</p>
@@ -76,9 +76,9 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <Badge
-                    variant={item.status === 'CONFIRMADO' ? 'success' : 'warning'}
+                    variant={item.status === 'CANCELADO' ? 'error' : 'success'}
                   >
-                    {item.status}
+                    {item.status === 'CANCELADO' ? 'CANCELADO' : 'CONFIRMADO'}
                   </Badge>
                 </div>
               ))}

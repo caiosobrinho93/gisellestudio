@@ -69,7 +69,7 @@ export default function AgendamentosPage() {
   }
 
   return (
-    <div className="p-2 md:p-8 page-content">
+    <div className="p-2.5 page-content">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Agendamentos</h1>
@@ -82,13 +82,13 @@ export default function AgendamentosPage() {
           <button
             key={f}
             onClick={() => setFiltro(f)}
-            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs md:text-sm whitespace-nowrap transition-colors ${
               filtro === f 
-                ? 'bg-accent-primary text-white' 
-                : 'bg-bg-card text-text-secondary'
+                ? 'bg-accent-primary text-white shadow-md shadow-accent-primary/20' 
+                : 'bg-bg-card text-text-secondary border border-border-light'
             }`}
           >
-            {f === 'todos' ? 'Todos' : f === 'hoje' ? 'Hoje' : f === 'amanha' ? 'Amanhã' : 'Esta semana'}
+            {f === 'todos' ? 'Todos' : f === 'hoje' ? 'Hoje' : f === 'amanha' ? 'Amanhã' : 'Semana'}
           </button>
         ))}
       </div>
@@ -106,21 +106,21 @@ export default function AgendamentosPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
               >
-                <Card className="p-3 max-h-[100px]">
-                  <div className="flex items-center justify-between gap-2">
+                <Card className="p-2 h-[80px] flex items-center overflow-hidden">
+                  <div className="flex items-center justify-between gap-2 w-full">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-accent-primary" />
                       </div>
                       <div className="min-w-0">
                         <p className="font-medium text-text-primary text-sm truncate">{agend.cliente}</p>
-                        <p className="text-xs text-text-secondary truncate">{agend.servico} por {agend.profissionais}</p>
+                        <p className="text-xs text-text-secondary truncate">{agend.servico}</p>
                         <p className="text-xs text-text-tertiary">{agend.data} às {agend.horario}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <Badge variant={agend.status === 'CONFIRMADO' ? 'success' : agend.status === 'PENDENTE' ? 'warning' : agend.status === 'CANCELADO' ? 'error' : 'primary'} className="text-xs">
-                        {agend.status}
+                      <Badge variant={agend.status === 'CANCELADO' ? 'error' : 'success'} className="text-[10px] px-1.5 py-0">
+                        {agend.status === 'CANCELADO' ? 'CANCELADO' : 'CONFIRMADO'}
                       </Badge>
                       <button
                         onClick={() => { setAgendamentoToDelete(agend); setIsDeleteModalOpen(true) }}
