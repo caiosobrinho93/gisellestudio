@@ -4,14 +4,14 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   variant?: 'default' | 'elevated' | 'glass'
   className?: string
   hover?: boolean
 }
 
-export function Card({ children, variant = 'default', className, hover = false }: CardProps) {
+export function Card({ children, variant = 'default', className, hover = false, ...props }: CardProps) {
   const variants = {
     default: 'bg-bg-card border border-border-light',
     elevated: 'bg-bg-card shadow-lg',
@@ -20,6 +20,7 @@ export function Card({ children, variant = 'default', className, hover = false }
 
   return (
     <motion.div
+      {...props}
       whileHover={hover ? { y: -4, transition: { duration: 0.2 } } : {}}
       className={cn(
         'rounded-2xl p-6',
