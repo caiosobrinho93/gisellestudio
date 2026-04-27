@@ -333,9 +333,9 @@ export default function AgendamentoPage() {
 
             <Card className="mt-6 border-white/5 bg-bg-card/40 backdrop-blur-sm">
               <TabsPanel value="servicos">
-                <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 snap-x hide-scrollbar">
+                <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 snap-x hide-scrollbar px-4 sm:px-6">
                   {services.map((service) => (
-                    <div key={service.id} className="relative group h-full flex flex-col flex-none w-[280px] sm:w-[320px] snap-center">
+                    <div key={service.id} className="relative group flex flex-col flex-none w-[280px] sm:w-[415px] h-[380px] sm:h-[420px] snap-center">
                       <button
                         onClick={() => toggleService(service.id)}
                         className={cn(
@@ -399,20 +399,19 @@ export default function AgendamentoPage() {
                         <Info className="w-4 h-4" />
                       </button>
                     </div>
-                  ))}
-                  
-                  {selectedServices.length > 0 && (
-                    <div className="p-4 sm:p-5 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mt-2 mx-4 mb-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-text-primary font-medium">Total Selecionado:</span>
-                        <div className="text-right">
-                          <span className="font-bold text-accent-primary text-xl">R$ {getTotalPrice()}</span>
-                          <span className="text-text-secondary text-sm ml-2">({getTotalDuration()} min)</span>
-                        </div>
+                </div>
+                
+                {selectedServices.length > 0 && (
+                  <div className="p-4 sm:p-5 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mx-4 sm:mx-6 mb-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-text-primary font-medium">Total Selecionado:</span>
+                      <div className="text-right">
+                        <span className="font-bold text-accent-primary text-xl">R$ {getTotalPrice()}</span>
+                        <span className="text-text-secondary text-sm ml-2">({getTotalDuration()} min)</span>
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </TabsPanel>
 
               <TabsPanel value="data">

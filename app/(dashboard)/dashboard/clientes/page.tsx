@@ -29,8 +29,10 @@ export default function ClientesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [editingCliente, setEditingCliente] = useState<Cliente | null>(null)
   const [clienteToDelete, setClienteToDelete] = useState<Cliente | null>(null)
+  const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null)
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -144,7 +146,8 @@ export default function ClientesPage() {
               key={cliente.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="p-3 flex items-center justify-between gap-3 h-[80px]"
+              onClick={() => { setSelectedCliente(cliente); setIsDetailModalOpen(true) }}
+              className="p-3 flex items-center justify-between gap-3 h-[80px] cursor-pointer hover:bg-bg-secondary/50 transition-colors"
             >
               <div className="flex items-center gap-3 min-w-0">
                 {cliente.foto ? (
@@ -161,25 +164,9 @@ export default function ClientesPage() {
               </div>
               
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => toggleAtivo(cliente)}>
-                  <Badge variant={cliente.ativo ? 'success' : 'default'} className="text-[10px] px-1.5 py-0">
-                    {cliente.ativo ? 'Ativo' : 'Inativo'}
-                  </Badge>
-                </button>
-                <div className="flex items-center gap-1">
-                  <button 
-                    onClick={() => handleOpenModal(cliente)} 
-                    className="p-1.5 rounded-lg hover:bg-bg-secondary"
-                  >
-                    <Edit2 className="w-4 h-4 text-text-secondary" />
-                  </button>
-                  <button 
-                    onClick={() => { setClienteToDelete(cliente); setIsDeleteModalOpen(true) }}
-                    className="p-1.5 rounded-lg hover:bg-error/10"
-                  >
-                    <Trash2 className="w-4 h-4 text-error" />
-                  </button>
-                </div>
+                <Badge variant={cliente.ativo ? 'success' : 'default'} className="text-[10px] px-1.5 py-0">
+                  {cliente.ativo ? 'Ativo' : 'Inativo'}
+                </Badge>
               </div>
             </motion.div>
           ))}
@@ -204,7 +191,8 @@ export default function ClientesPage() {
                   key={cliente.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="border-b border-border-light hover:bg-bg-secondary/50"
+                  onClick={() => { setSelectedCliente(cliente); setIsDetailModalOpen(true) }}
+                  className="border-b border-border-light hover:bg-bg-secondary/50 cursor-pointer"
                 >
                   <td className="py-2 px-4">
                     <div className="flex items-center gap-3">
@@ -217,14 +205,14 @@ export default function ClientesPage() {
                       )}
                       <div>
                         <p className="font-medium text-text-primary">{cliente.nome}</p>
-                        <p className="text-xs text-text-tertiary">Cadastro: {cliente.dataCadastro}</p>
+                        <p className="text-xs text-text-tertiary">Cadastrado em: {new Date(cliente.created_at).toLocaleDateString()}</p>
                       </div>
                     </div>
                   </td>
                   <td className="py-2 px-4">
                     <div className="flex items-center gap-2 text-text-secondary">
                       <Mail className="w-4 h-4" />
-                      {cliente.email}
+                      {cliente.email || '-'}
                     </div>
                   </td>
                   <td className="py-2 px-4">
@@ -233,31 +221,10 @@ export default function ClientesPage() {
                       {cliente.telefone}
                     </div>
                   </td>
-                  <td className="py-2 px-4 text-text-secondary text-sm max-w-xs truncate">
-                    {cliente.observacoes || '-'}
-                  </td>
                   <td className="py-2 px-4">
-                    <button onClick={() => toggleAtivo(cliente)}>
-                      <Badge variant={cliente.ativo ? 'success' : 'default'}>
-                        {cliente.ativo ? 'Ativo' : 'Inativo'}
-                      </Badge>
-                    </button>
-                  </td>
-                  <td className="py-2 px-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        onClick={() => handleOpenModal(cliente)} 
-                        className="p-2 rounded-lg hover:bg-bg-secondary"
-                      >
-                        <Edit2 className="w-4 h-4 text-text-secondary" />
-                      </button>
-                      <button 
-                        onClick={() => { setClienteToDelete(cliente); setIsDeleteModalOpen(true) }}
-                        className="p-2 rounded-lg hover:bg-error/10"
-                      >
-                        <Trash2 className="w-4 h-4 text-error" />
-                      </button>
-                    </div>
+                    <Badge variant={cliente.ativo ? 'success' : 'default'}>
+                      {cliente.ativo ? 'Ativo' : 'Inativo'}
+                    </Badge>
                   </td>
                 </motion.tr>
               ))}
@@ -347,6 +314,80 @@ export default function ClientesPage() {
             Excluir
           </Button>
         </div>
+      </Modal>
+
+      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Detalhes do Cliente">
+        {selectedCliente && (
+          <div className="p-2 space-y-6">
+            <div className="flex flex-col items-center gap-4 mb-6">
+              {selectedCliente.foto ? (
+                <img src={selectedCliente.foto} alt={selectedCliente.nome} className="w-24 h-24 rounded-full object-cover border-4 border-bg-secondary" />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-accent-primary/20 flex items-center justify-center border-4 border-bg-secondary">
+                  <User className="w-12 h-12 text-accent-primary" />
+                </div>
+              )}
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-text-primary">{selectedCliente.nome}</h3>
+                <Badge variant={selectedCliente.ativo ? 'success' : 'default'} className="mt-2">
+                  {selectedCliente.ativo ? 'Cliente Ativo' : 'Cliente Inativo'}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <p className="text-xs text-text-secondary mb-1">WhatsApp</p>
+                <p className="font-bold text-text-primary text-lg">{selectedCliente.telefone}</p>
+              </div>
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <p className="text-xs text-text-secondary mb-1">E-mail</p>
+                <p className="font-medium text-text-primary">{selectedCliente.email || '-'}</p>
+              </div>
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <p className="text-xs text-text-secondary mb-1">Observações</p>
+                <p className="text-text-secondary italic">{selectedCliente.observacoes || 'Nenhuma observação'}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-white/5">
+              <Button 
+                variant="secondary" 
+                onClick={() => {
+                  handleOpenModal(selectedCliente);
+                  setIsDetailModalOpen(false);
+                }}
+                className="flex-1 gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                Editar
+              </Button>
+              <Button 
+                variant="danger" 
+                onClick={() => {
+                  setClienteToDelete(selectedCliente);
+                  setIsDetailModalOpen(false);
+                  setIsDeleteModalOpen(true);
+                }}
+                className="flex-1 gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Excluir
+              </Button>
+            </div>
+            
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                toggleAtivo(selectedCliente);
+                setIsDetailModalOpen(false);
+              }}
+              className="w-full"
+            >
+              {selectedCliente.ativo ? 'Desativar Cliente' : 'Ativar Cliente'}
+            </Button>
+          </div>
+        )}
       </Modal>
     </div>
   )

@@ -17,8 +17,10 @@ export default function GaleriaPage() {
   const [itens, setItens] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<any>(null)
   const [editingItem, setEditingItem] = useState<any>(null)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
   const [filterCategoria, setFilterCategoria] = useState('')
   const [newTitulo, setNewTitulo] = useState('')
   const [newCategoria, setNewCategoria] = useState('Geral')
@@ -160,49 +162,20 @@ export default function GaleriaPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={cn('relative group', !item.ativo && 'opacity-50')}
+              onClick={() => { setSelectedItem(item); setIsDetailModalOpen(true) }}
+              className={cn('relative group cursor-pointer', !item.ativo && 'opacity-50')}
             >
-              <Card className="overflow-hidden p-0">
+              <Card className="overflow-hidden p-0 hover:border-accent-primary/50 transition-all">
                 <div className="aspect-square relative">
                   <img
                     src={item.imagem}
                     alt={item.titulo}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleOpenModal(item)}
-                      className="p-2 bg-bg-card rounded-lg"
-                    >
-                      <ImageIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => { setItemToDelete(item); setIsDeleteModalOpen(true) }}
-                      className="p-2 bg-error rounded-lg"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+                    <p className="text-[10px] font-bold text-accent-primary uppercase tracking-wider">{item.categoria}</p>
+                    <p className="text-xs font-medium text-white truncate">{item.titulo}</p>
                   </div>
-                </div>
-                <div className="p-2">
-                  <h3 className="font-medium text-text-primary text-sm">{item.titulo}</h3>
-                  <p className="text-xs text-text-secondary">{item.categoria}</p>
-                  <button 
-                    onClick={() => toggleAtivo(item.id)}
-                    className="mt-2 flex items-center gap-1 text-xs"
-                  >
-                    {item.ativo ? (
-                      <>
-                        <Eye className="w-3 h-3" />
-                        <span className="text-success">Ativo</span>
-                      </>
-                    ) : (
-                      <>
-                        <EyeOff className="w-3 h-3" />
-                        <span className="text-text-tertiary">Inativo</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               </Card>
             </motion.div>

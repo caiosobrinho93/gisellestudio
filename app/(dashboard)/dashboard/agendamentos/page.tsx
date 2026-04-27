@@ -18,7 +18,9 @@ export default function AgendamentosPage() {
   const [itens, setItens] = useState<any[]>([])
   const [filtro, setFiltro] = useState('todos')
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [agendamentoToDelete, setAgendamentoToDelete] = useState<any>(null)
+  const [selectedAgendamento, setSelectedAgendamento] = useState<any>(null)
 
   useEffect(() => {
     if (agendamentos.length > 0) {
@@ -106,25 +108,18 @@ export default function AgendamentosPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
               >
-                <Card className="p-2 h-[80px] flex items-center overflow-hidden">
-                  <div className="flex items-center justify-between gap-2 w-full">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
-                        <Calendar className="w-4 h-4 text-accent-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-text-primary text-sm truncate">{agend.cliente}</p>
-                        <p className="text-xs text-text-secondary truncate">{agend.servico}</p>
-                        <p className="text-xs text-text-tertiary">{agend.data} às {agend.horario}</p>
-                      </div>
+                <Card 
+                  className="p-2 h-[80px] flex items-center overflow-hidden cursor-pointer hover:bg-bg-secondary/50 transition-colors"
+                  onClick={() => { setSelectedAgendamento(agend); setIsDetailModalOpen(true) }}
+                >
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-5 h-5 text-accent-primary" />
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <button
-                        onClick={() => { setAgendamentoToDelete(agend); setIsDeleteModalOpen(true) }}
-                        className="p-1.5 bg-error/20 text-error rounded-lg"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <div className="min-w-0">
+                      <p className="font-medium text-text-primary text-sm truncate">{agend.cliente}</p>
+                      <p className="text-xs text-text-secondary truncate">{agend.servico}</p>
+                      <p className="text-xs text-text-tertiary">{agend.data} às {agend.horario}</p>
                     </div>
                   </div>
                 </Card>
@@ -148,6 +143,66 @@ export default function AgendamentosPage() {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Detalhes do Agendamento">
+        {selectedAgendamento && (
+          <div className="p-2 space-y-6">
+            <div className="grid gap-4">
+              <div className="flex items-center gap-4 p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <div className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-accent-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">Cliente</p>
+                  <p className="text-lg font-bold text-text-primary">{selectedAgendamento.cliente}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                  <p className="text-xs text-text-secondary mb-1">Data</p>
+                  <p className="font-bold text-text-primary">{selectedAgendamento.data}</p>
+                </div>
+                <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                  <p className="text-xs text-text-secondary mb-1">Horário</p>
+                  <p className="font-bold text-text-primary">{selectedAgendamento.horario}</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <p className="text-sm text-text-secondary mb-1">Serviço</p>
+                <p className="text-lg font-bold text-accent-primary">{selectedAgendamento.servico}</p>
+              </div>
+
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <p className="text-sm text-text-secondary mb-1">WhatsApp</p>
+                <p className="text-lg font-bold text-text-primary">{selectedAgendamento.telefone}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                variant="secondary" 
+                onClick={() => setIsDetailModalOpen(false)}
+                className="flex-1"
+              >
+                Voltar
+              </Button>
+              <Button 
+                variant="danger" 
+                onClick={() => {
+                  setAgendamentoToDelete(selectedAgendamento);
+                  setIsDetailModalOpen(false);
+                  setIsDeleteModalOpen(true);
+                }}
+                className="flex-1"
+              >
+                Excluir
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   )

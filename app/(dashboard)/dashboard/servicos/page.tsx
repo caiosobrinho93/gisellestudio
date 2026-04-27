@@ -22,8 +22,10 @@ export default function ServicosPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [editingServico, setEditingServico] = useState<any>(null)
   const [servicoToDelete, setServicoToDelete] = useState<any>(null)
+  const [selectedServico, setSelectedServico] = useState<any>(null)
   const [isSaving, setIsSaving] = useState(false)
   
   const [newNome, setNewNome] = useState('')
@@ -165,15 +167,17 @@ export default function ServicosPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
+              onClick={() => { setSelectedServico(servico); setIsDetailModalOpen(true) }}
+              className="cursor-pointer"
             >
-              <Card className={`p-2 h-[80px] flex items-center overflow-hidden ${!servico.ativo && 'opacity-50'}`}>
+              <Card className={`p-2 h-[80px] flex items-center overflow-hidden hover:bg-bg-secondary/50 transition-colors ${!servico.ativo && 'opacity-50'}`}>
                 <div className="flex items-center justify-between w-full gap-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-medium text-text-primary text-sm truncate">{servico.nome}</h3>
                       <Badge className="text-[10px] px-1 py-0">{servico.categoria}</Badge>
                     </div>
-                    <p className="text-[11px] text-text-secondary truncate max-w-[150px] md:max-w-md mb-1">{servico.descricao}</p>
+                    <p className="text-[11px] text-text-secondary truncate max-w-[200px] md:max-w-md mb-1">{servico.descricao}</p>
                     <div className="flex items-center gap-4 text-[10px]">
                       <span className="flex items-center gap-1 text-accent-primary font-medium">
                         <DollarSign className="w-2.5 h-2.5" />
@@ -184,26 +188,6 @@ export default function ServicosPage() {
                         {servico.duracao} min
                       </span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => toggleAtivo(servico.id)}
-                      className={`p-2 rounded-lg ${servico.ativo ? 'bg-success/20 text-success' : 'bg-bg-secondary text-text-tertiary'}`}
-                    >
-                      {servico.ativo ? 'Ativo' : 'Inativo'}
-                    </button>
-                    <button
-                      onClick={() => handleOpenModal(servico)}
-                      className="p-2 bg-bg-secondary rounded-lg"
-                    >
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => { setServicoToDelete(servico); setIsDeleteModalOpen(true) }}
-                      className="p-2 bg-error/20 text-error rounded-lg"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
                   </div>
                 </div>
               </Card>
@@ -295,6 +279,76 @@ export default function ServicosPage() {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Detalhes do Serviço">
+        {selectedServico && (
+          <div className="p-2 space-y-6">
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-bg-secondary border border-white/5">
+              {selectedServico.imagem ? (
+                <img src={selectedServico.imagem} alt={selectedServico.nome} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Plus className="w-12 h-12 text-text-tertiary opacity-20" />
+                </div>
+              )}
+              <div className="absolute top-4 right-4">
+                <Badge variant={selectedServico.ativo ? 'success' : 'default'} className="backdrop-blur-md bg-opacity-80">
+                  {selectedServico.ativo ? 'Serviço Ativo' : 'Serviço Inativo'}
+                </Badge>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs text-accent-primary uppercase tracking-[0.2em] font-bold mb-1">{selectedServico.categoria}</p>
+              <h3 className="text-2xl font-display font-bold text-text-primary">{selectedServico.nome}</h3>
+              <p className="text-text-secondary mt-2 leading-relaxed">{selectedServico.descricao || 'Nenhuma descrição detalhada disponível.'}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <div className="flex items-center gap-2 text-text-tertiary mb-1">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-xs font-medium uppercase tracking-wider">Duração</span>
+                </div>
+                <p className="text-lg font-bold text-text-primary">{selectedServico.duracao} minutos</p>
+              </div>
+              <div className="p-4 bg-bg-secondary rounded-2xl border border-white/5">
+                <div className="flex items-center gap-2 text-text-tertiary mb-1">
+                  <DollarSign className="w-4 h-4" />
+                  <span className="text-xs font-medium uppercase tracking-wider">Preço</span>
+                </div>
+                <p className="text-lg font-bold text-accent-primary">{formatCurrency(selectedServico.preco)}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-white/5">
+              <Button 
+                variant="secondary" 
+                onClick={() => {
+                  handleOpenModal(selectedServico);
+                  setIsDetailModalOpen(false);
+                }}
+                className="flex-1 gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                Editar
+              </Button>
+              <Button 
+                variant="danger" 
+                onClick={() => {
+                  setServicoToDelete(selectedServico);
+                  setIsDetailModalOpen(false);
+                  setIsDeleteModalOpen(true);
+                }}
+                className="flex-1 gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Excluir
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   )
