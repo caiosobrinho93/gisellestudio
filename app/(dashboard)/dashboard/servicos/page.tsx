@@ -32,8 +32,6 @@ export default function ServicosPage() {
   const [newCategoria, setNewCategoria] = useState('Manicure')
   const [newDescricao, setNewDescricao] = useState('')
   const [newImagem, setNewImagem] = useState('')
-  const [newProcesso, setNewProcesso] = useState('')
-  const [newBeneficios, setNewBeneficios] = useState('')
 
   useEffect(() => {
     if (servicos.length > 0) {
@@ -55,8 +53,6 @@ export default function ServicosPage() {
       setNewCategoria(servico.categoria)
       setNewDescricao(servico.descricao || '')
       setNewImagem(servico.imagem || '')
-      setNewProcesso(Array.isArray(servico.processo) ? servico.processo.join('\n') : '')
-      setNewBeneficios(Array.isArray(servico.beneficios) ? servico.beneficios.join('\n') : '')
     } else {
       setEditingServico(null)
       setNewNome('')
@@ -65,8 +61,6 @@ export default function ServicosPage() {
       setNewCategoria('Manicure')
       setNewDescricao('')
       setNewImagem('')
-      setNewProcesso('')
-      setNewBeneficios('')
     }
     setIsModalOpen(true)
   }
@@ -93,9 +87,7 @@ export default function ServicosPage() {
         descricao: newDescricao,
         categoria: newCategoria,
         ativo: editingServico.ativo,
-        imagem: newImagem,
-        processo: newProcesso.split('\n').filter(Boolean),
-        beneficios: newBeneficios.split('\n').filter(Boolean)
+        imagem: newImagem
       })
     } else {
       result = await createServico({
@@ -104,9 +96,7 @@ export default function ServicosPage() {
         duracao: Number(newDuracao),
         descricao: newDescricao,
         categoria: newCategoria,
-        imagem: newImagem,
-        processo: newProcesso.split('\n').filter(Boolean),
-        beneficios: newBeneficios.split('\n').filter(Boolean)
+        imagem: newImagem
       })
     }
     
@@ -272,22 +262,6 @@ export default function ServicosPage() {
               className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
             />
 
-            <textarea
-              placeholder="Passo a passo do processo (um por linha)"
-              value={newProcesso}
-              onChange={(e) => setNewProcesso(e.target.value)}
-              rows={3}
-              className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
-            />
-
-            <textarea
-              placeholder="Benefícios (um por linha)"
-              value={newBeneficios}
-              onChange={(e) => setNewBeneficios(e.target.value)}
-              rows={3}
-              className="w-full px-4 py-3 bg-bg-card border border-border-light rounded-xl text-text-primary resize-none"
-            />
-            
             <ImageUploader
               value={newImagem}
               onChange={setNewImagem}

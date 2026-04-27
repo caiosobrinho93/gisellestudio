@@ -75,11 +75,7 @@ export default function DashboardPage() {
                       <p className="text-sm text-text-secondary">{item.service}</p>
                     </div>
                   </div>
-                  <Badge
-                    variant={item.status === 'CANCELADO' ? 'error' : 'success'}
-                  >
-                    {item.status === 'CANCELADO' ? 'CANCELADO' : 'CONFIRMADO'}
-                  </Badge>
+                  </div>
                 </div>
               ))}
             </div>

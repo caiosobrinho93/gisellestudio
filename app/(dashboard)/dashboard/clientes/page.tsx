@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import { ImageUploader } from '@/components/ui/ImageUploader'
 import { useNotification } from '@/components/ui/NotificationContext'
+import { useClientes, createCliente, updateCliente, deleteCliente } from '@/hooks/useSupabase'
 
 interface Cliente {
   id: string
@@ -23,12 +24,7 @@ interface Cliente {
 
 export default function ClientesPage() {
   const { showNotification } = useNotification()
-  const [clientes, setClientes] = useState<Cliente[]>([
-    { id: '1', nome: 'Ana Paula', email: 'ana@email.com', telefone: '(11) 99999-9999', observacoes: 'Cliente há 2 anos', ativo: true, dataCadastro: '2024-01-15', foto: '' },
-    { id: '2', nome: 'Carla Silva', email: 'carla@email.com', telefone: '(11) 98888-8888', observacoes: 'Alérgica a acetona', ativo: true, dataCadastro: '2024-02-20', foto: '' },
-    { id: '3', nome: 'Juliana Santos', email: 'juliana@email.com', telefone: '(11) 97777-7777', observacoes: 'Prefere horário matinal', ativo: true, dataCadastro: '2024-03-10', foto: '' },
-    { id: '4', nome: 'Marina Oliveira', email: 'marina@email.com', telefone: '(11) 96666-6666', observacoes: '', ativo: false, dataCadastro: '2024-03-25', foto: '' },
-  ])
+  const { clientes, loading, refetch } = useClientes()
 
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -46,7 +42,7 @@ export default function ClientesPage() {
 
   const filteredClientes = clientes.filter(c => 
     c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.telefone.includes(searchTerm)
   )
 
@@ -55,9 +51,9 @@ export default function ClientesPage() {
       setEditingCliente(cliente)
       setFormData({
         nome: cliente.nome,
-        email: cliente.email,
+        email: cliente.email || '',
         telefone: cliente.telefone,
-        observacoes: cliente.observacoes,
+        observacoes: cliente.observacoes || '',
         foto: cliente.foto || '',
       })
     } else {
@@ -67,45 +63,52 @@ export default function ClientesPage() {
     setIsModalOpen(true)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    let result
     if (editingCliente) {
-      setClientes(prev => prev.map(c => 
-        c.id === editingCliente.id 
-          ? { ...c, ...formData }
-          : c
-      ))
-      showNotification('success', 'Cliente atualizado!')
-    } else {
-      const newCliente: Cliente = {
-        id: Date.now().toString(),
+      result = await updateCliente(editingCliente.id, {
         ...formData,
-        ativo: true,
-        dataCadastro: new Date().toISOString().split('T')[0],
-      }
-      setClientes(prev => [...prev, newCliente])
-      showNotification('success', 'Cliente adicionado!')
+        ativo: editingCliente.ativo
+      })
+      if (result.success) showNotification('success', 'Cliente atualizado!')
+    } else {
+      result = await createCliente(formData)
+      if (result.success) showNotification('success', 'Cliente adicionado!')
     }
     
-    setIsModalOpen(false)
-    setFormData({ nome: '', email: '', telefone: '', observacoes: '', foto: '' })
-    setEditingCliente(null)
+    if (result.success) {
+      refetch()
+      setIsModalOpen(false)
+      setFormData({ nome: '', email: '', telefone: '', observacoes: '', foto: '' })
+      setEditingCliente(null)
+    } else {
+      showNotification('error', 'Erro ao salvar cliente')
+    }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (clienteToDelete) {
-      setClientes(prev => prev.filter(c => c.id !== clienteToDelete.id))
-      showNotification('success', 'Cliente removido!')
+      const result = await deleteCliente(clienteToDelete.id)
+      if (result.success) {
+        showNotification('success', 'Cliente removido!')
+        refetch()
+      } else {
+        showNotification('error', 'Erro ao remover cliente')
+      }
     }
     setIsDeleteModalOpen(false)
     setClienteToDelete(null)
   }
 
-  const toggleAtivo = (id: string) => {
-    setClientes(prev => prev.map(c => 
-      c.id === id ? { ...c, ativo: !c.ativo } : c
-    ))
+  const toggleAtivo = async (cliente: Cliente) => {
+    const result = await updateCliente(cliente.id, {
+      nome: cliente.nome,
+      telefone: cliente.telefone,
+      ativo: !cliente.ativo
+    })
+    if (result.success) refetch()
   }
 
   return (
@@ -158,7 +161,7 @@ export default function ClientesPage() {
               </div>
               
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => toggleAtivo(cliente.id)}>
+                <button onClick={() => toggleAtivo(cliente)}>
                   <Badge variant={cliente.ativo ? 'success' : 'default'} className="text-[10px] px-1.5 py-0">
                     {cliente.ativo ? 'Ativo' : 'Inativo'}
                   </Badge>
@@ -234,7 +237,7 @@ export default function ClientesPage() {
                     {cliente.observacoes || '-'}
                   </td>
                   <td className="py-2 px-4">
-                    <button onClick={() => toggleAtivo(cliente.id)}>
+                    <button onClick={() => toggleAtivo(cliente)}>
                       <Badge variant={cliente.ativo ? 'success' : 'default'}>
                         {cliente.ativo ? 'Ativo' : 'Inativo'}
                       </Badge>

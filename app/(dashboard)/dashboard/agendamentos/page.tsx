@@ -119,9 +119,6 @@ export default function AgendamentosPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <Badge variant={agend.status === 'CANCELADO' ? 'error' : 'success'} className="text-[10px] px-1.5 py-0">
-                        {agend.status === 'CANCELADO' ? 'CANCELADO' : 'CONFIRMADO'}
-                      </Badge>
                       <button
                         onClick={() => { setAgendamentoToDelete(agend); setIsDeleteModalOpen(true) }}
                         className="p-1.5 bg-error/20 text-error rounded-lg"

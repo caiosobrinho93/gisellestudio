@@ -162,6 +162,94 @@ export function useAgendamentos() {
   return { agendamentos, loading, refetch: fetchAgendamentos }
 }
 
+export function useClientes() {
+  const [clientes, setClientes] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const mounted = useRef(true)
+
+  const fetchClientes = useCallback(async () => {
+    if (!mounted.current) return
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('clientes')
+        .select('*')
+        .order('nome')
+      
+      if (error) {
+      } else if (mounted.current) {
+        setClientes(data || [])
+      }
+    } catch (e) {
+    }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    mounted.current = true
+    fetchClientes()
+  }, [fetchClientes])
+
+  return { clientes, loading, refetch: fetchClientes }
+}
+
+export async function createCliente(data: {
+  nome: string
+  email?: string
+  telefone: string
+  observacoes?: string
+  foto?: string
+}) {
+  try {
+    const { error } = await supabase.from('clientes').insert([{
+      nome: data.nome,
+      email: data.email || null,
+      telefone: data.telefone,
+      observacoes: data.observacoes || null,
+      foto: data.foto || null,
+      ativo: true
+    }])
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function updateCliente(id: string, data: {
+  nome: string
+  email?: string
+  telefone: string
+  observacoes?: string
+  foto?: string
+  ativo?: boolean
+}) {
+  try {
+    const { error } = await supabase.from('clientes').update({
+      nome: data.nome,
+      email: data.email || null,
+      telefone: data.telefone,
+      observacoes: data.observacoes || null,
+      foto: data.foto || null,
+      ativo: data.ativo
+    }).eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
+export async function deleteCliente(id: string) {
+  try {
+    const { error } = await supabase.from('clientes').delete().eq('id', id)
+    if (error) return { success: false, error }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return { success: true }
+}
+
 export async function createAgendamento(data: {
   servico_id: string
   profissional_id?: string
@@ -181,7 +269,7 @@ export async function createAgendamento(data: {
         horario: data.horario,
         telefone: data.telefone,
         cliente: data.cliente || data.telefone,
-        status: data.status || 'PENDENTE',
+        status: data.status || 'CONFIRMADO',
       }])
 
     if (error) return { success: false, error }
@@ -272,8 +360,6 @@ export async function updateServico(id: string, data: {
   categoria: string
   ativo?: boolean
   imagem?: string
-  processo?: string[]
-  beneficios?: string[]
 }) {
   try {
     const { error } = await supabase.from('servicos').update({
@@ -283,9 +369,7 @@ export async function updateServico(id: string, data: {
       descricao: data.descricao,
       categoria: data.categoria,
       ativo: data.ativo,
-      imagem: data.imagem,
-      processo: data.processo,
-      beneficios: data.beneficios
+      imagem: data.imagem
     }).eq('id', id)
     if (error) return { success: false, error }
   } catch (e) {
@@ -301,8 +385,6 @@ export async function createServico(data: {
   descricao?: string
   categoria: string
   imagem?: string
-  processo?: string[]
-  beneficios?: string[]
 }) {
   try {
     const { error } = await supabase.from('servicos').insert([{
@@ -312,9 +394,7 @@ export async function createServico(data: {
       descricao: data.descricao,
       categoria: data.categoria,
       ativo: true,
-      imagem: data.imagem,
-      processo: data.processo,
-      beneficios: data.beneficios
+      imagem: data.imagem
     }])
     if (error) return { success: false, error }
   } catch (e) {
