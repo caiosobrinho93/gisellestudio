@@ -75,7 +75,6 @@ export default function DashboardPage() {
                       <p className="text-sm text-text-secondary">{item.service}</p>
                     </div>
                   </div>
-                  </div>
                 </div>
               ))}
             </div>
