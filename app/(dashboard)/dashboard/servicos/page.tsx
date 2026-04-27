@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit2, Trash2, Search, Clock, DollarSign } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { useNotification } from '@/components/ui/NotificationContext'
 import { useServicos, createServico, deleteServico, updateServico } from '@/hooks/useSupabase'
 import { ImageUploader } from '@/components/ui/ImageUploader'
 
@@ -17,8 +18,9 @@ function formatCurrency(value: number) {
 }
 
 export default function ServicosPage() {
-  const { servicos, loading, refetch } = useServicos()
-  const [itens, setItens] = useState<any[]>([])
+  const { showNotification } = useNotification()
+  const { servicos, loading, refetch } = useServicos(false)
+  
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -35,16 +37,10 @@ export default function ServicosPage() {
   const [newDescricao, setNewDescricao] = useState('')
   const [newImagem, setNewImagem] = useState('')
 
-  useEffect(() => {
-    if (servicos.length > 0) {
-      setItens(servicos)
-    }
-  }, [servicos])
-
-  const filteredServicos = itens.filter(servico =>
+  const filteredServicos = useMemo(() => servicos.filter((servico: any) =>
     servico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     servico.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  ), [servicos, searchTerm])
 
   const handleOpenModal = (servico?: any) => {
     if (servico) {
@@ -116,7 +112,6 @@ export default function ServicosPage() {
     if (servicoToDelete) {
       const result = await deleteServico(servicoToDelete.id)
       if (result.success) {
-        setItens(prev => prev.filter(s => s.id !== servicoToDelete.id))
         refetch()
       }
     }
@@ -124,18 +119,25 @@ export default function ServicosPage() {
     setServicoToDelete(null)
   }
 
-  const toggleAtivo = (id: string) => {
-    setItens(prev => prev.map(s => 
-      s.id === id ? { ...s, ativo: !s.ativo } : s
-    ))
+  const toggleAtivo = async (item: any) => {
+    await updateServico(item.id, {
+      nome: item.nome,
+      preco: item.preco,
+      duracao: item.duracao,
+      descricao: item.descricao,
+      categoria: item.categoria,
+      ativo: !item.ativo,
+      imagem: item.imagem
+    })
+    refetch()
   }
 
   return (
-    <div className="p-2.5">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Serviços</h1>
-          <p className="text-text-secondary text-sm md:text-base">({itens.length})</p>
+          <p className="text-text-secondary text-sm md:text-base">({servicos.length})</p>
         </div>
         <Button onClick={() => handleOpenModal()} className="w-10 h-10 p-0">
           <Plus className="w-5 h-5" />

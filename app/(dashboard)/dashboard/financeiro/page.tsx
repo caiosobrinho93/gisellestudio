@@ -1,51 +1,87 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { TrendingUp, TrendingDown, DollarSign, CreditCard, Banknote, Smartphone } from 'lucide-react'
+import { TrendingUp, DollarSign, CreditCard, Smartphone } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { formatCurrency } from '@/lib/utils'
-
-const stats = [
-  { label: 'Faturamento Total', value: 24500, icon: DollarSign, change: '+12%' },
-  { label: 'Este Mês', value: 8500, icon: TrendingUp, change: '+8%' },
-  { label: 'Cartão', value: 15000, icon: CreditCard, change: '+5%' },
-  { label: 'Dinheiro', value: 5500, icon: Banknote, change: '+15%' },
-  { label: 'PIX', value: 4000, icon: Smartphone, change: '+20%' },
-]
-
-const recentTransactions = [
-  { id: '1', date: '25/04', description: 'Manicure - Ana Paula', value: 45, method: 'PIX' },
-  { id: '2', date: '25/04', description: 'Pedicure - Carla Silva', value: 65, method: 'Cartão' },
-  { id: '3', date: '25/04', description: 'Extensão Cílios - Juliana', value: 150, method: 'Cartão' },
-  { id: '4', date: '24/04', description: 'Massagem - Marina', value: 80, method: 'Dinheiro' },
-  { id: '5', date: '24/04', description: 'Design Sobrancelha', value: 30, method: 'PIX' },
-]
+import { useAgendamentos, useServicos } from '@/hooks/useSupabase'
+import { useMemo } from 'react'
 
 export default function FinanceiroPage() {
+  const { agendamentos, loading: loadingAgend } = useAgendamentos()
+  const { servicos } = useServicos(false)
+
+  const { stats, recentTransactions } = useMemo(() => {
+    const confirmados = agendamentos.filter(a => a.status === 'CONFIRMADO')
+    
+    let faturamentoTotal = 0
+    let faturamentoMes = 0
+    let faturamentoCartao = 0
+    let faturamentoDinheiro = 0
+    let faturamentoPix = 0
+
+    const currentMonth = new Date().getMonth()
+    const currentYear = new Date().getFullYear()
+
+    const transactions = confirmados.map(a => {
+      const s = servicos.find(s => s.id === a.servico_id)
+      const valor = s?.preco || 0
+      faturamentoTotal += valor
+
+      const [day, month, year] = a.data.split('/')
+      if (parseInt(month) - 1 === currentMonth && parseInt(year) === currentYear) {
+        faturamentoMes += valor
+      }
+
+      // Dummy distribution for visualization since we don't have payment method in DB yet
+      // In a real app, this would be a field in the agendamentos table
+      faturamentoPix += valor // Assuming all as PIX for now for simplicity
+
+      return {
+        id: a.id,
+        date: a.data.split('/').slice(0, 2).join('/'),
+        description: `${s?.nome || 'Serviço'} - ${a.cliente || a.telefone}`,
+        value: valor,
+        method: 'PIX'
+      }
+    }).sort((a, b) => b.id.localeCompare(a.id)).slice(0, 5)
+
+    const statsArray = [
+      { label: 'Faturamento Total', value: faturamentoTotal, icon: DollarSign, change: 'total' },
+      { label: 'Este Mês', value: faturamentoMes, icon: TrendingUp, change: 'atual' },
+      { label: 'PIX', value: faturamentoPix, icon: Smartphone, change: '100%' },
+      { label: 'Cartão/Dinheiro', value: 0, icon: CreditCard, change: '0%' },
+    ]
+
+    return { stats: statsArray, recentTransactions: transactions }
+  }, [agendamentos, servicos])
+
+  const isLoading = loadingAgend
+
   return (
-    <div className="p-2.5">
+    <div>
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold text-text-primary">Financeiro</h1>
         <p className="text-text-secondary">Controle financeiro do salão</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.slice(0, 4).map((stat, i) => (
+        {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
+            transition={{ delay: i * 0.05 }}
           >
             <Card>
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-text-secondary text-sm">{stat.label}</p>
                   <p className="text-2xl font-bold text-text-primary mt-1">
-                    {typeof stat.value === 'number' ? formatCurrency(stat.value) : stat.value}
+                    {formatCurrency(stat.value)}
                   </p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-accent-rose/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center">
                   <stat.icon className="w-5 h-5 text-accent-primary" />
                 </div>
               </div>
@@ -64,20 +100,28 @@ export default function FinanceiroPage() {
             <CardTitle>Receitas Recentes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentTransactions.map((t) => (
-                <div
-                  key={t.id}
-                  className="flex items-center justify-between py-3 border-b border-border-light last:border-0"
-                >
-                  <div>
-                    <p className="font-medium text-text-primary">{t.description}</p>
-                    <p className="text-sm text-text-secondary">{t.date} • {t.method}</p>
+            {isLoading ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin w-6 h-6 border-2 border-accent-primary border-t-transparent rounded-full" />
+              </div>
+            ) : recentTransactions.length === 0 ? (
+              <p className="text-center py-10 text-text-secondary">Nenhuma receita registrada</p>
+            ) : (
+              <div className="space-y-4">
+                {recentTransactions.map((t) => (
+                  <div
+                    key={t.id}
+                    className="flex items-center justify-between py-3 border-b border-border-light last:border-0"
+                  >
+                    <div>
+                      <p className="font-medium text-text-primary">{t.description}</p>
+                      <p className="text-sm text-text-secondary">{t.date} • {t.method}</p>
+                    </div>
+                    <p className="font-medium text-success">+ {formatCurrency(t.value)}</p>
                   </div>
-                  <p className="font-medium text-success">+ {formatCurrency(t.value)}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -95,7 +139,7 @@ export default function FinanceiroPage() {
                   <span className="text-text-primary">{stat.label}</span>
                 </div>
                 <span className="font-medium text-text-primary">
-                  {typeof stat.value === 'number' ? formatCurrency(stat.value) : stat.value}
+                  {formatCurrency(stat.value)}
                 </span>
               </div>
             ))}

@@ -1,197 +1,40 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useAppData } from '@/components/providers/AppDataProvider'
 
-export function useServicos() {
-  const [servicos, setServicos] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchServicos = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('servicos')
-        .select('*')
-        .eq('ativo', true)
-        .order('nome')
-      
-      if (error) {
-      } else if (mounted.current) {
-        setServicos(data || [])
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchServicos()
-  }, [fetchServicos])
-
-  return { servicos, loading, refetch: fetchServicos }
+export function useServicos(onlyActive = true) {
+  const { servicos, loading, refetch } = useAppData()
+  const data = onlyActive ? servicos.filter((s: any) => s.ativo) : servicos
+  return { servicos: data, loading: loading.servicos, refetch: () => refetch('servicos') }
 }
 
-export function useProfissionais() {
-  const [profissionais, setProfissionais] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchProfissionais = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('profissionais')
-        .select('*')
-        .eq('ativo', true)
-        .order('nome')
-      
-      if (error) {
-      } else if (mounted.current) {
-        setProfissionais(data || [])
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchProfissionais()
-  }, [fetchProfissionais])
-
-  return { profissionais, loading, refetch: fetchProfissionais }
+export function useProfissionais(onlyActive = true) {
+  const { profissionais, loading, refetch } = useAppData()
+  const data = onlyActive ? profissionais.filter((p: any) => p.ativo) : profissionais
+  return { profissionais: data, loading: loading.profissionais, refetch: () => refetch('profissionais') }
 }
 
-export function useGaleria() {
-  const [galeria, setGaleria] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchGaleria = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('galeria')
-        .select('*')
-        .eq('ativo', true)
-        .order('created_at', { ascending: false })
-      
-      if (error) {
-      } else if (mounted.current) {
-        setGaleria(data || [])
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchGaleria()
-  }, [fetchGaleria])
-
-  return { galeria, loading, refetch: fetchGaleria }
+export function useGaleria(onlyActive = true) {
+  const { galeria, loading, refetch } = useAppData()
+  const data = onlyActive ? galeria.filter((g: any) => g.ativo) : galeria
+  return { galeria: data, loading: loading.galeria, refetch: () => refetch('galeria') }
 }
 
 export function useConfiguracoes() {
-  const [config, setConfig] = useState<Record<string, string>>({})
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchConfig = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('configuracoes')
-        .select('chave, valor')
-      
-      if (error) {
-      } else if (mounted.current) {
-        const configMap: Record<string, string> = {}
-        data?.forEach((item) => {
-          configMap[item.chave] = item.valor
-        })
-        setConfig(configMap)
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchConfig()
-  }, [fetchConfig])
-
-  return { config, loading, refetch: fetchConfig }
+  const { configuracoes: config, loading, refetch } = useAppData()
+  return { config, loading: loading.configuracoes, refetch: () => refetch('configuracoes') }
 }
 
 export function useAgendamentos() {
-  const [agendamentos, setAgendamentos] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchAgendamentos = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('agendamentos')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if (error) {
-      } else if (mounted.current) {
-        setAgendamentos(data || [])
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchAgendamentos()
-  }, [fetchAgendamentos])
-
-  return { agendamentos, loading, refetch: fetchAgendamentos }
+  const { agendamentos, loading, refetch } = useAppData()
+  return { agendamentos, loading: loading.agendamentos, refetch: () => refetch('agendamentos') }
 }
 
 export function useClientes() {
-  const [clientes, setClientes] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useRef(true)
-
-  const fetchClientes = useCallback(async () => {
-    if (!mounted.current) return
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('clientes')
-        .select('*')
-        .order('nome')
-      
-      if (error) {
-      } else if (mounted.current) {
-        setClientes(data || [])
-      }
-    } catch (e) {
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    mounted.current = true
-    fetchClientes()
-  }, [fetchClientes])
-
-  return { clientes, loading, refetch: fetchClientes }
+  const { clientes, loading, refetch } = useAppData()
+  return { clientes, loading: loading.clientes, refetch: () => refetch('clientes') }
 }
+
 
 export async function createCliente(data: {
   nome: string

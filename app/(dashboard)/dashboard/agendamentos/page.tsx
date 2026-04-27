@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Trash2, Calendar } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
@@ -13,55 +13,50 @@ import { useAgendamentos, useServicos, useProfissionais, deleteAgendamento } fro
 export default function AgendamentosPage() {
   const { showNotification } = useNotification()
   const { agendamentos, loading, refetch } = useAgendamentos()
-  const { servicos } = useServicos()
-  const { profissionais } = useProfissionais()
-  const [itens, setItens] = useState<any[]>([])
+  const { servicos } = useServicos(false)
+  const { profissionais } = useProfissionais(false)
+  
   const [filtro, setFiltro] = useState('todos')
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [agendamentoToDelete, setAgendamentoToDelete] = useState<any>(null)
   const [selectedAgendamento, setSelectedAgendamento] = useState<any>(null)
 
-  useEffect(() => {
-    if (agendamentos.length > 0) {
-      setItens(agendamentos)
-    }
-  }, [agendamentos])
-
-  const getServicoNome = (id: string) => {
-    const s = servicos.find(s => s.id === id)
+  const getServicoNome = useCallback((id: string) => {
+    const s = servicos.find((s: any) => s.id === id)
     return s?.nome || id
-  }
+  }, [servicos])
 
-  const getProfissionalNome = (id: string) => {
-    const p = profissionais.find(p => p.id === id)
+  const getProfissionalNome = useCallback((id: string) => {
+    const p = profissionais.find((p: any) => p.id === id)
     return p?.nome || id
-  }
+  }, [profissionais])
 
-  const displayItens = itens.map(a => ({
+  const displayItens = useMemo(() => agendamentos.map(a => ({
     ...a,
     cliente: a.cliente || a.telefone,
     servico: getServicoNome(a.servico_id),
     profissional: getProfissionalNome(a.profissional_id)
-  }))
+  })), [agendamentos, getServicoNome, getProfissionalNome])
 
-  const hoje = new Date().toLocaleDateString('pt-BR')
-  const amanha = new Date(Date.now() + 86400000).toLocaleDateString('pt-BR')
-  const proximaSemana = new Date(Date.now() + 7 * 86400000).toLocaleDateString('pt-BR')
+  const filteredAgendamentos = useMemo(() => {
+    const hoje = new Date().toLocaleDateString('pt-BR')
+    const amanha = new Date(Date.now() + 86400000).toLocaleDateString('pt-BR')
+    const proximaSemanaDate = new Date(Date.now() + 7 * 86400000)
 
-  const filteredAgendamentos = displayItens.filter(agend => {
-    if (filtro === 'todos') return true
-    if (filtro === 'hoje') return agend.data === hoje
-    if (filtro === 'amanha') return agend.data === amanha
-    if (filtro === 'semana') return agend.data >= hoje && agend.data <= proximaSemana
-    return true
-  })
+    return displayItens.filter(agend => {
+      if (filtro === 'todos') return true
+      if (filtro === 'hoje') return agend.data === hoje
+      if (filtro === 'amanha') return agend.data === amanha
+      if (filtro === 'semana') return agend.data >= hoje && agend.data <= proximaSemanaDate.toLocaleDateString('pt-BR')
+      return true
+    })
+  }, [displayItens, filtro])
 
   const handleDelete = async () => {
     if (agendamentoToDelete) {
       const result = await deleteAgendamento(agendamentoToDelete.id)
       if (result.success) {
-        setItens(prev => prev.filter(a => a.id !== agendamentoToDelete.id))
         refetch()
         showNotification('success', 'Agendamento removido!')
       }
@@ -71,7 +66,7 @@ export default function AgendamentosPage() {
   }
 
   return (
-    <div className="p-2.5 page-content">
+    <div className="page-content">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Agendamentos</h1>

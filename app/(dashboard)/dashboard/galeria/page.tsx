@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Trash2, Image as ImageIcon, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils'
 const categorias = ['Manicure', 'Pedicure', 'Cílios', 'Sobrancelha', 'Massagem', 'Geral']
 
 export default function GaleriaPage() {
-  const { galeria, loading, refetch } = useGaleria()
-  const [itens, setItens] = useState<any[]>([])
+  const { galeria, loading, refetch } = useGaleria(false)
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -27,31 +27,24 @@ export default function GaleriaPage() {
   const [newImagem, setNewImagem] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
-  useEffect(() => {
-    if (galeria.length > 0) {
-      const fixedItens = galeria.map((item: any) => {
-        let imgPath = item.imagem || ''
-        if (imgPath.startsWith('data:')) {
-          return { ...item }
-        }
-        if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
-          if (imgPath.startsWith('/images/')) {
-            imgPath = '/gisellestudio' + imgPath
-          } else if (imgPath.startsWith('/')) {
-            imgPath = '/gisellestudio' + imgPath
-          } else {
-            imgPath = '/gisellestudio/images/' + imgPath
-          }
-        }
-        return { ...item, imagem: imgPath }
-      })
-      setItens(fixedItens)
-    }
+  const processedGaleria = useMemo(() => {
+    return galeria.map((item: any) => {
+      let imgPath = item.imagem || ''
+      if (imgPath.startsWith('data:')) return item
+      if (imgPath && !imgPath.startsWith('/gisellestudio/') && !imgPath.startsWith('http')) {
+        if (imgPath.startsWith('/images/')) imgPath = '/gisellestudio' + imgPath
+        else if (imgPath.startsWith('/')) imgPath = '/gisellestudio' + imgPath
+        else imgPath = '/gisellestudio/images/' + imgPath
+      }
+      return { ...item, imagem: imgPath }
+    })
   }, [galeria])
 
-  const filteredItens = filterCategoria 
-    ? itens.filter(i => i.categoria === filterCategoria)
-    : itens
+  const filteredItens = useMemo(() => {
+    return processedGaleria.filter(item => 
+      !filterCategoria || item.categoria === filterCategoria
+    )
+  }, [processedGaleria, filterCategoria])
 
   const handleOpenModal = (item?: any) => {
     if (item) {
@@ -111,7 +104,6 @@ export default function GaleriaPage() {
     if (itemToDelete) {
       const result = await deleteGaleriaItem(itemToDelete.id)
       if (result.success) {
-        setItens(prev => prev.filter(i => i.id !== itemToDelete.id))
         refetch()
       }
     }
@@ -119,18 +111,22 @@ export default function GaleriaPage() {
     setItemToDelete(null)
   }
 
-  const toggleAtivo = async (id: string) => {
-    setItens(prev => prev.map(i => 
-      i.id === id ? { ...i, ativo: !i.ativo } : i
-    ))
+  const toggleAtivo = async (item: any) => {
+    await updateGaleriaItem(item.id, {
+      titulo: item.titulo,
+      imagem: item.imagem,
+      categoria: item.categoria,
+      ativo: !item.ativo
+    })
+    refetch()
   }
 
   return (
-    <div className="p-2.5">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Galeria</h1>
-          <p className="text-text-secondary text-sm md:text-base">({itens.length})</p>
+          <p className="text-text-secondary text-sm md:text-base">({galeria.length})</p>
         </div>
         <Button onClick={() => handleOpenModal()} className="w-10 h-10 p-0">
           <Plus className="w-5 h-5" />

@@ -36,7 +36,7 @@ export default function ConfiguracoesPage() {
   }
 
   return (
-    <div className="p-2.5">
+    <div>
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold text-text-primary">Configurações</h1>
         <p className="text-text-secondary">Configure o sistema</p>

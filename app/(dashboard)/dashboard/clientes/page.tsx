@@ -114,7 +114,7 @@ export default function ClientesPage() {
   }
 
   return (
-    <div className="p-2.5">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Clientes</h1>

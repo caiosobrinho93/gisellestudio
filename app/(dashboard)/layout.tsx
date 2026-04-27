@@ -2,6 +2,7 @@
 
 import { Sidebar } from '@/components/layout/Sidebar'
 import { NotificationProvider } from '@/components/ui/NotificationContext'
+import { AppDataProvider } from '@/components/providers/AppDataProvider'
 
 export default function DashboardLayout({
   children,
